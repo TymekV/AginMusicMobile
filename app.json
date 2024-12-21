@@ -1,21 +1,24 @@
 {
   "expo": {
-    "name": "agin-music",
+    "name": "Agin Music",
     "slug": "agin-music",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "aginmusic",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "rocks.agin.music",
+      "appleTeamId": "64X57WU2MF"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "rocks.agin.music"
     },
     "web": {
       "bundler": "metro",
