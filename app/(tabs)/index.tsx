@@ -1,4 +1,4 @@
-import Container from '@/components/Container';
+import Container from '@/lib/components/Container';
 import { View } from 'react-native';
 
 export default function Home() {
