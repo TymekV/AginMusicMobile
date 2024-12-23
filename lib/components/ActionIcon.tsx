@@ -27,20 +27,20 @@ const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, iconProps, ...pro
 
     const scaleDownAnimation = useSharedValue(1);
     const opacity = useSharedValue(1);
-    const backgroundColor = useSharedValue('#ffffff00'); // Initial background color
+    const backgroundColor = useSharedValue('#ffffff00');
 
     const scaleHandler = Gesture.Tap()
         .onBegin(() => {
             "worklet";
             scaleDownAnimation.value = withSpring(0.8);
             opacity.value = withSpring(0.5);
-            backgroundColor.value = withSpring('#ffffff15'); // Animate background color
+            backgroundColor.value = withSpring('#ffffff15');
         })
         .onFinalize(() => {
             "worklet";
             scaleDownAnimation.value = withSpring(1);
             opacity.value = withSpring(1);
-            backgroundColor.value = withSpring('#ffffff00'); // Animate back to initial color
+            backgroundColor.value = withSpring('#ffffff00');
         });
 
     const animatedStyle = useAnimatedStyle(() => ({

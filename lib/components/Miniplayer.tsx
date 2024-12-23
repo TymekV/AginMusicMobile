@@ -1,10 +1,11 @@
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, TouchableHighlight, View } from 'react-native';
 import Title from './Title';
 import { useMemo } from 'react';
 import { useColors } from '@/lib/hooks/useColors';
 import { Image } from 'expo-image';
 import ActionIcon from './ActionIcon';
 import { IconPlayerPlayFilled, IconPlayerSkipBackFilled, IconPlayerTrackNext, IconPlayerTrackNextFilled } from '@tabler/icons-react-native';
+import { SheetManager } from 'react-native-actions-sheet';
 
 export default function Miniplayer() {
     const colors = useColors();
@@ -48,7 +49,7 @@ export default function Miniplayer() {
     }), [colors.secondaryBackground]);
 
     return (
-        <View style={styles.miniplayer}>
+        <Pressable onPress={() => SheetManager.show('playback')} style={styles.miniplayer}>
             <View style={styles.metadata}>
                 <Image source={{ uri: 'https://cdn.swiatksiazki.pl/media/catalog/product/6/8/6899907019068-1.jpg?width=650&height=650&store=default&image-type=small_image' }} style={styles.image} cachePolicy="disk" />
                 <View>
@@ -60,6 +61,6 @@ export default function Miniplayer() {
                 <ActionIcon icon={IconPlayerPlayFilled} isFilled />
                 <ActionIcon icon={IconPlayerTrackNextFilled} size={20} isFilled />
             </View>
-        </View>
+        </Pressable>
     )
 }

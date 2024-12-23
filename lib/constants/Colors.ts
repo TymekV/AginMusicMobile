@@ -15,7 +15,11 @@ export const Colors = {
     icon: '#687076',
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
-    secondaryBackground: '#FAFAFA'
+    secondaryBackground: '#FAFAFA',
+    sheetBackgroundColor: '#ffffff',
+    sheetIndicatorColor: '#e4e6ed',
+    sheetActionBackgroundColor: '#dedfe0',
+    segmentedControlBackground: '#dedfe0',
   },
   dark: {
     text: '#ECEDEE',
@@ -25,6 +29,10 @@ export const Colors = {
     icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
-    secondaryBackground: '#18181B'
+    secondaryBackground: '#18181B',
+    sheetBackgroundColor: '#121212',
+    sheetIndicatorColor: '#1d1d1d',
+    sheetActionBackgroundColor: '#1d1d1d',
+    segmentedControlBackground: '#000000',
   },
 };

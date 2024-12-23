@@ -25,9 +25,6 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "androidNavigationBar": {
-      "backgroundColor": "#ffffff00"
-    },
     "plugins": [
       "expo-router",
       [

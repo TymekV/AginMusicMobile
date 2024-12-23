@@ -18,6 +18,7 @@ export default function Title({ children, size, fontFamily, color }: TitleProps)
             color: color ?? colors.text,
             fontFamily: fontFamily ?? 'Poppins-Medium',
             fontSize: size,
+            includeFontPadding: false,
         }
     }), [colors.text, size, fontFamily, color]);
 
