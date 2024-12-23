@@ -1,8 +1,11 @@
 import Container from '@/lib/components/Container';
+import NowPlayingBackground from '@/lib/components/NowPlayingBackground';
 import { View } from 'react-native';
 
 export default function Home() {
     return (
-        <Container></Container>
+        <Container>
+            <NowPlayingBackground image="" />
+        </Container>
     )
 }

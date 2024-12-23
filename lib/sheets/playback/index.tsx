@@ -16,9 +16,10 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
 
     const [coverColors, setCoverColors] = useState<ImageColorsResult>();
 
+    const url = 'https://cdn.swiatksiazki.pl/media/catalog/product/6/8/6899907019068-1.jpg?width=650&height=650&store=default&image-type=small_image';
+
     useEffect(() => {
         (async () => {
-            const url = 'https://cdn.swiatksiazki.pl/media/catalog/product/6/8/6899907019068-1.jpg?width=650&height=650&store=default&image-type=small_image';
             const colors = await getColors(url, {
                 fallback: '#228B22',
                 cache: true,
@@ -44,7 +45,7 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
         // CustomHeaderComponent={<Background source={{ uri: 'https://cdn.swiatksiazki.pl/media/catalog/product/6/8/6899907019068-1.jpg?width=650&height=650&store=default&image-type=small_image' }} />}
         >
             <SheetContainer>
-                <Image style={{ width: 100, height: 100 }} source={{ uri: 'https://cdn.swiatksiazki.pl/media/catalog/product/6/8/6899907019068-1.jpg?width=650&height=650&store=default&image-type=small_image' }} />
+                <Image style={{ width: 100, height: 100 }} source={{ uri: url }} />
                 {/* <View style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, backgroundColor: 'red' }}></View> */}
             </SheetContainer>
         </StyledActionSheet>
