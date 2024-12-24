@@ -4,7 +4,7 @@ import { Image, Platform } from 'react-native';
 import { getColors } from 'react-native-image-colors';
 import { AndroidImageColors, IOSImageColors } from 'react-native-image-colors/build/types';
 import { useColors } from '@/lib/hooks/useColors';
-import chroma from 'chroma-js';
+import chroma, { hex } from 'chroma-js';
 
 export type ImageColorsProps = {
     image: string;
@@ -48,6 +48,7 @@ async function cropImageIntoTiles(uri: string): Promise<ImageManipulator.ImageRe
 
 function darkenIfLight(color: string): string {
     const colorInstance = chroma(color);
+    console.log('l', colorInstance.luminance());
 
     if (colorInstance.luminance() > 0.8) {
         return colorInstance.darken(3).hex();
@@ -60,6 +61,13 @@ function darkenIfLight(color: string): string {
     return colorInstance.hex();
 }
 
+function generateGradientTint(color: string): string {
+    const colorInstance = chroma(color);
+    console.log('l2', colorInstance.luminance());
+
+    return colorInstance.mix('black', .7).hex();
+}
+
 export default function useImageColors({ image }: ImageColorsProps) {
     const [colors, setColors] = useState<ImageColors>([]);
 
@@ -67,18 +75,30 @@ export default function useImageColors({ image }: ImageColorsProps) {
 
     useEffect(() => {
         (async () => {
-            const results = [];
-            const imageData = await cropImageIntoTiles(image);
+            // const results = [];
+            // const imageData = await cropImageIntoTiles(image);
 
-            let i = 0;
-            for (const tile of imageData) {
-                const color = await getColors(tile.uri);
-                const hexColor = Platform.OS == 'ios' ? (color as IOSImageColors)?.background : Platform.OS == 'android' ? (color as AndroidImageColors)?.dominant : themeColors.sheetBackgroundColor;
-                const finalColor = darkenIfLight(hexColor);
-                results.push(finalColor);
-                i++;
-            }
-            console.log(results);
+            // let i = 0;
+            // for (const tile of imageData) {
+            //     const color = await getColors(tile.uri);
+            //     const hexColor = Platform.OS == 'ios' ? (color as IOSImageColors)?.background : Platform.OS == 'android' ? (color as AndroidImageColors)?.dominant : themeColors.sheetBackgroundColor;
+            //     const finalColor = darkenIfLight(hexColor);
+            //     results.push(finalColor);
+            //     i++;
+            // }
+            // console.log(results);
+
+            // setColors(results);
+            const results = [];
+
+            const color = await getColors(image, {
+                cache: true,
+            });
+            const hexColor = Platform.OS == 'ios' ? (color as IOSImageColors)?.background : Platform.OS == 'android' ? (color as AndroidImageColors)?.dominant : themeColors.sheetBackgroundColor;
+            const finalColor = darkenIfLight(hexColor);
+            results.push(finalColor);
+            results.push(generateGradientTint(hexColor));
+            // results.push(darkenIfLight(finalColor));
 
             setColors(results);
         })();

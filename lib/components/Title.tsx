@@ -1,5 +1,5 @@
 import { useColors } from "@/lib/hooks/useColors";
-import { CustomFont } from "@/types";
+import { CustomFont } from "@/lib/types";
 import { useMemo } from "react";
 import { StyleSheet, Text } from "react-native";
 

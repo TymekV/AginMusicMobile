@@ -33,7 +33,7 @@ export default function NowPlayingBackground({ image }: NowPlayingBackgroundProp
         leftColor.value = withTiming(imageColors[0], { duration: 1000 });
         rightColor.value = withTiming(imageColors[1], { duration: 1000 });
         // changeColors(imageColors[0], imageColors[1]);
-        // console.log({ imageColors });
+        console.log({ imageColors });
 
     }, [imageColors]);
 
