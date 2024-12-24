@@ -6,9 +6,12 @@ import { Image } from 'expo-image';
 import ActionIcon from './ActionIcon';
 import { IconPlayerPlayFilled, IconPlayerSkipBackFilled, IconPlayerTrackNext, IconPlayerTrackNextFilled } from '@tabler/icons-react-native';
 import { SheetManager } from 'react-native-actions-sheet';
+import { useNowPlaying } from '../hooks';
 
 export default function Miniplayer() {
     const colors = useColors();
+
+    const [nowPlaying] = useNowPlaying();
 
     const styles = useMemo(() => StyleSheet.create({
         miniplayer: {
@@ -53,8 +56,8 @@ export default function Miniplayer() {
             <View style={styles.metadata}>
                 <Image source={{ uri: 'https://cdn.swiatksiazki.pl/media/catalog/product/6/8/6899907019068-1.jpg?width=650&height=650&store=default&image-type=small_image' }} style={styles.image} cachePolicy="disk" />
                 <View>
-                    <Title size={14} fontFamily='Poppins-SemiBold'>LosT</Title>
-                    <Title size={12} fontFamily='Poppins-Regular' color={colors.secondaryText}>Bring Me The Horizon</Title>
+                    <Title size={14} fontFamily='Poppins-SemiBold'>{nowPlaying.title}</Title>
+                    <Title size={12} fontFamily='Poppins-Regular' color={colors.secondaryText}>{nowPlaying.artist}</Title>
                 </View>
             </View>
             <View style={styles.actions}>

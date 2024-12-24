@@ -11,7 +11,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "rocks.agin.music",
-      "appleTeamId": "64X57WU2MF"
+      "appleTeamId": "64X57WU2MF",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "audio"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -36,7 +41,8 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true

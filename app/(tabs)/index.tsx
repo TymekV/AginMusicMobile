@@ -9,20 +9,18 @@ import { View } from 'react-native';
 
 export default function Home() {
     const server = useServer();
-    useEffect(() => {
-        (async () => {
-            const serverInfo = await server.discoverServer('');
-            console.log(serverInfo);
+    // useEffect(() => {
+    //     (async () => {
+    //         const serverInfo = await server.discoverServer('192.168.1.64:4533');
+    //         console.log(serverInfo);
 
-            await server.saveAndTestPasswordCredentials('', '');
+    //         await server.saveAndTestPasswordCredentials('', '');
 
-        })();
-    }, [server.discoverServer]);
+    //     })();
+    // }, [server.discoverServer]);
 
     return (
         <Container>
-            <Title>{server.server.auth.username}</Title>
-            <Title>{server.server.auth.password}</Title>
             {/* <NowPlayingBackground image={images[2]} /> */}
         </Container>
     )
