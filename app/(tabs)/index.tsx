@@ -26,7 +26,7 @@ export default function Home() {
                 const serverInfo = await server.discoverServer('192.168.1.64:4533');
                 console.log(serverInfo);
 
-                await server.saveAndTestPasswordCredentials('', '');
+                await server.saveAndTestPasswordCredentials('nigger', 'nigger');
                 console.log('DONE');
 
             }} />

@@ -26,8 +26,6 @@ export default function NowPlayingProvider({ children }: { children?: React.Reac
     const api = useApi();
 
     useEffect(() => {
-        console.log('fuck axios', api);
-
         if (!api) return;
         console.log('fetchibng1');
 

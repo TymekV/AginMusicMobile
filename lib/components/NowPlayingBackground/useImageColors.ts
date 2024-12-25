@@ -5,6 +5,7 @@ import { getColors } from 'react-native-image-colors';
 import { AndroidImageColors, IOSImageColors } from 'react-native-image-colors/build/types';
 import { useColors } from '@/lib/hooks/useColors';
 import chroma, { hex } from 'chroma-js';
+import * as Crypto from 'expo-crypto';
 
 export type ImageColorsProps = {
     image: string;
@@ -48,7 +49,7 @@ async function cropImageIntoTiles(uri: string): Promise<ImageManipulator.ImageRe
 
 function darkenIfLight(color: string): string {
     const colorInstance = chroma(color);
-    console.log('l', colorInstance.luminance());
+    console.log('l', color, colorInstance.luminance());
 
     if (colorInstance.luminance() > 0.8) {
         return colorInstance.darken(3).hex();
@@ -93,6 +94,7 @@ export default function useImageColors({ image }: ImageColorsProps) {
 
             const color = await getColors(image, {
                 cache: true,
+                key: await Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, image),
             });
             const hexColor = Platform.OS == 'ios' ? (color as IOSImageColors)?.background : Platform.OS == 'android' ? (color as AndroidImageColors)?.dominant : themeColors.sheetBackgroundColor;
             const finalColor = darkenIfLight(hexColor);
