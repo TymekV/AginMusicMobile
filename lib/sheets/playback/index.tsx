@@ -1,67 +1,53 @@
-import { SheetContainer, StyledActionSheet } from "@/lib/components/StyledActionSheet";
-import { Platform, View } from "react-native";
+import { StyledActionSheet } from "@/lib/components/StyledActionSheet";
+import { Platform, StyleSheet, View } from "react-native";
 import { SheetProps } from "react-native-actions-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Background from "./Background";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getColors, ImageColorsResult } from "react-native-image-colors";
 import { Image } from "expo-image";
-import { AndroidImageColors, IOSImageColors, WebImageColors } from "react-native-image-colors/build/types";
+import { AndroidImageColors, IOSImageColors } from "react-native-image-colors/build/types";
 import { useColors } from "@/lib/hooks/useColors";
 import { useNowPlaying } from "@/lib/hooks";
 import { useCoverBuilder } from "@/lib/hooks/useCoverBuilder";
-import NowPlayingBackground from "@/lib/components/NowPlayingBackground";
-import Animated from "react-native-reanimated";
+import BlurredBackground from "@/lib/components/BlurredBackground";
+import Cover from "@/lib/components/Cover";
 
 function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
     const insets = useSafeAreaInsets();
 
     const colors = useColors();
 
-    const [coverColors, setCoverColors] = useState<ImageColorsResult>();
-
     const [nowPlaying] = useNowPlaying();
 
     const cover = useCoverBuilder();
 
-    useEffect(() => {
-        (async () => {
-            if (!nowPlaying.coverArt) return;
-
-            const url = cover.generateUrl(nowPlaying.coverArt);
-            console.log(url);
-
-            const colors = await getColors(url, {
-                fallback: '#228B22',
-                cache: true,
-                key: url,
-            });
-            setCoverColors(colors);
-        })();
-    }, [cover, nowPlaying.coverArt]);
+    const styles = useMemo(() => StyleSheet.create({
+        container: {
+            padding: 40,
+        }
+    }), []);
 
     return (
         <StyledActionSheet
             gestureEnabled={true}
             fullHeight
-            // safeAreaInsets={insets}
-            safeAreaInsets={{ bottom: 0, left: 0, right: 0, top: 0 }}
+            safeAreaInsets={insets}
+            // safeAreaInsets={{ bottom: 0, left: 0, right: 0, top: 0 }}
             // overdrawEnabled={false}
             // drawUnderStatusBar
-            containerStyle={{ backgroundColor: Platform.OS == 'ios' ? (coverColors as IOSImageColors)?.background : Platform.OS == 'android' ? (coverColors as AndroidImageColors)?.dominant : colors.sheetBackgroundColor, }}
+            containerStyle={{ backgroundColor: colors.background, margin: 0, padding: 0, overflow: 'hidden' }}
             indicatorStyle={{ backgroundColor: '#ffffff20' }}
             openAnimationConfig={{ bounciness: 0 }}
             closeAnimationConfig={{ bounciness: 0 }}
-        // isModal={false}
-        // CustomHeaderComponent={<Background source={{ uri: 'https://cdn.swiatksiazki.pl/media/catalog/product/6/8/6899907019068-1.jpg?width=650&height=650&store=default&image-type=small_image' }} />}
+            statusBarTranslucent
+            isModal={false}
+            CustomHeaderComponent={<View></View>}
         >
-            {/* <SheetContainer> */}
-            {/* <NowPlayingBackground image={cover.generateUrl(nowPlaying.coverArt ?? '')} /> */}
-            <Animated.View sharedTransitionTag="cover">
-                <Image style={{ width: 100, height: 100 }} source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} />
-            </Animated.View>
-            {/* <View style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, backgroundColor: 'red' }}></View> */}
-            {/* </SheetContainer> */}
+            <BlurredBackground source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }}>
+                <View style={styles.container}>
+                    <Cover source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} />
+                </View>
+            </BlurredBackground>
         </StyledActionSheet>
     );
 }

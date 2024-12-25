@@ -8,7 +8,6 @@ import { IconPlayerPlayFilled, IconPlayerTrackNextFilled } from '@tabler/icons-r
 import { SheetManager } from 'react-native-actions-sheet';
 import { useNowPlaying } from '../hooks';
 import { useCoverBuilder } from '../hooks/useCoverBuilder';
-import Animated from 'react-native-reanimated';
 
 export default function Miniplayer() {
     const colors = useColors();
@@ -56,13 +55,11 @@ export default function Miniplayer() {
     return (
         <Pressable onPress={() => SheetManager.show('playback')} style={styles.miniplayer}>
             <View style={styles.metadata}>
-                <Animated.View sharedTransitionTag="cover">
-                    <Image
-                        source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '', { size: 128 }) }}
-                        style={styles.image}
-                        cachePolicy="disk"
-                    />
-                </Animated.View>
+                <Image
+                    source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '', { size: 128 }) }}
+                    style={styles.image}
+                    cachePolicy="disk"
+                />
                 <View style={styles.textContainer}>
                     <Title size={14} fontFamily="Poppins-SemiBold" numberOfLines={1}>
                         {isEmpty ? 'Not Playing' : nowPlaying.title}
