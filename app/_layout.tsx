@@ -13,7 +13,6 @@ import '@/lib/sheets';
 import NowPlayingProvider from '@/lib/providers/NowPlayingProvider';
 import ServerProvider from '@/lib/providers/ServerProvider';
 import { SQLiteProvider } from 'expo-sqlite';
-import ApiProvider from '@/lib/providers/ApiProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -54,19 +53,17 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SQLiteProvider databaseName="cache">
         <ServerProvider>
-          <ApiProvider>
-            <NowPlayingProvider>
-              <GestureHandlerRootView style={{ flex: 1 }}>
-                <SheetProvider>
-                  <Stack>
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
-                  <StatusBar style="auto" />
-                </SheetProvider>
-              </GestureHandlerRootView>
-            </NowPlayingProvider>
-          </ApiProvider>
+          <NowPlayingProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <SheetProvider>
+                <Stack>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+                <StatusBar style="auto" />
+              </SheetProvider>
+            </GestureHandlerRootView>
+          </NowPlayingProvider>
         </ServerProvider>
       </SQLiteProvider>
     </ThemeProvider>

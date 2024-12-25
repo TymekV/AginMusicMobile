@@ -26,25 +26,31 @@ export default function NowPlayingProvider({ children }: { children?: React.Reac
     const api = useApi();
 
     useEffect(() => {
-        console.log({ api });
+        console.log('fuck axios', api);
 
         if (!api) return;
+        console.log('fetchibng1');
+
         (async () => {
-            console.log('fetching', api.defaults.baseURL);
-            const rawRes = await api.get('/getNowPlaying');
-            console.log('a');
-            const res = rawRes.data?.['subsonic-response'] as (BaseResponse & { nowPlaying: NowPlaying });
-            console.log('b');
+            try {
+                console.log('fetching');
+                const rawRes = await api.get('/getNowPlaying');
+                console.log('a');
+                const res = rawRes.data?.['subsonic-response'] as (BaseResponse & { nowPlaying: NowPlaying });
+                console.log('b', res);
 
-            const nowPlaying = res.nowPlaying.entry?.[0];
-            console.log('c');
-            console.log(nowPlaying);
-            console.log('d');
+                const nowPlaying = res.nowPlaying?.entry?.[0];
+                console.log('c');
+                console.log(nowPlaying);
+                console.log('d');
 
-            if (!nowPlaying) return;
+                if (!nowPlaying) return;
 
-            console.log('e');
-            setNowPlaying(nowPlaying);
+                console.log('e');
+                setNowPlaying(nowPlaying);
+            } catch (error) {
+                console.log(error);
+            }
         })();
     }, [api]);
 
