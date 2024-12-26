@@ -47,10 +47,8 @@ export default function BlurredBackground({ source, children }: BlurredBackgroun
     return (
         <View style={styles.content}>
             <View style={styles.background}>
-                <View style={styles.container}>
-                    <Image style={styles.image} source={source} blurRadius={500} />
-                    <LinearGradient style={styles.gradient} colors={[colors.background + '50', colors.background + '90']} />
-                </View>
+                <Image style={styles.image} source={source} blurRadius={500} />
+                <LinearGradient style={styles.gradient} colors={[colors.background + '50', colors.background + '90']} />
             </View>
             {children}
         </View>
