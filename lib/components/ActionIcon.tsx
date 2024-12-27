@@ -33,7 +33,7 @@ const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor
             styles: {},
             backgroundColor: '#ffffff00',
             tapBackgroundColor: '#ffffff15',
-            iconColor: colors.text,
+            iconColor: colors.text[0],
             extraSize: 18,
         },
         primary: {
@@ -45,7 +45,7 @@ const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor
         },
         secondary: {
             styles: {},
-            iconColor: colors.text,
+            iconColor: colors.text[0],
             backgroundColor: '#ffffff10',
             tapBackgroundColor: '#ffffff05',
             extraSize: 12,

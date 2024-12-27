@@ -2,6 +2,12 @@ import { createContext, useEffect, useState } from "react";
 import { BaseResponse, Child, NowPlaying } from "../types";
 import { useApi } from "../hooks";
 
+// TODO
+export type NowPlayingType = {
+    metadata: Child;
+
+}
+
 export type NowPlayingContextType = [
     Child,
     React.Dispatch<React.SetStateAction<Child>>,

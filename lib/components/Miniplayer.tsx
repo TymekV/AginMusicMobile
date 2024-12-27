@@ -68,7 +68,7 @@ export default function Miniplayer() {
                         <Title
                             size={12}
                             fontFamily="Poppins-Regular"
-                            color={colors.secondaryText}
+                            color={colors.text[1]}
                             numberOfLines={1}
                         >
                             {nowPlaying.artist}

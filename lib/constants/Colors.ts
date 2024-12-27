@@ -8,8 +8,11 @@ const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    secondaryText: '#11181C80',
+    text: [
+      '#11181C',
+      '#11181C80',
+      '#11181C60',
+    ],
     background: '#fff',
     tint: tintColorLight,
     tintText: '#ECEDEE',
@@ -23,8 +26,11 @@ export const Colors = {
     segmentedControlBackground: '#dedfe0',
   },
   dark: {
-    text: '#ECEDEE',
-    secondaryText: '#ECEDEE80',
+    text: [
+      '#ECEDEE',
+      '#ECEDEE80',
+      '#ECEDEE60',
+    ],
     background: '#0A0A0B',
     tint: tintColorDark,
     tintText: '#11181C',

@@ -16,13 +16,13 @@ export default function NowPlayingSlider({ progress, cache, onSlidingStart, onSl
             progress={progress}
             cache={cache}
             theme={{
-                disableMinTrackTintColor: colors.secondaryText,
+                disableMinTrackTintColor: colors.text[1],
                 maximumTrackTintColor: '#ffffff10',
-                minimumTrackTintColor: colors.secondaryText,
+                minimumTrackTintColor: colors.text[1],
                 cacheTrackTintColor: '#ffffff10',
                 // bubbleBackgroundColor: colors.secondaryText,
                 // bubbleTextColor: '#000000',
-                heartbeatColor: colors.secondaryText,
+                heartbeatColor: colors.text[1],
             }}
             thumbWidth={0}
             containerStyle={{

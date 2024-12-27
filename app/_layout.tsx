@@ -13,6 +13,7 @@ import '@/lib/sheets';
 import NowPlayingProvider from '@/lib/providers/NowPlayingProvider';
 import ServerProvider from '@/lib/providers/ServerProvider';
 import { SQLiteProvider } from 'expo-sqlite';
+import initDatabase from '@/lib/initDatabase';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -51,7 +52,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <SQLiteProvider databaseName="cache">
+      <SQLiteProvider databaseName="cache.db" onInit={initDatabase}>
         <ServerProvider>
           <NowPlayingProvider>
             <GestureHandlerRootView style={{ flex: 1 }}>

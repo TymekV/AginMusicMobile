@@ -15,12 +15,12 @@ export default function Title({ children, size, fontFamily, color, ...props }: T
 
     const styles = useMemo(() => StyleSheet.create({
         title: {
-            color: color ?? colors.text,
+            color: color ?? colors.text[0],
             fontFamily: fontFamily ?? 'Poppins-Medium',
             fontSize: size,
             includeFontPadding: false,
         }
-    }), [colors.text, size, fontFamily, color]);
+    }), [colors.text[0], size, fontFamily, color]);
 
     return (
         <Text style={styles.title} {...props}>

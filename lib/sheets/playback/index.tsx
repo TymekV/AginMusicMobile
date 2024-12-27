@@ -10,11 +10,12 @@ import BlurredBackground from "@/lib/components/BlurredBackground";
 import Cover from "@/lib/components/Cover";
 import Title from "@/lib/components/Title";
 import ActionIcon from "@/lib/components/ActionIcon";
-import { IconPlayerPauseFilled, IconPlayerSkipBack, IconPlayerSkipBackFilled, IconPlayerSkipForwardFilled, IconPlayerTrackNextFilled, IconPlayerTrackPrev, IconPlayerTrackPrevFilled } from "@tabler/icons-react-native";
+import { IconCast, IconList, IconMessage, IconPlayerPauseFilled, IconPlayerSkipBack, IconPlayerSkipBackFilled, IconPlayerSkipForwardFilled, IconPlayerTrackNextFilled, IconPlayerTrackPrev, IconPlayerTrackPrevFilled } from "@tabler/icons-react-native";
 import NowPlayingSlider from "@/lib/components/nowPlaying/NowPlayingSlider";
 import { useSharedValue } from "react-native-reanimated";
 import NowPlayingActions from "@/lib/components/nowPlaying/NowPlayingActions";
 import { secondsToTimecode } from "@/lib/util";
+import NowPlayingTab from "@/lib/components/nowPlaying/NowPlayingTab";
 
 function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
     const insets = useSafeAreaInsets();
@@ -32,6 +33,7 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
             justifyContent: 'space-between',
             // flex: 1,
             height: '100%',
+            paddingBottom: Math.max(30, insets.bottom + 10),
         },
         metadata: {
             flexDirection: 'row',
@@ -60,18 +62,24 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
             flexDirection: 'row',
             justifyContent: 'space-between',
             marginTop: 8,
+        },
+        tabs: {
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignContent: 'center',
+            gap: 70,
         }
-    }), []);
+    }), [insets.bottom]);
 
     return (
         <StyledActionSheet
             gestureEnabled={true}
             fullHeight
-            safeAreaInsets={insets}
-            // safeAreaInsets={{ bottom: 0, left: 0, right: 0, top: 0 }}
-            // overdrawEnabled={false}
-            // drawUnderStatusBar
-            containerStyle={{ backgroundColor: colors.background, margin: 0, padding: 0, overflow: 'hidden' }}
+            // safeAreaInsets={insets}
+            safeAreaInsets={{ ...insets, bottom: 0, }}
+            overdrawEnabled={false}
+            drawUnderStatusBar
+            containerStyle={{ backgroundColor: colors.background, margin: 0, padding: 0, overflow: 'hidden', position: 'relative' }}
             // indicatorStyle={{ backgroundColor: '#ffffff20' }}
             openAnimationConfig={{ bounciness: 0 }}
             closeAnimationConfig={{ bounciness: 0 }}
@@ -89,19 +97,24 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
                     <View style={styles.metadata}>
                         <View style={styles.metadataContainer}>
                             <Title size={18} fontFamily="Poppins-SemiBold" numberOfLines={1}>{nowPlaying.title}</Title>
-                            <Title size={16} color={colors.secondaryText} fontFamily="Poppins-Regular" numberOfLines={1}>{nowPlaying.artist}</Title>
+                            <Title size={16} color={colors.text[1]} fontFamily="Poppins-Regular" numberOfLines={1}>{nowPlaying.artist}</Title>
                         </View>
                         <NowPlayingActions />
                     </View>
                     <NowPlayingSlider minimumValue={sliderMin} maximumValue={sliderMax} progress={progress} />
                     <View style={styles.time}>
-                        <Title size={11} color={colors.secondaryText} fontFamily="Poppins-Regular">{secondsToTimecode(0)}</Title>
-                        <Title size={11} color={colors.secondaryText} fontFamily="Poppins-Regular">-{secondsToTimecode(120)}</Title>
+                        <Title size={12} color={colors.text[2]} fontFamily="Poppins-SemiBold">{secondsToTimecode(0)}</Title>
+                        <Title size={12} color={colors.text[2]} fontFamily="Poppins-SemiBold">-{secondsToTimecode(120)}</Title>
                     </View>
                     <View style={styles.buttons}>
-                        <ActionIcon icon={IconPlayerSkipBackFilled} isFilled size={25} />
-                        <ActionIcon icon={IconPlayerPauseFilled} isFilled size={50} stroke="transparent" />
-                        <ActionIcon icon={IconPlayerSkipForwardFilled} isFilled size={25} />
+                        <ActionIcon icon={IconPlayerSkipBackFilled} isFilled size={30} />
+                        <ActionIcon icon={IconPlayerPauseFilled} isFilled size={55} stroke="transparent" />
+                        <ActionIcon icon={IconPlayerSkipForwardFilled} isFilled size={30} />
+                    </View>
+                    <View style={styles.tabs}>
+                        <NowPlayingTab icon={IconMessage} active={false} />
+                        <NowPlayingTab icon={IconCast} active={false} />
+                        <NowPlayingTab icon={IconList} active={false} />
                     </View>
                 </View>
             </View>
