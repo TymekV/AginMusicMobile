@@ -9,7 +9,7 @@ export function useCache() {
 
     const api = useApi();
 
-    const createChild = useCallback(async (child: Child) => {
+    const cacheChild = useCallback(async (child: Child) => {
         console.log('[cache] Saving ', child.id);
         const row = await db.getFirstAsync('SELECT * FROM childrenCache WHERE id = $id', { $id: child.id });
         if (row) await db.runAsync('UPDATE childrenCache SET data = $data WHERE id = $id', { $id: child.id, $data: JSON.stringify(child) });
@@ -41,11 +41,12 @@ export function useCache() {
         const childData = child.data?.['subsonic-response']?.song as Child | undefined;
         if (!childData) return;
 
-        await createChild(childData);
+        await cacheChild(childData);
         return childData;
-    }, [getChild, createChild, api]);
+    }, [getChild, cacheChild, api]);
 
     return {
         fetchChild,
+        cacheChild,
     }
 }

@@ -6,13 +6,13 @@ import { Image } from 'expo-image';
 import ActionIcon from './ActionIcon';
 import { IconPlayerPlayFilled, IconPlayerTrackNextFilled } from '@tabler/icons-react-native';
 import { SheetManager } from 'react-native-actions-sheet';
-import { useNowPlaying } from '../hooks';
-import { useCoverBuilder } from '../hooks/useCoverBuilder';
+import { useCoverBuilder } from '@lib/hooks/useCoverBuilder';
+import { useQueue } from '../hooks';
 
 export default function Miniplayer() {
     const colors = useColors();
 
-    const [nowPlaying] = useNowPlaying();
+    const { nowPlaying } = useQueue();
 
     const cover = useCoverBuilder();
 

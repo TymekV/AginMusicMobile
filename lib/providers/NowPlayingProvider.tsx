@@ -2,12 +2,6 @@ import { createContext, useEffect, useState } from "react";
 import { BaseResponse, Child, NowPlaying } from "../types";
 import { useApi } from "../hooks";
 
-// TODO
-export type NowPlayingType = {
-    metadata: Child;
-
-}
-
 export type NowPlayingContextType = [
     Child,
     React.Dispatch<React.SetStateAction<Child>>,
@@ -31,32 +25,32 @@ export default function NowPlayingProvider({ children }: { children?: React.Reac
 
     const api = useApi();
 
-    useEffect(() => {
-        if (!api) return;
-        console.log('fetchibng1');
+    // useEffect(() => {
+    //     if (!api) return;
+    //     console.log('fetchibng1');
 
-        (async () => {
-            try {
-                console.log('fetching');
-                const rawRes = await api.get('/getNowPlaying');
-                console.log('a');
-                const res = rawRes.data?.['subsonic-response'] as (BaseResponse & { nowPlaying: NowPlaying });
-                console.log('b', res);
+    //     (async () => {
+    //         try {
+    //             console.log('fetching');
+    //             const rawRes = await api.get('/getNowPlaying');
+    //             console.log('a');
+    //             const res = rawRes.data?.['subsonic-response'] as (BaseResponse & { nowPlaying: NowPlaying });
+    //             console.log('b', res);
 
-                const nowPlaying = res.nowPlaying?.entry?.[0];
-                console.log('c');
-                console.log(nowPlaying);
-                console.log('d');
+    //             const nowPlaying = res.nowPlaying?.entry?.[0];
+    //             console.log('c');
+    //             console.log(nowPlaying);
+    //             console.log('d');
 
-                if (!nowPlaying) return;
+    //             if (!nowPlaying) return;
 
-                console.log('e');
-                setNowPlaying(nowPlaying);
-            } catch (error) {
-                console.log(error);
-            }
-        })();
-    }, [api]);
+    //             console.log('e');
+    //             setNowPlaying(nowPlaying);
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     })();
+    // }, [api]);
 
     return (
         <NowPlayingContext.Provider value={[nowPlaying, setNowPlaying]}>

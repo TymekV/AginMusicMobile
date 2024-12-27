@@ -1,26 +1,26 @@
 import { StyledActionSheet } from "@/lib/components/StyledActionSheet";
-import { StyleSheet, View } from "react-native";
-import { SheetProps } from "react-native-actions-sheet";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useMemo } from "react";
-import { useColors } from "@/lib/hooks/useColors";
-import { useNowPlaying } from "@/lib/hooks";
-import { useCoverBuilder } from "@/lib/hooks/useCoverBuilder";
-import BlurredBackground from "@/lib/components/BlurredBackground";
-import Cover from "@/lib/components/Cover";
-import Title from "@/lib/components/Title";
-import ActionIcon from "@/lib/components/ActionIcon";
-import { IconCast, IconList, IconMessage, IconPlayerPauseFilled, IconPlayerSkipBack, IconPlayerSkipBackFilled, IconPlayerSkipForwardFilled, IconPlayerTrackNextFilled, IconPlayerTrackPrev, IconPlayerTrackPrevFilled } from "@tabler/icons-react-native";
-import NowPlayingSlider from "@/lib/components/nowPlaying/NowPlayingSlider";
-import { useSharedValue } from "react-native-reanimated";
-import NowPlayingActions from "@/lib/components/nowPlaying/NowPlayingActions";
-import { secondsToTimecode } from "@/lib/util";
-import NowPlayingTab from "@/lib/components/nowPlaying/NowPlayingTab";
+import { StyleSheet, View } from 'react-native';
+import { SheetProps } from 'react-native-actions-sheet';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useMemo } from 'react';
+import { useColors } from '@/lib/hooks/useColors';
+import { useQueue } from '@/lib/hooks';
+import { useCoverBuilder } from '@/lib/hooks/useCoverBuilder';
+import BlurredBackground from '@/lib/components/BlurredBackground';
+import Cover from '@/lib/components/Cover';
+import Title from '@/lib/components/Title';
+import ActionIcon from '@/lib/components/ActionIcon';
+import { IconCast, IconList, IconMessage, IconPlayerPauseFilled, IconPlayerSkipBackFilled, IconPlayerSkipForwardFilled } from '@tabler/icons-react-native';
+import NowPlayingSlider from '@/lib/components/nowPlaying/NowPlayingSlider';
+import { useSharedValue } from 'react-native-reanimated';
+import NowPlayingActions from '@/lib/components/nowPlaying/NowPlayingActions';
+import { secondsToTimecode } from '@/lib/util';
+import NowPlayingTab from '@/lib/components/nowPlaying/NowPlayingTab';
 
 function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
     const insets = useSafeAreaInsets();
     const colors = useColors();
-    const [nowPlaying] = useNowPlaying();
+    const { nowPlaying } = useQueue();
     const cover = useCoverBuilder();
 
     const sliderMin = useSharedValue(0);

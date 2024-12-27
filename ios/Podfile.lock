@@ -15,6 +15,8 @@ PODS:
     - ExpoModulesCore
   - ExpoAsset (11.0.1):
     - ExpoModulesCore
+  - ExpoAudio (0.3.1):
+    - ExpoModulesCore
   - ExpoBlur (14.0.1):
     - ExpoModulesCore
   - ExpoCrypto (14.0.1):
@@ -1955,6 +1957,7 @@ DEPENDENCIES:
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
+  - ExpoAudio (from `../node_modules/expo-audio/ios`)
   - ExpoBlur (from `../node_modules/expo-blur/ios`)
   - ExpoCrypto (from `../node_modules/expo-crypto/ios`)
   - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
@@ -2074,6 +2077,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo"
   ExpoAsset:
     :path: "../node_modules/expo-asset/ios"
+  ExpoAudio:
+    :path: "../node_modules/expo-audio/ios"
   ExpoBlur:
     :path: "../node_modules/expo-blur/ios"
   ExpoCrypto:
@@ -2261,6 +2266,7 @@ SPEC CHECKSUMS:
   EXImageLoader: 759063a65ab016b836f73972d3bb25404888713d
   Expo: 1544b630fdf4f47d8fe376c2e422f46cd3ed90d4
   ExpoAsset: 8138f2a9ec55ae1ad7c3871448379f7d97692d15
+  ExpoAudio: babc6798f1297cb8a43904a4a4232abdf4e67b36
   ExpoBlur: 562b3da84d3cd79016c411671eaf71a404266415
   ExpoCrypto: 8465f71eb3798c194c0a509d4a76e5c429656d83
   ExpoFileSystem: 179a0661fd6d3c4e5d7e500a99a9cd8b295d9566
