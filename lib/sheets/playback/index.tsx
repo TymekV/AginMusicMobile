@@ -1,5 +1,5 @@
 import { StyledActionSheet } from '@/lib/components/StyledActionSheet';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { createContext, useMemo, useState } from 'react';
@@ -87,7 +87,7 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
             containerStyle={{ backgroundColor: colors.background, margin: 0, padding: 0, overflow: 'hidden', position: 'relative' }}
             openAnimationConfig={{ bounciness: 0 }}
             closeAnimationConfig={{ bounciness: 0 }}
-            isModal={false}
+            isModal={Platform.OS == 'android' ? false : true}
             CustomHeaderComponent={<View></View>}
             useBottomSafeAreaPadding={true}
         >
