@@ -11,10 +11,9 @@ import { IconCast, IconList, IconMessage } from '@tabler/icons-react-native';
 import { showRoutePicker } from 'react-airplay';
 import MainTab from './MainTab';
 import Tabs, { Tab } from './Tabs';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 import { enterDown, enterUp, exitDown, exitUp } from './animations';
 import Title from '@/lib/components/Title';
-import SmallNowPlaying from './SmallNowPlaying';
 import QueueTab from './QueueTab';
 
 type GestureEnabledContextType = [
@@ -41,6 +40,7 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
             padding: 30,
             // justifyContent: 'space-between',
             // flex: 1,
+            paddingHorizontal: 0,
             height: '100%',
             paddingBottom: Math.max(30, insets.bottom + 10),
         },

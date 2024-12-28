@@ -44,6 +44,7 @@ export default function MainTab() {
         container: {
             justifyContent: 'space-between',
             flex: 1,
+            paddingHorizontal: 30,
             height: '100%',
         },
         metadata: {

@@ -11,6 +11,7 @@ export type QueueContextType = {
     nowPlaying: Child;
     add: (id: string) => Promise<void>;
     clear: () => Promise<void>;
+    jumpTo: (index: number) => void;
 }
 
 const initialQueue: PlayQueue = {
@@ -32,6 +33,7 @@ const initialQueueContext: QueueContextType = {
     },
     add: async (id: string) => { },
     clear: async () => { },
+    jumpTo: (index: number) => { },
 }
 
 export const QueueContext = createContext<QueueContextType>(initialQueueContext);
@@ -74,6 +76,15 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         setQueue(q => ({ ...q, entry: [] }));
         setNowPlaying(initialQueueContext.nowPlaying);
     }, []);
+
+    const jumpTo = useCallback(async (index: number) => {
+        console.log('jumping to', index);
+
+        const data = queue.entry?.[index];
+        if (!data) return;
+
+        setNowPlaying(data);
+    }, [queue.entry]);
 
     useEffect(() => {
         (async () => {
@@ -125,7 +136,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     }, [nowPlaying, player]);
 
     return (
-        <QueueContext.Provider value={{ queue, add, clear, nowPlaying, setQueue }}>
+        <QueueContext.Provider value={{ queue, add, clear, nowPlaying, setQueue, jumpTo }}>
             {children}
         </QueueContext.Provider>
     )
