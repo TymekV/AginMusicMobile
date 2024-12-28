@@ -7,6 +7,7 @@ import { useCoverBuilder } from '../hooks/useCoverBuilder';
 
 export type QueueContextType = {
     queue: PlayQueue;
+    setQueue: React.Dispatch<React.SetStateAction<PlayQueue>>;
     nowPlaying: Child;
     add: (id: string) => Promise<void>;
     clear: () => Promise<void>;
@@ -23,6 +24,7 @@ const initialQueue: PlayQueue = {
 
 const initialQueueContext: QueueContextType = {
     queue: initialQueue,
+    setQueue: () => { },
     nowPlaying: {
         id: '',
         isDir: false,
@@ -69,7 +71,8 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     }, [cache, queue, nowPlaying]);
 
     const clear = useCallback(async () => {
-        setQueue(q => ({ ...q }))
+        setQueue(q => ({ ...q, entry: [] }));
+        setNowPlaying(initialQueueContext.nowPlaying);
     }, []);
 
     useEffect(() => {
@@ -122,7 +125,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     }, [nowPlaying, player]);
 
     return (
-        <QueueContext.Provider value={{ queue, add, clear, nowPlaying, }}>
+        <QueueContext.Provider value={{ queue, add, clear, nowPlaying, setQueue }}>
             {children}
         </QueueContext.Provider>
     )

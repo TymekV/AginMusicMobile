@@ -5,7 +5,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useColors } from '../hooks/useColors';
 
-export type ActionIconVariant = 'subtle' | 'primary' | 'secondary';
+export type ActionIconVariant = 'subtle' | 'subtleFilled' | 'primary' | 'secondary';
 
 export type ActionIconProps = PressableProps & {
     icon: Icon;
@@ -33,6 +33,13 @@ const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor
             styles: {},
             backgroundColor: '#ffffff00',
             tapBackgroundColor: '#ffffff15',
+            iconColor: colors.text[0],
+            extraSize: 18,
+        },
+        subtleFilled: {
+            styles: {},
+            backgroundColor: '#ffffff10',
+            tapBackgroundColor: '#ffffff25',
             iconColor: colors.text[0],
             extraSize: 18,
         },

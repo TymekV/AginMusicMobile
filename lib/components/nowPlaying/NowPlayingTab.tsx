@@ -27,7 +27,7 @@ export default function NowPlayingTab({ icon: Icon, active, disabled, onPress, .
     const iconColor = disabled ? colors.text[3] : active ? colors.background : colors.text[1];
 
     return (
-        <TouchableOpacity activeOpacity={disabled ? 1 : .6} onPress={disabled ? undefined : onPress} {...props}>
+        <TouchableOpacity activeOpacity={disabled ? 1 : .6} onPress={disabled ? undefined : onPress} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10, }} {...props}>
             <View style={[styles.tab, active && styles.activeTab]}>
                 <Icon color={iconColor} size={22} />
             </View>

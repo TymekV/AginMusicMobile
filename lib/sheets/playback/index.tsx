@@ -2,7 +2,7 @@ import { StyledActionSheet } from '@/lib/components/StyledActionSheet';
 import { StyleSheet, View } from 'react-native';
 import { SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useMemo, useState } from 'react';
+import { createContext, useMemo, useState } from 'react';
 import { useColors } from '@/lib/hooks/useColors';
 import { useQueue } from '@/lib/hooks';
 import { useCoverBuilder } from '@/lib/hooks/useCoverBuilder';
@@ -14,6 +14,18 @@ import Tabs, { Tab } from './Tabs';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { enterDown, enterUp, exitDown, exitUp } from './animations';
 import Title from '@/lib/components/Title';
+import SmallNowPlaying from './SmallNowPlaying';
+import QueueTab from './QueueTab';
+
+type GestureEnabledContextType = [
+    boolean,
+    React.Dispatch<React.SetStateAction<boolean>>,
+]
+
+export const GestureEnabledContext = createContext<GestureEnabledContextType>([
+    true,
+    () => { },
+]);
 
 function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
     const insets = useSafeAreaInsets();
@@ -21,6 +33,8 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
     const { nowPlaying } = useQueue();
     const cover = useCoverBuilder();
     const isExternalPlaybackAvailable = true;// useExternalPlaybackAvailability();
+
+    const [gestureEnabled, setGestureEnabled] = useState(true);
 
     const styles = useMemo(() => StyleSheet.create({
         container: {
@@ -65,7 +79,7 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
 
     return (
         <StyledActionSheet
-            gestureEnabled={true}
+            gestureEnabled={gestureEnabled}
             fullHeight
             safeAreaInsets={{ ...insets, bottom: 0, }}
             overdrawEnabled={false}
@@ -77,21 +91,23 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
             CustomHeaderComponent={<View></View>}
             useBottomSafeAreaPadding={true}
         >
-            <BlurredBackground source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} />
-            <View style={styles.container}>
-                <View style={styles.tabContainer}>
-                    {currentTab == 'main' && <Animated.View style={styles.tab} exiting={exitUp} entering={enterDown}>
-                        <MainTab />
-                    </Animated.View>}
-                    {currentTab == 'queue' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
-                        <Title>Queue</Title>
-                    </Animated.View>}
-                    {currentTab == 'lyrics' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
-                        <Title>Lyrics</Title>
-                    </Animated.View>}
+            <GestureEnabledContext.Provider value={[gestureEnabled, setGestureEnabled]}>
+                <BlurredBackground source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} />
+                <View style={styles.container}>
+                    <View style={styles.tabContainer}>
+                        {currentTab == 'main' && <Animated.View style={styles.tab} exiting={exitUp} entering={enterDown}>
+                            <MainTab />
+                        </Animated.View>}
+                        {currentTab == 'queue' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
+                            <QueueTab />
+                        </Animated.View>}
+                        {currentTab == 'lyrics' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
+                            <Title>Lyrics</Title>
+                        </Animated.View>}
+                    </View>
+                    <Tabs tabs={tabs} active={currentTab} onChange={handleTabChange} />
                 </View>
-                <Tabs tabs={tabs} active={currentTab} onChange={handleTabChange} />
-            </View>
+            </GestureEnabledContext.Provider>
         </StyledActionSheet>
     );
 }
