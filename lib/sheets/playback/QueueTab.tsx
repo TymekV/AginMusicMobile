@@ -1,14 +1,19 @@
 import Queue from '@/lib/components/Queue';
 import SmallNowPlaying from './SmallNowPlaying';
 import Title from '@lib/components/Title';
-import { useColors } from '@lib/hooks';
-import React, { useMemo } from 'react';
+import { useColors, useQueue } from '@lib/hooks';
+import React, { useContext, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import ActionIcon from '@/lib/components/ActionIcon';
 import { IconTrash } from '@tabler/icons-react-native';
+import { IdContext } from '.';
+import { SheetManager } from 'react-native-actions-sheet';
 
 export default function QueueTab() {
     const colors = useColors();
+    const queue = useQueue();
+
+    const sheetId = useContext(IdContext);
 
     const styles = useMemo(() => StyleSheet.create({
         top: {
@@ -40,7 +45,7 @@ export default function QueueTab() {
                         <Title size={12} fontFamily="Poppins-Regular" color={colors.text[1]}>Playing from Playlist 1</Title>
                     </View>
                     <View style={styles.actions}>
-                        <ActionIcon icon={IconTrash} variant='secondary' size={16} />
+                        <ActionIcon icon={IconTrash} variant='secondary' size={16} onPress={async () => await queue.clearConfirm({ wait: true, onConfirm: () => SheetManager.hide(sheetId) })} />
                     </View>
                 </View>
             </View>

@@ -26,6 +26,9 @@ export const GestureEnabledContext = createContext<GestureEnabledContextType>([
     () => { },
 ]);
 
+export const IdContext = createContext<string>('');
+
+// TODO: Fix dragging the sheet
 function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
     const insets = useSafeAreaInsets();
     const colors = useColors();
@@ -92,21 +95,23 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
             useBottomSafeAreaPadding={true}
         >
             <GestureEnabledContext.Provider value={[gestureEnabled, setGestureEnabled]}>
-                <BlurredBackground source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} />
-                <View style={styles.container}>
-                    <View style={styles.tabContainer}>
-                        {currentTab == 'main' && <Animated.View style={styles.tab} exiting={exitUp} entering={enterDown}>
-                            <MainTab />
-                        </Animated.View>}
-                        {currentTab == 'queue' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
-                            <QueueTab />
-                        </Animated.View>}
-                        {currentTab == 'lyrics' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
-                            <Title>Lyrics</Title>
-                        </Animated.View>}
+                <IdContext.Provider value={sheetId}>
+                    <BlurredBackground source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} />
+                    <View style={styles.container}>
+                        <View style={styles.tabContainer}>
+                            {currentTab == 'main' && <Animated.View style={styles.tab} exiting={exitUp} entering={enterDown}>
+                                <MainTab />
+                            </Animated.View>}
+                            {currentTab == 'queue' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
+                                <QueueTab />
+                            </Animated.View>}
+                            {currentTab == 'lyrics' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
+                                <Title>Lyrics</Title>
+                            </Animated.View>}
+                        </View>
+                        <Tabs tabs={tabs} active={currentTab} onChange={handleTabChange} />
                     </View>
-                    <Tabs tabs={tabs} active={currentTab} onChange={handleTabChange} />
-                </View>
+                </IdContext.Provider>
             </GestureEnabledContext.Provider>
         </StyledActionSheet>
     );

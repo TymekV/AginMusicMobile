@@ -25,6 +25,7 @@ export const Colors = {
     sheetIndicatorColor: '#e4e6ed',
     sheetActionBackgroundColor: '#dedfe0',
     segmentedControlBackground: '#dedfe0',
+    danger: '#f21616',
   },
   dark: {
     text: [
@@ -44,5 +45,6 @@ export const Colors = {
     sheetIndicatorColor: '#1d1d1d',
     sheetActionBackgroundColor: '#1d1d1d',
     segmentedControlBackground: '#000000',
+    danger: '#f21616',
   },
 };

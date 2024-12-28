@@ -3,21 +3,28 @@ import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { useCache } from '@lib/hooks/useCache';
 import { useApi, useGlobalPlayer, useServer, useSubsonicParams } from '@lib/hooks';
 import qs from 'qs';
-import { useCoverBuilder } from '../hooks/useCoverBuilder';
 import { useAudioPlayerStatus } from 'expo-audio';
+import { SheetManager } from 'react-native-actions-sheet';
+import * as Haptics from 'expo-haptics';
+
+export type ClearConfirmOptions = {
+    wait?: boolean;
+    onConfirm?: () => void;
+}
 
 export type QueueContextType = {
     queue: PlayQueue;
-    setQueue: React.Dispatch<React.SetStateAction<PlayQueue>>;
     nowPlaying: Child;
-    add: (id: string) => Promise<void>;
-    clear: () => Promise<void>;
-    jumpTo: (index: number) => void;
-    skipBackward: () => void;
-    skipForward: () => void;
     activeIndex: number;
     canGoForward: boolean;
     canGoBackward: boolean;
+    setQueue: React.Dispatch<React.SetStateAction<PlayQueue>>;
+    add: (id: string) => Promise<void>;
+    clear: () => void;
+    clearConfirm: (options?: ClearConfirmOptions) => Promise<boolean>;
+    jumpTo: (index: number) => void;
+    skipBackward: () => void;
+    skipForward: () => void;
 }
 
 const initialQueue: PlayQueue = {
@@ -31,20 +38,21 @@ const initialQueue: PlayQueue = {
 
 const initialQueueContext: QueueContextType = {
     queue: initialQueue,
-    setQueue: () => { },
     nowPlaying: {
         id: '',
         isDir: false,
         title: '',
     },
-    add: async (id: string) => { },
-    clear: async () => { },
-    jumpTo: (index: number) => { },
-    skipBackward: () => { },
-    skipForward: () => { },
     activeIndex: 0,
     canGoBackward: false,
     canGoForward: false,
+    setQueue: () => { },
+    add: async (id: string) => { },
+    clear: () => { },
+    clearConfirm: async () => false,
+    jumpTo: (index: number) => { },
+    skipBackward: () => { },
+    skipForward: () => { },
 }
 
 export const QueueContext = createContext<QueueContextType>(initialQueueContext);
@@ -93,6 +101,29 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         setActiveIndex(0);
         setNowPlaying(initialQueueContext.nowPlaying);
     }, []);
+
+    const clearConfirm = useCallback(async (options?: ClearConfirmOptions) => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+
+        const confirmed = await SheetManager.show('confirm', {
+            payload: {
+                title: 'Clear Queue',
+                message: 'Are you sure you want to clear the queue?',
+                confirmText: 'Clear',
+                cancelText: 'Cancel',
+            },
+        });
+        if (!confirmed) return false;
+
+        if (options?.wait) {
+            player?.pause();
+            if (options?.onConfirm) options.onConfirm();
+            await new Promise(r => setTimeout(r, 500));
+        }
+
+        clear();
+        return true;
+    }, [clear, player]);
 
     const jumpTo = useCallback((index: number) => {
         console.log('jumping to', index);
@@ -173,7 +204,20 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     }, [nowPlaying, player]);
 
     return (
-        <QueueContext.Provider value={{ queue, add, clear, nowPlaying, setQueue, jumpTo, skipBackward, skipForward, canGoBackward, canGoForward, activeIndex }}>
+        <QueueContext.Provider value={{
+            queue,
+            nowPlaying,
+            canGoBackward,
+            canGoForward,
+            activeIndex,
+            add,
+            clear,
+            setQueue,
+            jumpTo,
+            skipBackward,
+            skipForward,
+            clearConfirm,
+        }}>
             {children}
         </QueueContext.Provider>
     )
