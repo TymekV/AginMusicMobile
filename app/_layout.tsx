@@ -10,7 +10,6 @@ import { useColorScheme } from '@/lib/hooks/useColorScheme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SheetProvider } from 'react-native-actions-sheet';
 import '@/lib/sheets';
-import NowPlayingProvider from '@/lib/providers/NowPlayingProvider';
 import ServerProvider from '@/lib/providers/ServerProvider';
 import { SQLiteProvider } from 'expo-sqlite';
 import initDatabase from '@/lib/initDatabase';

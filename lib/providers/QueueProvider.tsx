@@ -3,6 +3,7 @@ import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { useCache } from '@lib/hooks/useCache';
 import { useApi, useGlobalPlayer, useServer, useSubsonicParams } from '@lib/hooks';
 import qs from 'qs';
+import { useCoverBuilder } from '../hooks/useCoverBuilder';
 
 export type QueueContextType = {
     queue: PlayQueue;
@@ -50,6 +51,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     const params = useSubsonicParams();
     const { server } = useServer();
     const player = useGlobalPlayer();
+    const cover = useCoverBuilder();
 
     const generateMediaUrl = useCallback((options: StreamOptions) => `${server.url}/rest/stream?${qs.stringify({ ...params, ...options })}`, [params, server.url]);
 

@@ -6,9 +6,10 @@ import { StyleSheet, TouchableOpacity, TouchableOpacityProps, View } from 'react
 export interface NowPlayingTabProps extends TouchableOpacityProps {
     icon: Icon;
     active: boolean;
+    disabled?: boolean;
 }
 
-export default function NowPlayingTab({ icon: Icon, active, ...props }: NowPlayingTabProps) {
+export default function NowPlayingTab({ icon: Icon, active, disabled, onPress, ...props }: NowPlayingTabProps) {
     const colors = useColors();
     const styles = useMemo(() => StyleSheet.create({
         tab: {
@@ -23,10 +24,10 @@ export default function NowPlayingTab({ icon: Icon, active, ...props }: NowPlayi
         }
     }), [colors]);
 
-    const iconColor = active ? colors.background : colors.text[1];
+    const iconColor = disabled ? colors.text[3] : active ? colors.background : colors.text[1];
 
     return (
-        <TouchableOpacity activeOpacity={.6} {...props}>
+        <TouchableOpacity activeOpacity={disabled ? 1 : .6} onPress={disabled ? undefined : onPress} {...props}>
             <View style={[styles.tab, active && styles.activeTab]}>
                 <Icon color={iconColor} size={22} />
             </View>

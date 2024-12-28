@@ -5,8 +5,6 @@ import { useQueue, useServer } from '@/lib/hooks';
 import { useEffect } from 'react';
 import { Button, ScrollView, View } from 'react-native';
 
-
-
 export default function Home() {
     const server = useServer();
     const queue = useQueue();
@@ -32,6 +30,7 @@ export default function Home() {
 
             }} />
             <Button title="Play Something" onPress={async () => await queue.add('34ad9fc80c3b33366cecf87fe6c4ed44')} />
+            <Button title="Play Something" onPress={async () => await queue.add('ffcb34e1bf61ae7214368c245491d5de')} />
             {/* <ScrollView style={{ flex: 1 }}>
                 {new Array(500).fill(0).map((x, i) => <Title key={i}>ahgihudfgshiudfgshiougdfsiou</Title>)}
             </ScrollView> */}
