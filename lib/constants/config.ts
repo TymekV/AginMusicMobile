@@ -12,7 +12,7 @@ export type AppConfig = {
 };
 
 const config: AppConfig = {
-    clientName: 'AginRequests',
+    clientName: 'AginMusic',
     clientVersion: Application.nativeApplicationVersion ?? '',
     protocolVersion: '1.16.1',
 };

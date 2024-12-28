@@ -2,14 +2,15 @@ import { AwesomeSliderProps, Slider } from 'react-native-awesome-slider';
 import { SharedValue, useSharedValue } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { useColors } from '../../hooks/useColors';
-import React from 'react';
+import React, { useState } from 'react';
 
 export interface NowPlayingSliderProps extends AwesomeSliderProps {
-
+    setSeeking?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function NowPlayingSlider({ progress, cache, onSlidingStart, onSlidingComplete, onValueChange, ...props }: NowPlayingSliderProps) {
+export default function NowPlayingSlider({ progress, cache, onSlidingStart, onSlidingComplete, onValueChange, setSeeking, ...props }: NowPlayingSliderProps) {
     const colors = useColors();
+    const [realSeeking, setRealSeeking] = useState(false);
 
     return (
         <Slider
@@ -32,12 +33,17 @@ export default function NowPlayingSlider({ progress, cache, onSlidingStart, onSl
             disableTapEvent
             panHitSlop={{ top: 20, left: 0, bottom: 50, right: 0, }}
             onSlidingStart={() => {
-                // setSeeking(true);
+                if (setSeeking) setSeeking(true);
+                setRealSeeking(true);
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 if (typeof onSlidingStart == 'function') onSlidingStart();
             }}
             onSlidingComplete={(number) => {
-                // setSeeking(false);
+                // TODO: Find a better fix
+                if (setSeeking) setTimeout(() => {
+                    setSeeking(false);
+                }, 500);
+                setRealSeeking(false);
                 // videoRef?.current?.seek(Math.floor(number));
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 if (typeof onSlidingComplete == 'function') onSlidingComplete(number);

@@ -25,6 +25,7 @@
     "chroma-js": "^3.1.2",
     "expo": "~52.0.20",
     "expo-application": "~6.0.1",
+    "expo-audio": "~0.3.1",
     "expo-av": "~15.0.1",
     "expo-blur": "~14.0.1",
     "expo-constants": "~17.0.3",
@@ -46,6 +47,7 @@
     "expo-web-browser": "~14.0.1",
     "qs": "^6.13.1",
     "react": "18.3.1",
+    "react-airplay": "^1.2.0",
     "react-dom": "18.3.1",
     "react-native": "0.76.5",
     "react-native-actions-sheet": "^0.9.7",
@@ -60,8 +62,7 @@
     "react-native-swipeable-item": "^2.0.9",
     "react-native-toast-message": "^2.2.1",
     "react-native-web": "~0.19.13",
-    "react-native-webview": "13.12.5",
-    "expo-audio": "~0.3.1"
+    "react-native-webview": "13.12.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

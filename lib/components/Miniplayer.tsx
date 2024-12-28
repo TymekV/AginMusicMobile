@@ -2,17 +2,20 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Title from './Title';
 import { useMemo } from 'react';
 import { useColors } from '@/lib/hooks/useColors';
-import { Image } from 'expo-image';
+import CachedImage from '@/lib/components/CachedImage';
 import ActionIcon from './ActionIcon';
-import { IconPlayerPlayFilled, IconPlayerTrackNextFilled } from '@tabler/icons-react-native';
+import { IconPlayerPauseFilled, IconPlayerPlayFilled, IconPlayerTrackNextFilled } from '@tabler/icons-react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 import { useCoverBuilder } from '@lib/hooks/useCoverBuilder';
-import { useQueue } from '../hooks';
+import { useGlobalPlayer, useQueue } from '@lib/hooks';
+import { useAudioPlayerStatus } from 'expo-audio';
 
 export default function Miniplayer() {
     const colors = useColors();
 
     const { nowPlaying } = useQueue();
+    const player = useGlobalPlayer();
+    const status = player ? useAudioPlayerStatus(player) : null;
 
     const cover = useCoverBuilder();
 
@@ -55,10 +58,10 @@ export default function Miniplayer() {
     return (
         <Pressable onPress={() => SheetManager.show('playback')} style={styles.miniplayer}>
             <View style={styles.metadata}>
-                <Image
-                    source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '', { size: 128 }) }}
+                <CachedImage
+                    uri={cover.generateUrl(nowPlaying.coverArt ?? '', { size: 128 })}
+                    cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-128x128` : 'empty-128x128'}
                     style={styles.image}
-                    cachePolicy="disk"
                 />
                 <View style={styles.textContainer}>
                     <Title size={14} fontFamily="Poppins-SemiBold" numberOfLines={1}>
@@ -78,8 +81,8 @@ export default function Miniplayer() {
             </View>
             {!isEmpty && (
                 <View style={styles.actions}>
-                    <ActionIcon icon={IconPlayerPlayFilled} isFilled />
-                    <ActionIcon icon={IconPlayerTrackNextFilled} size={20} isFilled />
+                    <ActionIcon icon={status?.playing ? IconPlayerPauseFilled : IconPlayerPlayFilled} size={24} stroke="transparent" isFilled onPress={() => status?.playing ? player?.pause() : player?.play()} />
+                    <ActionIcon icon={IconPlayerTrackNextFilled} size={18} isFilled />
                 </View>
             )}
         </Pressable>

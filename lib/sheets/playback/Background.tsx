@@ -1,13 +1,15 @@
 import { BlurView } from "expo-blur";
-import { Image, ImageSource } from "expo-image"
+import { ImageSource } from "expo-image"
 import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
+import CachedImage from '@/lib/components/CachedImage';
 
 export type BackgroundProps = {
     source: ImageSource;
+    cacheKey: string;
 }
 
-export default function Background({ source }: BackgroundProps) {
+export default function Background({ source, cacheKey }: BackgroundProps) {
     const styles = useMemo(() => StyleSheet.create({
         image: {
             // height: '100%',
@@ -24,7 +26,7 @@ export default function Background({ source }: BackgroundProps) {
 
     return (
         <View style={styles.container}>
-            <Image source={source} style={styles.image} />
+            <CachedImage uri={source.uri ?? ''} cacheKey={cacheKey} style={styles.image} />
             <BlurView
                 intensity={100}
                 experimentalBlurMethod="dimezisBlurView"
