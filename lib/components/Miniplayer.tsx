@@ -13,7 +13,9 @@ import { useAudioPlayerStatus } from 'expo-audio';
 export default function Miniplayer() {
     const colors = useColors();
 
-    const { nowPlaying } = useQueue();
+    const queue = useQueue();
+    const { nowPlaying } = queue;
+
     const player = useGlobalPlayer();
     const status = player ? useAudioPlayerStatus(player) : null;
 
@@ -82,7 +84,7 @@ export default function Miniplayer() {
             {!isEmpty && (
                 <View style={styles.actions}>
                     <ActionIcon icon={status?.playing ? IconPlayerPauseFilled : IconPlayerPlayFilled} size={24} stroke="transparent" isFilled onPress={() => status?.playing ? player?.pause() : player?.play()} />
-                    <ActionIcon icon={IconPlayerTrackNextFilled} size={18} isFilled />
+                    <ActionIcon icon={IconPlayerTrackNextFilled} size={18} isFilled onPress={() => queue.skipForward()} disabled={!queue.canGoForward} />
                 </View>
             )}
         </Pressable>

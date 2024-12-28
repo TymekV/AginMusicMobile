@@ -9,7 +9,9 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 export default function SmallNowPlaying() {
-    const { nowPlaying } = useQueue();
+    const queue = useQueue();
+    const { nowPlaying } = queue;
+
     const cover = useCoverBuilder();
     const colors = useColors();
 
@@ -47,7 +49,7 @@ export default function SmallNowPlaying() {
             </View>
             <View style={styles.actions}>
                 <ActionIcon icon={status?.playing ? IconPlayerPauseFilled : IconPlayerPlayFilled} size={24} stroke="transparent" isFilled onPress={() => status?.playing ? player?.pause() : player?.play()} variant="subtleFilled" />
-                <ActionIcon icon={IconPlayerTrackNextFilled} size={18} isFilled />
+                <ActionIcon icon={IconPlayerTrackNextFilled} size={18} isFilled onPress={() => queue.skipForward()} disabled={!queue.canGoForward} />
             </View>
             {/* <NowPlayingActions /> */}
         </View>

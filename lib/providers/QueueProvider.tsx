@@ -4,6 +4,7 @@ import { useCache } from '@lib/hooks/useCache';
 import { useApi, useGlobalPlayer, useServer, useSubsonicParams } from '@lib/hooks';
 import qs from 'qs';
 import { useCoverBuilder } from '../hooks/useCoverBuilder';
+import { useAudioPlayerStatus } from 'expo-audio';
 
 export type QueueContextType = {
     queue: PlayQueue;
@@ -12,6 +13,11 @@ export type QueueContextType = {
     add: (id: string) => Promise<void>;
     clear: () => Promise<void>;
     jumpTo: (index: number) => void;
+    skipBackward: () => void;
+    skipForward: () => void;
+    activeIndex: number;
+    canGoForward: boolean;
+    canGoBackward: boolean;
 }
 
 const initialQueue: PlayQueue = {
@@ -34,6 +40,11 @@ const initialQueueContext: QueueContextType = {
     add: async (id: string) => { },
     clear: async () => { },
     jumpTo: (index: number) => { },
+    skipBackward: () => { },
+    skipForward: () => { },
+    activeIndex: 0,
+    canGoBackward: false,
+    canGoForward: false,
 }
 
 export const QueueContext = createContext<QueueContextType>(initialQueueContext);
@@ -49,13 +60,17 @@ export type StreamOptions = {
 export default function QueueProvider({ children }: { children?: React.ReactNode }) {
     const [queue, setQueue] = useState<PlayQueue>(initialQueue);
     const [nowPlaying, setNowPlaying] = useState<Child>(initialQueueContext.nowPlaying);
+    const [activeIndex, setActiveIndex] = useState<number>(0);
+
+    const canGoBackward = activeIndex > 0;
+    const canGoForward = activeIndex < (queue.entry?.length ?? 0) - 1;
 
     const cache = useCache();
     const api = useApi();
     const params = useSubsonicParams();
     const { server } = useServer();
     const player = useGlobalPlayer();
-    const cover = useCoverBuilder();
+    const status = player ? useAudioPlayerStatus(player) : null;
 
     const generateMediaUrl = useCallback((options: StreamOptions) => `${server.url}/rest/stream?${qs.stringify({ ...params, ...options })}`, [params, server.url]);
 
@@ -69,22 +84,44 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
 
         if (nowPlaying.id == '') {
             setNowPlaying(data);
+            setActiveIndex(0);
         }
     }, [cache, queue, nowPlaying]);
 
     const clear = useCallback(async () => {
         setQueue(q => ({ ...q, entry: [] }));
+        setActiveIndex(0);
         setNowPlaying(initialQueueContext.nowPlaying);
     }, []);
 
-    const jumpTo = useCallback(async (index: number) => {
+    const jumpTo = useCallback((index: number) => {
         console.log('jumping to', index);
 
         const data = queue.entry?.[index];
         if (!data) return;
 
+        setActiveIndex(index);
         setNowPlaying(data);
     }, [queue.entry]);
+
+    const skipForward = useCallback(() => {
+        if (!queue.entry) return;
+
+        const nextIndex = queue.entry.findIndex(x => x.id == nowPlaying.id) + 1;
+        jumpTo(nextIndex);
+    }, [jumpTo, queue.entry, nowPlaying]);
+
+    const skipBackward = useCallback(() => {
+        if (!queue.entry) return;
+
+        if (status?.currentTime && status.currentTime > 5000) {
+            player?.seekTo(0);
+            return;
+        }
+
+        const prevIndex = queue.entry.findIndex(x => x.id == nowPlaying.id) - 1;
+        jumpTo(prevIndex);
+    }, [jumpTo, queue.entry, nowPlaying, status]);
 
     useEffect(() => {
         (async () => {
@@ -103,7 +140,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
 
             setQueue(queue);
         })();
-    }, [api, cache]);
+    }, [!!api, !!cache]);
 
     useEffect(() => {
         (async () => {
@@ -120,7 +157,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
                 }
             });
         })();
-    }, [api, queue]);
+    }, [!!api, !!queue]);
 
     useEffect(() => {
         (async () => {
@@ -136,7 +173,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     }, [nowPlaying, player]);
 
     return (
-        <QueueContext.Provider value={{ queue, add, clear, nowPlaying, setQueue, jumpTo }}>
+        <QueueContext.Provider value={{ queue, add, clear, nowPlaying, setQueue, jumpTo, skipBackward, skipForward, canGoBackward, canGoForward, activeIndex }}>
             {children}
         </QueueContext.Provider>
     )

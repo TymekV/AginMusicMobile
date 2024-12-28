@@ -17,7 +17,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function MainTab() {
     const insets = useSafeAreaInsets();
     const colors = useColors();
-    const { nowPlaying } = useQueue();
+    const queue = useQueue();
+    const { nowPlaying } = queue;
     const cover = useCoverBuilder();
 
     const player = useGlobalPlayer();
@@ -116,9 +117,9 @@ export default function MainTab() {
                     <Title size={12} color={colors.text[2]} fontFamily="Poppins-SemiBold">{!status?.isBuffering && `-${secondsToTimecode((duration - currentTime) / 1000)}`}</Title>
                 </View>
                 <View style={styles.buttons}>
-                    <ActionIcon icon={IconPlayerSkipBackFilled} isFilled size={30} />
+                    <ActionIcon icon={IconPlayerSkipBackFilled} isFilled size={30} onPress={() => queue.skipBackward()} disabled={!queue.canGoBackward} />
                     <ActionIcon icon={status?.playing ? IconPlayerPauseFilled : IconPlayerPlayFilled} isFilled size={55} stroke="transparent" onPress={() => status?.playing ? player?.pause() : player?.play()} />
-                    <ActionIcon icon={IconPlayerSkipForwardFilled} isFilled size={30} />
+                    <ActionIcon icon={IconPlayerSkipForwardFilled} isFilled size={30} onPress={() => queue.skipForward()} disabled={!queue.canGoForward} />
                 </View>
             </View>
         </View>

@@ -15,6 +15,7 @@ export type ActionIconProps = PressableProps & {
     isFilled?: boolean;
     stroke?: ColorValue;
     variant?: ActionIconVariant;
+    disabled?: boolean;
 }
 
 type VariantConfig = {
@@ -25,7 +26,7 @@ type VariantConfig = {
     extraSize: number;
 }
 
-const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor, iconProps, variant = 'subtle', ...props }: ActionIconProps) => {
+const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor, iconProps, variant = 'subtle', disabled = false, onPress, ...props }: ActionIconProps) => {
     const colors = useColors();
 
     const variantStyles = useMemo<Record<ActionIconVariant, VariantConfig>>(() => ({
@@ -57,7 +58,7 @@ const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor
             tapBackgroundColor: '#ffffff05',
             extraSize: 12,
         },
-    }), [colors]);
+    }), [colors, disabled]);
 
     const styles = useMemo(() => StyleSheet.create({
         container: {
@@ -90,7 +91,7 @@ const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor
 
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [{ scale: scaleDownAnimation.value }],
-        opacity: opacity.value,
+        opacity: disabled ? .3 : opacity.value,
         backgroundColor: backgroundColor.value,
     }));
 
@@ -98,7 +99,7 @@ const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor
 
     return (
         <GestureDetector gesture={scaleHandler}>
-            <Pressable {...props}>
+            <Pressable onPress={disabled ? undefined : onPress} {...props}>
                 <Animated.View style={[styles.container, animatedStyle]}>
                     <Icon color={iconCol} fill={isFilled ? iconCol : 'transparent'} size={size} stroke={stroke ?? iconCol} {...iconProps} />
                 </Animated.View>
