@@ -93,6 +93,8 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
             isModal={Platform.OS == 'android' ? false : true}
             CustomHeaderComponent={<View></View>}
             useBottomSafeAreaPadding={true}
+            overlayColor={colors.background}
+            defaultOverlayOpacity={1}
         >
             <GestureEnabledContext.Provider value={[gestureEnabled, setGestureEnabled]}>
                 <IdContext.Provider value={sheetId}>

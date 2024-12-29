@@ -8,19 +8,10 @@ import { Button, ScrollView, View } from 'react-native';
 export default function Home() {
     const server = useServer();
     const queue = useQueue();
-    // useEffect(() => {
-    //     (async () => {
-    //         const serverInfo = await server.discoverServer('192.168.1.64:4533');
-    //         console.log(serverInfo);
-
-    //         await server.saveAndTestPasswordCredentials('', '');
-
-    //     })();
-    // }, [server.discoverServer]);
 
     return (
         <Container>
-            {/* <NowPlayingBackground image={images[2]} /> */}
+            <Title size={20} fontFamily='Poppins-SemiBold'>Welcome back!</Title>
             <Button title="Log in" onPress={async () => {
                 const serverInfo = await server.discoverServer('192.168.1.64:4533');
                 console.log(serverInfo);
@@ -33,9 +24,6 @@ export default function Home() {
             <Button title="Play Something" onPress={async () => await queue.add('ffcb34e1bf61ae7214368c245491d5de')} />
             <Button title="Play Something" onPress={async () => await queue.add('348b4c77d7e15d55d9a93b00fa4a4931')} />
             <Button title="Clear Queue" onPress={async () => await queue.clear()} />
-            {/* <ScrollView style={{ flex: 1 }}>
-                {new Array(500).fill(0).map((x, i) => <Title key={i}>ahgihudfgshiudfgshiougdfsiou</Title>)}
-            </ScrollView> */}
         </Container>
     )
 }
