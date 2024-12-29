@@ -1,16 +1,18 @@
 import ActionIcon from '@/lib/components/ActionIcon';
 import Cover from '@/lib/components/Cover';
-import NowPlayingActions from '@/lib/components/nowPlaying/NowPlayingActions';
 import Title from '@/lib/components/Title';
 import { useColors, useCoverBuilder, useGlobalPlayer, useQueue } from '@lib/hooks';
 import { IconPlayerPauseFilled, IconPlayerPlayFilled, IconPlayerTrackNextFilled } from '@tabler/icons-react-native';
 import { useAudioPlayerStatus } from 'expo-audio';
-import { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useContext, useMemo } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { TabContext } from '.';
 
 export default function SmallNowPlaying() {
     const queue = useQueue();
     const { nowPlaying } = queue;
+
+    const { tab, changeTab } = useContext(TabContext);
 
     const cover = useCoverBuilder();
     const colors = useColors();
@@ -48,13 +50,15 @@ export default function SmallNowPlaying() {
 
     return (
         <View style={styles.container}>
-            <View style={styles.left}>
-                <Cover source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} size={70} radius={12} />
-                <View style={styles.text}>
-                    <Title size={16} fontFamily="Poppins-Medium" numberOfLines={1}>{nowPlaying.title}</Title>
-                    <Title size={14} color={colors.text[1]} fontFamily="Poppins-Regular" numberOfLines={1} style={{ marginRight: 5 }}>{nowPlaying.artist}</Title>
+            <TouchableOpacity style={styles.left} activeOpacity={.8} onPress={() => changeTab('main')}>
+                <View style={styles.left}>
+                    <Cover source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} size={70} radius={12} />
+                    <View style={styles.text}>
+                        <Title size={16} fontFamily="Poppins-Medium" numberOfLines={1}>{nowPlaying.title}</Title>
+                        <Title size={14} color={colors.text[1]} fontFamily="Poppins-Regular" numberOfLines={1} style={{ marginRight: 5 }}>{nowPlaying.artist}</Title>
+                    </View>
                 </View>
-            </View>
+            </TouchableOpacity>
             <View style={styles.actions}>
                 <ActionIcon icon={status?.playing ? IconPlayerPauseFilled : IconPlayerPlayFilled} size={24} stroke="transparent" isFilled onPress={() => status?.playing ? player?.pause() : player?.play()} variant="subtleFilled" />
                 <ActionIcon icon={IconPlayerTrackNextFilled} size={18} isFilled onPress={() => queue.skipForward()} disabled={!queue.canGoForward} />

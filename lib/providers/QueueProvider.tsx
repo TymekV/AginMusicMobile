@@ -1,5 +1,5 @@
 import { Child, PlayQueue } from '@lib/types';
-import React, { createContext, useCallback, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { useCache } from '@lib/hooks/useCache';
 import { useApi, useGlobalPlayer, useServer, useSubsonicParams } from '@lib/hooks';
 import qs from 'qs';
@@ -79,6 +79,8 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     const { server } = useServer();
     const player = useGlobalPlayer();
     const status = player ? useAudioPlayerStatus(player) : null;
+
+    const ended = status ? Math.floor(status.currentTime) == Math.floor(status.duration) && status.currentTime > 2 && status.isBuffering == false && status.playbackRate == 0 : false;
 
     const generateMediaUrl = useCallback((options: StreamOptions) => `${server.url}/rest/stream?${qs.stringify({ ...params, ...options })}`, [params, server.url]);
 
@@ -208,6 +210,16 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
             player.play();
         })();
     }, [nowPlaying, player]);
+
+    useEffect(() => {
+        console.log('ended', ended);
+
+        if (ended) skipForward();
+    }, [ended, skipForward]);
+
+    useEffect(() => {
+        // console.log('status', status);
+    }, [status]);
 
     return (
         <QueueContext.Provider value={{

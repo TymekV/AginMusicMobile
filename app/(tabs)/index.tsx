@@ -29,6 +29,8 @@ export default function Home() {
             <Button title="Play Something" onPress={async () => await queue.add('348b4c77d7e15d55d9a93b00fa4a4931')} /> */}
             <Button title="Play Something" onPress={async () => await queue.add('2b3d5b5c432f9f8ae208806fdc1060b5')} />
             <Button title="Play Something" onPress={async () => await queue.add('a2c11dbe7bcbb396edd41ffdd1ab0481')} />
+            <Button title="Play Something" onPress={async () => await queue.add('506270e419db3dfbf65bcf51a57bde3e')} />
+            <Button title="Play Something" onPress={async () => await queue.add('488ce4e2dac87919abe8f15941203dc2')} />
             <Button title="Clear Cache" onPress={async () => await cache.clearAll()} />
         </Container>
     )

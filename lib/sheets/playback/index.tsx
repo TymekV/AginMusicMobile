@@ -2,7 +2,7 @@ import { StyledActionSheet } from '@/lib/components/StyledActionSheet';
 import { Platform, StyleSheet, View } from 'react-native';
 import { SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { createContext, useMemo, useState } from 'react';
+import React, { createContext, useMemo, useState } from 'react';
 import { useColors } from '@/lib/hooks/useColors';
 import { useQueue } from '@/lib/hooks';
 import { useCoverBuilder } from '@/lib/hooks/useCoverBuilder';
@@ -28,6 +28,16 @@ export const GestureEnabledContext = createContext<GestureEnabledContextType>([
 ]);
 
 export const IdContext = createContext<string>('');
+
+export type TabContextType = {
+    tab: string,
+    changeTab: (tab: string) => void,
+};
+
+export const TabContext = createContext<TabContextType>({
+    tab: 'main',
+    changeTab: () => { },
+});
 
 // TODO: Fix dragging the sheet
 function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
@@ -99,21 +109,23 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
         >
             <GestureEnabledContext.Provider value={[gestureEnabled, setGestureEnabled]}>
                 <IdContext.Provider value={sheetId}>
-                    <BlurredBackground source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} />
-                    <View style={styles.container}>
-                        <View style={styles.tabContainer}>
-                            {currentTab == 'main' && <Animated.View style={styles.tab} exiting={exitUp} entering={enterDown}>
-                                <MainTab />
-                            </Animated.View>}
-                            {currentTab == 'queue' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
-                                <QueueTab />
-                            </Animated.View>}
-                            {currentTab == 'lyrics' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
-                                <LyricsTab />
-                            </Animated.View>}
+                    <TabContext.Provider value={{ tab: currentTab, changeTab: handleTabChange }}>
+                        <BlurredBackground source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} />
+                        <View style={styles.container}>
+                            <View style={styles.tabContainer}>
+                                {currentTab == 'main' && <Animated.View style={styles.tab} exiting={exitUp} entering={enterDown}>
+                                    <MainTab />
+                                </Animated.View>}
+                                {currentTab == 'queue' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
+                                    <QueueTab />
+                                </Animated.View>}
+                                {currentTab == 'lyrics' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
+                                    <LyricsTab />
+                                </Animated.View>}
+                            </View>
+                            <Tabs tabs={tabs} active={currentTab} onChange={handleTabChange} />
                         </View>
-                        <Tabs tabs={tabs} active={currentTab} onChange={handleTabChange} />
-                    </View>
+                    </TabContext.Provider>
                 </IdContext.Provider>
             </GestureEnabledContext.Provider>
         </StyledActionSheet>

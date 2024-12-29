@@ -113,8 +113,8 @@ export default function MainTab() {
                     }}
                 />
                 <View style={styles.time}>
-                    <Title size={12} color={colors.text[2]} fontFamily="Poppins-SemiBold">{status?.isBuffering ? 'Loading...' : secondsToTimecode(currentTime / 1000)}</Title>
-                    <Title size={12} color={colors.text[2]} fontFamily="Poppins-SemiBold">{!status?.isBuffering && `-${secondsToTimecode((duration - currentTime) / 1000)}`}</Title>
+                    <Title size={12} color={colors.text[2]} fontFamily="Poppins-SemiBold">{status?.isBuffering ? 'Loading...' : secondsToTimecode(Math.floor(currentTime) / 1000)}</Title>
+                    <Title size={12} color={colors.text[2]} fontFamily="Poppins-SemiBold">{!status?.isBuffering && `-${secondsToTimecode((Math.floor(duration) - Math.floor(currentTime)) / 1000)}`}</Title>
                 </View>
                 <View style={styles.buttons}>
                     <ActionIcon icon={IconPlayerSkipBackFilled} isFilled size={30} onPress={() => queue.skipBackward()} disabled={!queue.canGoBackward} />
