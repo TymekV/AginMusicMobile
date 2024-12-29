@@ -9,4 +9,11 @@ export default async function initDatabase(db: SQLiteDatabase) {
         data TEXT not null,
         primary key (id)
     )`);
+
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS lyricsCache (
+        id TEXT not null,
+        data TEXT not null,
+        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP not null,
+        primary key (id)
+    )`);
 }

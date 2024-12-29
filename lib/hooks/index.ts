@@ -8,3 +8,4 @@ export * from './useSubsonicParams';
 export * from './useGlobalPlayer';
 export * from './useCoverBuilder';
 export * from './useColors';
+export * from './useCache';

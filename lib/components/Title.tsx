@@ -1,7 +1,7 @@
 import { useColors } from "@/lib/hooks/useColors";
 import { CustomFont } from "@/lib/types";
 import { useMemo } from "react";
-import { StyleSheet, Text, TextProps } from "react-native";
+import { StyleSheet, Text, TextProps, ViewStyle } from "react-native";
 
 export interface TitleProps extends TextProps {
     children?: React.ReactNode;
@@ -11,7 +11,7 @@ export interface TitleProps extends TextProps {
     align?: 'left' | 'center' | 'right';
 }
 
-export default function Title({ children, size, fontFamily, color, align = 'left', ...props }: TitleProps) {
+export default function Title({ children, size, fontFamily, color, align = 'left', style, ...props }: TitleProps) {
     const colors = useColors();
 
     const styles = useMemo(() => StyleSheet.create({
@@ -25,7 +25,7 @@ export default function Title({ children, size, fontFamily, color, align = 'left
     }), [colors.text[0], size, fontFamily, color, align]);
 
     return (
-        <Text style={styles.title} {...props}>
+        <Text style={[styles.title, style]} {...props}>
             {children}
         </Text>
     )

@@ -24,12 +24,20 @@ export default function SmallNowPlaying() {
             justifyContent: 'space-between',
             alignItems: 'center',
             marginBottom: 15,
+            overflow: 'hidden',
+            gap: 10,
         },
         left: {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
             gap: 12,
+            overflow: 'hidden',
+            flex: 1,
+        },
+        text: {
+            flex: 1,
+            overflow: 'hidden',
         },
         actions: {
             flexDirection: 'row',
@@ -42,9 +50,9 @@ export default function SmallNowPlaying() {
         <View style={styles.container}>
             <View style={styles.left}>
                 <Cover source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} size={70} radius={12} />
-                <View>
+                <View style={styles.text}>
                     <Title size={16} fontFamily="Poppins-Medium" numberOfLines={1}>{nowPlaying.title}</Title>
-                    <Title size={14} color={colors.text[1]} fontFamily="Poppins-Regular" numberOfLines={1}>{nowPlaying.artist}</Title>
+                    <Title size={14} color={colors.text[1]} fontFamily="Poppins-Regular" numberOfLines={1} style={{ marginRight: 5 }}>{nowPlaying.artist}</Title>
                 </View>
             </View>
             <View style={styles.actions}>

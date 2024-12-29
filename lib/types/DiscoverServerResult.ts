@@ -5,4 +5,5 @@ export type DiscoverServerResult = {
     success: boolean;
     server?: Server;
     error?: AginErrorCode;
-}
+    url: string;
+};

@@ -70,7 +70,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     const [nowPlaying, setNowPlaying] = useState<Child>(initialQueueContext.nowPlaying);
     const [activeIndex, setActiveIndex] = useState<number>(0);
 
-    const canGoBackward = activeIndex > 0;
+    const canGoBackward = nowPlaying.id != '';
     const canGoForward = activeIndex < (queue.entry?.length ?? 0) - 1;
 
     const cache = useCache();
@@ -145,14 +145,20 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     const skipBackward = useCallback(() => {
         if (!queue.entry) return;
 
-        if (status?.currentTime && status.currentTime > 5000) {
+        if ((status?.currentTime && status.currentTime > 5000) || activeIndex == 0) {
             player?.seekTo(0);
             return;
         }
 
         const prevIndex = queue.entry.findIndex(x => x.id == nowPlaying.id) - 1;
         jumpTo(prevIndex);
-    }, [jumpTo, queue.entry, nowPlaying, status]);
+    }, [jumpTo, queue.entry, nowPlaying, status, activeIndex]);
+
+    useEffect(() => {
+        if (!queue.entry) return;
+        const index = queue.entry.findIndex(x => x.id == nowPlaying.id);
+        setActiveIndex(index);
+    }, [queue.entry, nowPlaying.id]);
 
     useEffect(() => {
         (async () => {

@@ -15,6 +15,7 @@ import Animated from 'react-native-reanimated';
 import { enterDown, enterUp, exitDown, exitUp } from './animations';
 import Title from '@/lib/components/Title';
 import QueueTab from './QueueTab';
+import LyricsTab from './LyricsTab';
 
 type GestureEnabledContextType = [
     boolean,
@@ -108,7 +109,7 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
                                 <QueueTab />
                             </Animated.View>}
                             {currentTab == 'lyrics' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
-                                <Title>Lyrics</Title>
+                                <LyricsTab />
                             </Animated.View>}
                         </View>
                         <Tabs tabs={tabs} active={currentTab} onChange={handleTabChange} />

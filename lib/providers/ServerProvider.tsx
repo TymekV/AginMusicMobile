@@ -31,7 +31,7 @@ const initialServer: Server = {
 export type ServerContextType = {
     server: Server;
     discoverServer: (url: string) => Promise<DiscoverServerResult> | void;
-    saveAndTestPasswordCredentials: (username: string, password: string) => Promise<void>;
+    saveAndTestPasswordCredentials: (url: string, username: string, password: string) => Promise<void>;
 }
 
 const initialServerContext: ServerContextType = {
@@ -90,8 +90,10 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
 
 
     const discoverServer = useCallback(async (url: string): Promise<DiscoverServerResult> => {
+        let correctUrl = '';
+        let authMethod: Server['authMethod'] = '';
         try {
-            const correctUrl = fixUrl(url);
+            correctUrl = fixUrl(url);
 
             const rawRes = await axios.get(`${correctUrl}/rest/getOpenSubsonicExtensions`, {
                 params: {
@@ -102,10 +104,16 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
             });
 
             const res = rawRes.data['subsonic-response'] as (BaseResponse & { openSubsonicExtensions: OpenSubsonicExtensions[] });
-            if (res.status != 'ok') {
+
+            if (res.status != 'ok' && res.status != 'failed') {
+                if (res.status == 'failed') {
+                    // Server rejects /getOpenSubsonicExtensions but still returns a valid response
+                    authMethod = 'saltedPassword';
+                }
                 return {
                     success: false,
-                    error: 0
+                    error: 0,
+                    url: correctUrl,
                 }
             }
 
@@ -123,7 +131,7 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
             //     }
             // }
 
-            const authMethod = res.openSubsonicExtensions.find(e => e.name == 'apiKeyAuthentication') ? 'apiKey' : 'saltedPassword';
+            authMethod = res.openSubsonicExtensions?.find(e => e.name == 'apiKeyAuthentication') ? 'apiKey' : 'saltedPassword';
 
             const serverData: Server = {
                 url: correctUrl,
@@ -140,20 +148,23 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
             return {
                 success: true,
                 server: serverData,
+                url: correctUrl,
             }
         } catch (error) {
+            console.error(error);
             return {
                 success: false,
                 error: 'ERR_SERVER_UNREACHABLE',
+                url: correctUrl,
             }
         }
     }, []);
 
-    const saveAndTestPasswordCredentials = useCallback(async (username: string, password: string) => {
+    const saveAndTestPasswordCredentials = useCallback(async (url: string, username: string, password: string) => {
         // TODO: Add error handling
         console.log(server.url);
         const { salt, hash } = await generateSubsonicToken(password);
-        console.log('TESTING');
+        console.log('TESTING1', username, password, salt, hash, server.url);
 
         try {
             const rawRes = await axios.get(`${server.url}/rest/ping`, {
