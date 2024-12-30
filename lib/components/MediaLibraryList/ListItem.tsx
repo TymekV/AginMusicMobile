@@ -19,11 +19,18 @@ export default function ListItem({ title, subtitle, coverUri, coverCacheKey }: T
             paddingHorizontal: 20,
             borderBottomWidth: 1,
             borderBottomColor: colors.border[0],
+            overflow: 'hidden',
+            gap: 10,
         },
         itemLeft: {
             flexDirection: 'row',
             alignItems: 'center',
             gap: compact ? 10 : 12,
+            flex: 1,
+        },
+        metadata: {
+            flex: 1,
+            overflow: 'hidden',
         }
     }), [colors, compact]);
 
@@ -37,9 +44,9 @@ export default function ListItem({ title, subtitle, coverUri, coverCacheKey }: T
                     radius={compact ? 6 : 8}
                     withShadow={false}
                 />
-                <View>
-                    <Title size={compact ? 14 : 16}>{title}</Title>
-                    {subtitle && <Title size={12} color={colors.text[1]} fontFamily='Poppins-Regular'>{subtitle}</Title>}
+                <View style={styles.metadata}>
+                    <Title size={compact ? 14 : 16} numberOfLines={1}>{title}</Title>
+                    {subtitle && <Title size={12} color={colors.text[1]} fontFamily='Poppins-Regular' numberOfLines={1}>{subtitle}</Title>}
                 </View>
             </View>
             {!compact && <IconChevronRight size={16} color={colors.text[1]} />}

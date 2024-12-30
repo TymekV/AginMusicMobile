@@ -7,7 +7,7 @@ interface CachedImageProps extends ImageProps {
     uri: string;
     cacheKey?: string;
 }
-
+// TODO: Improve performance (!!!)
 const CachedImage: React.FC<CachedImageProps> = ({ uri, cacheKey, ...props }) => {
     const [imageUri, setImageUri] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);

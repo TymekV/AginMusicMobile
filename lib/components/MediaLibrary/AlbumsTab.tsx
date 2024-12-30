@@ -5,25 +5,25 @@ import { useCoverBuilder, useMemoryCache } from '@/lib/hooks';
 import { formatDistanceToNow } from 'date-fns';
 import { useFocusEffect } from 'expo-router';
 
-export function PlaylistsTab() {
+export function AlbumsTab() {
     const cache = useMemoryCache();
     const cover = useCoverBuilder();
 
-    const data = useMemo((): TMediaLibItem[] => cache.cache.allPlaylists.map(p => ({
+    const data = useMemo((): TMediaLibItem[] => cache.cache.allAlbums.map(p => ({
         id: p.id,
         title: p.name,
-        subtitle: `${p.songCount} songs • edited ${formatDistanceToNow(new Date(p.changed), { addSuffix: true })}`,
+        subtitle: `${p.artist} • ${p.year}`,
         coverUri: cover.generateUrl(p.coverArt ?? '', { size: 128 }),
         coverCacheKey: `${p.coverArt}-128x128`,
-    })), [cache.cache.allPlaylists, cover]);
+    })), [cache.cache.allAlbums, cover]);
 
     useEffect(() => {
-        cache.refreshPlaylists();
-    }, [cache.refreshPlaylists]);
+        cache.refreshAlbums();
+    }, [cache.refreshAlbums]);
 
     useFocusEffect(useCallback(() => {
-        cache.refreshPlaylists();
-    }, [cache.refreshPlaylists]));
+        cache.refreshAlbums();
+    }, [cache.refreshAlbums]));
 
     return (
         <MediaLibraryList

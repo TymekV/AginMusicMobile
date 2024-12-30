@@ -8,7 +8,7 @@ import { TTagTab } from '@/lib/components/TagTabs/TagTab';
 import { IconDisc, IconHeart, IconLayoutGrid, IconLayoutList, IconMicrophone2, IconMusic, IconPlaylist, IconPlus } from '@tabler/icons-react-native';
 import React, { useState } from 'react';
 import * as Haptics from 'expo-haptics';
-import { PlaylistsTab } from '@/lib/components/MediaLibrary';
+import { AlbumsTab, PlaylistsTab } from '@/lib/components/MediaLibrary';
 
 const tabs: TTagTab[] = [
     {
@@ -16,11 +16,11 @@ const tabs: TTagTab[] = [
         id: 'playlists',
         icon: IconPlaylist,
     },
-    {
-        label: 'Favorite',
-        id: 'favorite',
-        icon: IconHeart,
-    },
+    // {
+    //     label: 'Favorite',
+    //     id: 'favorite',
+    //     icon: IconHeart,
+    // },
     {
         label: 'Artists',
         id: 'artists',
@@ -70,6 +70,7 @@ export default function Library() {
             </>} />
             <TagTabs data={tabs} tab={tab} onChange={setTab} />
             {tab == 'playlists' && <PlaylistsTab />}
+            {tab == 'albums' && <AlbumsTab />}
         </Container>
     )
 }

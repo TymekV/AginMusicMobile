@@ -1,7 +1,6 @@
-import { FlatList } from 'react-native-actions-sheet';
 import MediaLibItem, { TMediaLibItem } from './Item';
 import { createContext, useMemo } from 'react';
-import { StyleSheet } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 
 export type MediaLibraryLayout = 'grid' | 'list';
 
