@@ -2,7 +2,7 @@ import Container from '@/lib/components/Container';
 import Header from '@/lib/components/Header';
 import { PlaylistBackground, PlaylistHeader } from '@lib/components/Playlist';
 import Title from '@/lib/components/Title';
-import { useColors, useCoverBuilder, useMemoryCache } from '@lib/hooks';
+import { useColors, useCoverBuilder, useMemoryCache, useQueue } from '@lib/hooks';
 import ActionIcon from '@lib/components/ActionIcon';
 import { LibSize, LibLayout, LibSeparators } from '@lib/components/MediaLibraryList';
 import MediaLibItem from '@lib/components/MediaLibraryList/Item';
@@ -17,6 +17,7 @@ export default function Playlist() {
     const cache = useMemoryCache();
     const cover = useCoverBuilder();
     const colors = useColors();
+    const queue = useQueue();
 
     const data = useMemo(() => cache.cache.playlists[id as string], [cache.cache.playlists, id]);
 
@@ -40,7 +41,7 @@ export default function Playlist() {
                         <FlatList
                             data={data?.entry}
                             keyExtractor={item => item.id}
-                            renderItem={({ item }) => (
+                            renderItem={({ item, index }) => (
                                 <MediaLibItem
                                     id={item.id}
                                     title={item.title}
@@ -50,6 +51,12 @@ export default function Playlist() {
                                     rightSection={<>
                                         <ActionIcon icon={IconDots} size={16} variant='secondaryTransparent' />
                                     </>}
+                                    onPress={() => {
+                                        if (!data.entry) return;
+                                        // TODO: Fix when sorting or filtering is enabled
+                                        const queueToCopy = data.entry.slice(index);
+                                        queue.replace(queueToCopy);
+                                    }}
                                 />
                             )}
                             ListHeaderComponent={<PlaylistHeader playlist={data} />}

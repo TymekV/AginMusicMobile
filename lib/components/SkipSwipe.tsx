@@ -24,6 +24,7 @@ export default function SkipSwipe({ width, renderItem, style }: SkipSwipeProps) 
             ref={carosuelRef}
             loop={false}
             data={queue.queue.entry ?? []}
+            windowSize={5}
             width={width}
             renderItem={({ index }) => {
                 const item = queue.queue?.entry?.[index];

@@ -28,6 +28,8 @@ export default function QueueItem({ item, getIndex, drag, isActive }: RenderItem
             paddingVertical: 3,
             paddingHorizontal: 30,
             backgroundColor: isActive ? '#ffffff20' : isPlaying ? '#ffffff10' : 'transparent',
+            overflow: 'hidden',
+            gap: 5,
         },
         activeItem: {
             shadowColor: '#000',
@@ -44,6 +46,11 @@ export default function QueueItem({ item, getIndex, drag, isActive }: RenderItem
             flexDirection: 'row',
             alignItems: 'center',
             gap: 10,
+            flex: 1,
+        },
+        metadata: {
+            flex: 1,
+            overflow: 'hidden',
         }
     }), [isPlaying, isActive]);
 
@@ -62,9 +69,9 @@ export default function QueueItem({ item, getIndex, drag, isActive }: RenderItem
                         radius={6}
                         withShadow={false}
                     />
-                    <View>
-                        <Title size={14}>{item.title}</Title>
-                        <Title size={12} fontFamily="Poppins-Regular" color={colors.text[1]}>{item.artist}</Title>
+                    <View style={styles.metadata}>
+                        <Title size={14} numberOfLines={1}>{item.title}</Title>
+                        <Title size={12} fontFamily="Poppins-Regular" color={colors.text[1]} numberOfLines={1}>{item.artist}</Title>
                     </View>
                 </View>
                 <IconMenu size={20} color={colors.text[1]} />
