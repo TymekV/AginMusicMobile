@@ -13,6 +13,7 @@ import SkipSwipe from './SkipSwipe';
 import { Child } from '@lib/types';
 import Animated, { Easing, FadeInDown, FadeInUp, FadeOutDown, FadeOutUp } from 'react-native-reanimated';
 import React from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
 
 function RenderItem(item: Child) {
     const colors = useColors();
@@ -65,6 +66,28 @@ function RenderItem(item: Child) {
                 )}
             </View>
         </View>
+    )
+}
+
+function Overlay({ position }: { position: 'left' | 'right' }) {
+    const colors = useColors();
+    const styles = useMemo(() => StyleSheet.create({
+        overlay: {
+            position: 'absolute',
+            [position]: 0,
+            top: 0,
+            bottom: 0,
+            width: position == 'left' ? 7 : 15,
+        }
+    }), [colors, position]);
+
+    return (
+        <LinearGradient
+            style={styles.overlay}
+            colors={position == 'left' ? [colors.secondaryBackground, colors.secondaryBackground + '00'] : [colors.secondaryBackground + '00', colors.secondaryBackground]}
+            start={[0, 0]}
+            end={[1, 0]}
+        />
     )
 }
 
@@ -124,6 +147,7 @@ export default function Miniplayer() {
         swipeContainer: {
             overflow: 'hidden',
             flex: 1,
+            position: 'relative',
         }
     }), [colors.secondaryBackground]);
 
@@ -135,6 +159,8 @@ export default function Miniplayer() {
                 <Pressable onPress={() => SheetManager.show('playback')} style={styles.miniplayer}>
                     <View style={styles.swipeContainer} ref={containerRef}>
                         {carouselWidth != 0 && <SkipSwipe width={carouselWidth} renderItem={RenderItem} />}
+                        <Overlay position="left" />
+                        <Overlay position="right" />
                     </View>
                     {!isEmpty && (
                         <View style={styles.actions}>

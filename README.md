@@ -8,3 +8,4 @@ Agin Music is an open source client for OpenSubsonic-compatible servers. It has 
 - Dark mode support
 - Marking songs as favourite
 - Managing playback from the lock screen
+- Gesture support

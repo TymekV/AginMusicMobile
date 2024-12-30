@@ -9,3 +9,4 @@ export * from './useGlobalPlayer';
 export * from './useCoverBuilder';
 export * from './useColors';
 export * from './useCache';
+export * from './useMemoryCache';

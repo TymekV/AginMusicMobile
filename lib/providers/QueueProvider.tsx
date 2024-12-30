@@ -118,7 +118,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         if (!confirmed) return false;
 
         if (options?.wait) {
-            player?.pause();
+            if (!player?.paused) player?.pause();
             if (options?.onConfirm) options.onConfirm();
             await new Promise(r => setTimeout(r, 500));
         }

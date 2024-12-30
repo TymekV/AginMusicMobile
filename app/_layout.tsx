@@ -15,6 +15,7 @@ import { SQLiteProvider } from 'expo-sqlite';
 import initDatabase from '@/lib/initDatabase';
 import QueueProvider from '@/lib/providers/QueueProvider';
 import PlayerProvider from '@/lib/providers/PlayerProvider';
+import MemoryCacheProvider from '@/lib/providers/MemoryCacheProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -57,15 +58,17 @@ export default function RootLayout() {
         <PlayerProvider>
           <ServerProvider>
             <QueueProvider>
-              <GestureHandlerRootView style={{ flex: 1 }}>
-                <SheetProvider>
-                  <Stack>
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
-                  <StatusBar style="auto" />
-                </SheetProvider>
-              </GestureHandlerRootView>
+              <MemoryCacheProvider>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                  <SheetProvider>
+                    <Stack>
+                      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                      <Stack.Screen name="+not-found" />
+                    </Stack>
+                    <StatusBar style="auto" />
+                  </SheetProvider>
+                </GestureHandlerRootView>
+              </MemoryCacheProvider>
             </QueueProvider>
           </ServerProvider>
         </PlayerProvider>

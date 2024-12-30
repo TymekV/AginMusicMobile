@@ -1,15 +1,13 @@
 import Container from '@/lib/components/Container';
 import Header from '@/lib/components/Header';
-import NowPlayingBackground from '@/lib/components/NowPlayingBackground';
-import Title from '@/lib/components/Title';
-import { useQueue, useServer, useCache } from '@/lib/hooks';
-import { useEffect } from 'react';
-import { Button, ScrollView, View } from 'react-native';
+import { useQueue, useServer, useCache, useMemoryCache } from '@/lib/hooks';
+import { Button } from 'react-native';
 
 export default function Home() {
     const server = useServer();
     const queue = useQueue();
     const cache = useCache();
+    const memoryCache = useMemoryCache();
 
     return (
         <Container>
@@ -31,7 +29,10 @@ export default function Home() {
             <Button title="Play Something" onPress={async () => await queue.add('a2c11dbe7bcbb396edd41ffdd1ab0481')} />
             <Button title="Play Something" onPress={async () => await queue.add('506270e419db3dfbf65bcf51a57bde3e')} />
             <Button title="Play Something" onPress={async () => await queue.add('488ce4e2dac87919abe8f15941203dc2')} />
-            <Button title="Clear Cache" onPress={async () => await cache.clearAll()} />
+            <Button title="Clear Cache" onPress={async () => {
+                await cache.clearAll();
+                memoryCache.clear();
+            }} />
         </Container>
     )
 }

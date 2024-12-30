@@ -4,7 +4,7 @@
  */
 
 const tintColorLight = '#0969ff';
-const tintColorDark = '#fff';
+const tintColorDark = '#ECEDEE';
 
 export const Colors = {
   light: {
@@ -26,6 +26,10 @@ export const Colors = {
     sheetActionBackgroundColor: '#dedfe0',
     segmentedControlBackground: '#dedfe0',
     danger: '#f21616',
+    border: [
+      '#00000010',
+      '#00000020',
+    ]
   },
   dark: {
     text: [
@@ -46,5 +50,9 @@ export const Colors = {
     sheetActionBackgroundColor: '#1d1d1d',
     segmentedControlBackground: '#000000',
     danger: '#f21616',
+    border: [
+      '#ffffff10',
+      '#ffffff20',
+    ]
   },
 };

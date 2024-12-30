@@ -22,6 +22,15 @@ export default function Header({ title, subtitle, rightSection }: HeaderProps) {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
+        },
+        right: {
+            flexDirection: 'row',
+            gap: 8,
+            alignItems: 'center',
+        },
+        rightContent: {
+            flexDirection: 'row',
+            alignItems: 'center',
         }
     }), [colors]);
 
@@ -32,7 +41,12 @@ export default function Header({ title, subtitle, rightSection }: HeaderProps) {
                     <Title size={24} fontFamily='Poppins-SemiBold'>{title}</Title>
                     {subtitle && <Title size={14} fontFamily='Poppins-Regular' color={colors.text[1]}>{subtitle}</Title>}
                 </View>
-                <Avatar />
+                <View style={styles.right}>
+                    <View style={styles.rightContent}>
+                        {rightSection}
+                    </View>
+                    <Avatar />
+                </View>
             </View>
         </View>
     )
