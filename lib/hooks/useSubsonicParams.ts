@@ -25,7 +25,7 @@ export type SubsonicParams = {
 
 export function useSubsonicParams(): SubsonicParams {
     const { server } = useServer();
-    // const [tokenData, setTokenData] = useState<{ salt: string, hash: string } | null>(null);
+    const [tokenData, setTokenData] = useState<{ salt: string, hash: string } | null>(null);
 
     useEffect(() => {
         (async () => {
@@ -34,9 +34,9 @@ export function useSubsonicParams(): SubsonicParams {
 
             if (!server.auth.username || !server.auth.password) return;
 
-            // const { salt, hash } = await generateSubsonicToken(server.auth.password);
+            const { salt, hash } = await generateSubsonicToken(server.auth.password);
 
-            // setTokenData({ salt, hash });
+            setTokenData({ salt, hash });
         })();
     }, [server]);
 
@@ -45,9 +45,10 @@ export function useSubsonicParams(): SubsonicParams {
         f: 'json',
         v: config.protocolVersion,
         u: server.auth.username ?? '',
-        t: server.auth.saltedPassword ?? '',
-        s: server.auth.salt ?? '',
-    }), [server]);
+        t: tokenData?.hash ?? '',
+        s: tokenData?.salt ?? '',
+    }), [server, tokenData]);
 
+    if (!tokenData) return null;
     return params;
 }

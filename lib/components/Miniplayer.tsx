@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Title from './Title';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useColors } from '@/lib/hooks/useColors';
+import CachedImage from '@/lib/components/CachedImage';
 import ActionIcon from './ActionIcon';
 import { IconPlayerPauseFilled, IconPlayerPlayFilled, IconPlayerTrackNextFilled } from '@tabler/icons-react-native';
 import { SheetManager } from 'react-native-actions-sheet';
@@ -13,7 +14,6 @@ import { Child } from '@lib/types';
 import Animated, { Easing, FadeInDown, FadeInUp, FadeOutDown, FadeOutUp } from 'react-native-reanimated';
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image } from 'expo-image';
 
 function RenderItem(item: Child) {
     const colors = useColors();
@@ -45,8 +45,9 @@ function RenderItem(item: Child) {
     }), [colors.secondaryBackground]);
     return (
         <View style={styles.metadata}>
-            <Image
-                source={{ uri: cover.generateUrl(item.coverArt ?? '', { size: 128 }) }}
+            <CachedImage
+                uri={cover.generateUrl(item.coverArt ?? '', { size: 128 })}
+                cacheKey={item.coverArt ? `${item.coverArt}-128x128` : 'empty-128x128'}
                 style={styles.image}
             />
             <View style={styles.textContainer}>

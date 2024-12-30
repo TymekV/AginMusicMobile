@@ -1,15 +1,17 @@
-import { Image, ImageSource } from 'expo-image';
+import CachedImage from '@/lib/components/CachedImage';
+import { ImageSource } from 'expo-image';
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 export type CoverProps = {
     source: ImageSource;
+    cacheKey?: string;
     size?: number;
     radius?: number;
     withShadow?: boolean;
 }
 
-export default function Cover({ source, size, radius, withShadow = true }: CoverProps) {
+export default function Cover({ source, size, radius, withShadow = true, cacheKey }: CoverProps) {
     const styles = useMemo(() => StyleSheet.create({
         container: {
             shadowColor: '#000',
@@ -34,7 +36,7 @@ export default function Cover({ source, size, radius, withShadow = true }: Cover
 
     return (
         <View style={withShadow && styles.container}>
-            <Image source={source} style={styles.image} />
+            <CachedImage uri={source.uri ?? ''} cacheKey={cacheKey} style={styles.image} />
         </View>
     )
 }

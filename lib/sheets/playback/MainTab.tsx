@@ -87,7 +87,7 @@ export default function MainTab() {
     return (
         <View style={styles.container}>
             <View style={styles.cover}>
-                <Cover source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} />
+                <Cover source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} />
             </View>
             <View>
                 <View style={styles.metadata}>

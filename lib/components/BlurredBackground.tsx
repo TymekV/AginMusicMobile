@@ -3,12 +3,14 @@ import { useColors } from '@lib/hooks/useColors';
 import { StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image, ImageSource } from 'expo-image';
+import CachedImage from './CachedImage';
 
 export type BlurredBackgroundProps = {
     source: ImageSource;
+    cacheKey?: string;
 }
 
-export default function BlurredBackground({ source }: BlurredBackgroundProps) {
+export default function BlurredBackground({ source, cacheKey }: BlurredBackgroundProps) {
     const colors = useColors();
     const styles = useMemo(() => StyleSheet.create({
         background: {
@@ -41,7 +43,7 @@ export default function BlurredBackground({ source }: BlurredBackgroundProps) {
 
     return (
         <View style={styles.background}>
-            <Image style={styles.image} source={source} blurRadius={500} transition={{ duration: 500, effect: 'cross-dissolve', timing: 'ease-in-out' }} />
+            <CachedImage style={styles.image} uri={source.uri ?? ''} cacheKey={cacheKey} blurRadius={500} />
             <LinearGradient style={styles.gradient} colors={[colors.background + '50', colors.background + '90']} />
         </View>
     )

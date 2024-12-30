@@ -57,6 +57,7 @@ export default function QueueItem({ item, getIndex, drag, isActive }: RenderItem
                 <View style={styles.left}>
                     <Cover
                         source={{ uri: cover.generateUrl(item.coverArt ?? '', { size: 128 }) }}
+                        cacheKey={item.coverArt ? `${item.coverArt}-128x128` : 'empty-128x128'}
                         size={50}
                         radius={6}
                         withShadow={false}
