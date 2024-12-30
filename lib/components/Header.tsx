@@ -6,6 +6,7 @@ import Avatar from './Avatar';
 import ActionIcon from './ActionIcon';
 import { IconChevronLeft } from '@tabler/icons-react-native';
 import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export type HeaderProps = {
     title?: string;
@@ -19,10 +20,19 @@ export type HeaderProps = {
 export default function Header({ title, subtitle, rightSection, withBackIcon = false, withAvatar = true, floating = false }: HeaderProps) {
     const colors = useColors();
 
+    const Root = floating ? SafeAreaView : View;
+
     const styles = useMemo(() => StyleSheet.create({
         header: {
             paddingHorizontal: 20,
             paddingTop: 10,
+        },
+        floatingHeader: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 100,
         },
         top: {
             flexDirection: 'row',
@@ -37,11 +47,12 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
         rightContent: {
             flexDirection: 'row',
             alignItems: 'center',
+            gap: 10,
         }
     }), [colors]);
 
     return (
-        <View style={styles.header}>
+        <Root style={[styles.header, floating && styles.floatingHeader]}>
             <View style={styles.top}>
                 <View style={styles.iconGroup}>
                     {withBackIcon && <ActionIcon icon={IconChevronLeft} size={16} variant='secondary' onPress={() => router.back()} />}
@@ -57,6 +68,6 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
                     {withAvatar && <Avatar />}
                 </View>
             </View>
-        </View>
+        </Root>
     )
 }

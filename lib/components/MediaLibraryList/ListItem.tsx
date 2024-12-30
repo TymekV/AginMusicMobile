@@ -1,55 +1,68 @@
-import { StyleSheet, View } from 'react-native';
-import { TMediaLibItem } from './Item';
+import { StyleSheet, View, ViewProps } from 'react-native';
+import { MediaLibItemProps, TMediaLibItem } from './Item';
 import { useColors } from '@lib/hooks';
 import { useContext, useMemo } from 'react';
 import Title from '../Title';
 import Cover from '../Cover';
-import { LibCompact } from '.';
+import { LibSize, LibSeparators } from '.';
 import { IconChevronRight } from '@tabler/icons-react-native';
 
-export default function ListItem({ title, subtitle, coverUri, coverCacheKey }: TMediaLibItem) {
-    const compact = useContext(LibCompact);
+export default function ListItem({ title, subtitle, coverUri, coverCacheKey, rightSection }: MediaLibItemProps) {
+    const size = useContext(LibSize);
+    const withSeparators = useContext(LibSeparators);
+
     const colors = useColors();
     const styles = useMemo(() => StyleSheet.create({
         item: {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            paddingVertical: 10,
+            paddingVertical: withSeparators ? 10 : size == 'small' ? 8 : 6,
             paddingHorizontal: 20,
-            borderBottomWidth: 1,
-            borderBottomColor: colors.border[0],
             overflow: 'hidden',
             gap: 10,
+        },
+        separator: {
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border[0],
         },
         itemLeft: {
             flexDirection: 'row',
             alignItems: 'center',
-            gap: compact ? 10 : 12,
+            gap: size == 'small' ? 10 : 12,
             flex: 1,
         },
         metadata: {
             flex: 1,
             overflow: 'hidden',
+        },
+        right: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 5,
         }
-    }), [colors, compact]);
+    }), [colors, size, withSeparators]);
 
     return (
-        <View style={styles.item}>
+        <View style={[styles.item, withSeparators && styles.separator]}>
             <View style={styles.itemLeft}>
                 <Cover
                     source={{ uri: coverUri }}
                     cacheKey={coverCacheKey}
-                    size={compact ? 40 : 60}
-                    radius={compact ? 6 : 8}
+                    size={size == 'small' ? 40 : size == 'medium' ? 50 : 60}
+                    radius={(size == 'small' || size == 'medium') ? 6 : 8}
                     withShadow={false}
                 />
                 <View style={styles.metadata}>
-                    <Title size={compact ? 14 : 16} numberOfLines={1}>{title}</Title>
+                    <Title size={(size == 'small' || size == 'medium') ? 14 : 16} numberOfLines={1}>{title}</Title>
                     {subtitle && <Title size={12} color={colors.text[1]} fontFamily='Poppins-Regular' numberOfLines={1}>{subtitle}</Title>}
                 </View>
             </View>
-            {!compact && <IconChevronRight size={16} color={colors.text[1]} />}
+            {rightSection ? <View style={styles.right}>
+                {rightSection}
+            </View> : (
+                size == 'large' && <IconChevronRight size={16} color={colors.text[1]} />
+            )}
         </View>
     )
 }

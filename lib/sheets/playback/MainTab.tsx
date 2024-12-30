@@ -10,7 +10,7 @@ import { secondsToTimecode } from '@/lib/util';
 import { IconPlayerPauseFilled, IconPlayerPlayFilled, IconPlayerSkipBackFilled, IconPlayerSkipForwardFilled } from '@tabler/icons-react-native';
 import { useAudioPlayerStatus } from 'expo-audio';
 import { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -30,6 +30,8 @@ export default function MainTab() {
     const sliderMin = useSharedValue(0);
     const sliderMax = useSharedValue(100);
     const progress = useSharedValue(0);
+
+    const { width, height } = useWindowDimensions();
 
     const currentTime = seeking ? seekingValue : (status?.currentTime ?? 0);
     const duration = status?.duration ?? 0;
@@ -69,7 +71,7 @@ export default function MainTab() {
             justifyContent: 'center',
             gap: 40,
             alignItems: 'center',
-            height: 170,
+            height: height < 750 ? 120 : 170,
         },
         time: {
             flexDirection: 'row',
@@ -82,7 +84,7 @@ export default function MainTab() {
             alignContent: 'center',
             gap: 70,
         }
-    }), [insets.bottom]);
+    }), [insets.bottom, height]);
 
     return (
         <View style={styles.container}>

@@ -5,7 +5,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useColors } from '../hooks/useColors';
 
-export type ActionIconVariant = 'subtle' | 'subtleFilled' | 'primary' | 'secondary';
+export type ActionIconVariant = 'subtle' | 'subtleFilled' | 'primary' | 'secondary' | 'secondaryTransparent';
 
 export type ActionIconProps = PressableProps & {
     icon: Icon;
@@ -16,6 +16,7 @@ export type ActionIconProps = PressableProps & {
     stroke?: ColorValue;
     variant?: ActionIconVariant;
     disabled?: boolean;
+    extraSize?: number;
 }
 
 type VariantConfig = {
@@ -26,7 +27,7 @@ type VariantConfig = {
     extraSize: number;
 }
 
-const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor, iconProps, variant = 'subtle', disabled = false, onPress, ...props }: ActionIconProps) => {
+const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor, iconProps, variant = 'subtle', disabled = false, onPress, extraSize, ...props }: ActionIconProps) => {
     const colors = useColors();
 
     const variantStyles = useMemo<Record<ActionIconVariant, VariantConfig>>(() => ({
@@ -35,30 +36,37 @@ const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor
             backgroundColor: '#ffffff00',
             tapBackgroundColor: '#ffffff15',
             iconColor: colors.text[0],
-            extraSize: 18,
+            extraSize: extraSize ?? 18,
         },
         subtleFilled: {
             styles: {},
             backgroundColor: '#ffffff10',
             tapBackgroundColor: '#ffffff25',
             iconColor: colors.text[0],
-            extraSize: 18,
+            extraSize: extraSize ?? 18,
         },
         primary: {
             styles: {},
             iconColor: colors.tintText,
             backgroundColor: colors.tint,
             tapBackgroundColor: colors.tint,
-            extraSize: 24,
+            extraSize: extraSize ?? 24,
         },
         secondary: {
             styles: {},
             iconColor: colors.text[0],
             backgroundColor: '#ffffff10',
             tapBackgroundColor: '#ffffff05',
-            extraSize: 12,
+            extraSize: extraSize ?? 12,
         },
-    }), [colors, disabled]);
+        secondaryTransparent: {
+            styles: {},
+            iconColor: colors.text[1],
+            backgroundColor: '#ffffff00',
+            tapBackgroundColor: '#ffffff15',
+            extraSize: extraSize ?? 12,
+        },
+    }), [colors, disabled, extraSize]);
 
     const styles = useMemo(() => StyleSheet.create({
         container: {
