@@ -16,9 +16,17 @@ import initDatabase from '@/lib/initDatabase';
 import QueueProvider from '@/lib/providers/QueueProvider';
 import PlayerProvider from '@/lib/providers/PlayerProvider';
 import MemoryCacheProvider from '@/lib/providers/MemoryCacheProvider';
+import { configureReanimatedLogger, ReanimatedLogLevel, } from 'react-native-reanimated';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+
+// This is the default configuration
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false, // Reanimated runs in strict mode by default
+});
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

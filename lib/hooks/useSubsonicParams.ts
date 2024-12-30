@@ -38,7 +38,9 @@ export function useSubsonicParams(): SubsonicParams {
 
             setTokenData({ salt, hash });
         })();
-    }, [server]);
+    }, [server.url, server.auth.username, server.auth.password]);
+
+    if (!tokenData) return null;
 
     const params = useMemo(() => ({
         c: `${config.clientName}/${config.clientVersion}`,
@@ -47,8 +49,7 @@ export function useSubsonicParams(): SubsonicParams {
         u: server.auth.username ?? '',
         t: tokenData?.hash ?? '',
         s: tokenData?.salt ?? '',
-    }), [server, tokenData]);
+    }), [server.url, server.auth.username, server.auth.password, tokenData]);
 
-    if (!tokenData) return null;
     return params;
 }

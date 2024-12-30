@@ -53,9 +53,7 @@ export default function Playlist() {
                                     </>}
                                     onPress={() => {
                                         if (!data.entry) return;
-                                        // TODO: Fix when sorting or filtering is enabled
-                                        const queueToCopy = data.entry.slice(index);
-                                        queue.replace(queueToCopy);
+                                        queue.replace(data.entry, data.entry.findIndex(x => x.id === item.id));
                                     }}
                                 />
                             )}

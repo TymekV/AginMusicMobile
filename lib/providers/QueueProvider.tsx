@@ -25,7 +25,7 @@ export type QueueContextType = {
     jumpTo: (index: number) => void;
     skipBackward: () => void;
     skipForward: () => void;
-    replace: (items: Child[]) => void;
+    replace: (items: Child[], initialIndex?: number) => void;
 }
 
 const initialQueue: PlayQueue = {
@@ -100,10 +100,10 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         }
     }, [cache, queue, nowPlaying]);
 
-    const replace = useCallback(async (items: Child[]) => {
+    const replace = useCallback(async (items: Child[], initialIndex?: number) => {
         setQueue(q => ({ ...q, entry: items }));
         setNowPlaying(items[0]);
-        setActiveIndex(0);
+        setActiveIndex(initialIndex ?? 0);
     }, []);
 
     const clear = useCallback(async () => {
