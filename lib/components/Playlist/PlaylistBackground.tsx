@@ -10,7 +10,7 @@ export type PlaylistBackgroundProps = {
     animated?: boolean;
 }
 
-export default function PlaylistBackground({ source, cacheKey, animated }: PlaylistBackgroundProps) {
+export function PlaylistBackground({ source, cacheKey, animated }: PlaylistBackgroundProps) {
     const colors = useColors();
     const styles = useMemo(() => StyleSheet.create({
         background: {
@@ -41,8 +41,8 @@ export default function PlaylistBackground({ source, cacheKey, animated }: Playl
 
     return (
         <View style={styles.background}>
-            <Image style={styles.image} source={{ ...source, cacheKey }} blurRadius={500} cachePolicy="disk" transition={animated ? { duration: 1000, effect: 'cross-dissolve', timing: 'ease-in-out' } : undefined} />
-            <LinearGradient style={styles.gradient} colors={[colors.background + '80', colors.background]} />
+            <Image style={styles.image} source={{ ...source, cacheKey }} blurRadius={150} cachePolicy="disk" transition={animated ? { duration: 1000, effect: 'cross-dissolve', timing: 'ease-in-out' } : undefined} />
+            <LinearGradient style={styles.gradient} colors={[colors.background + '50', colors.background]} />
         </View>
     )
 }

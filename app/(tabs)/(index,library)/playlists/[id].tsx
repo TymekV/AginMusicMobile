@@ -1,20 +1,30 @@
 import Container from '@/lib/components/Container';
 import Header from '@/lib/components/Header';
-import PlaylistBackground from '@/lib/components/Playlist/PlaylistBackground';
+import { PlaylistBackground, PlaylistHeader } from '@/lib/components/Playlist';
 import Title from '@/lib/components/Title';
+import { useCoverBuilder, useMemoryCache } from '@/lib/hooks';
 import { useLocalSearchParams } from 'expo-router';
+import { useEffect, useMemo } from 'react';
 
 export default function Playlist() {
     const { id } = useLocalSearchParams();
+
+    const cache = useMemoryCache();
+    const cover = useCoverBuilder();
+    const data = useMemo(() => cache.cache.playlists[id as string], [cache.cache.playlists, id]);
+
+    useEffect(() => {
+        cache.refreshPlaylist(id as string);
+    }, [cache.refreshPlaylist, id]);
 
     return (
         <Container>
             <Header withBackIcon withAvatar={false} />
             <PlaylistBackground
-                source={{ uri: 'https://picsum.photos/200' }}
-                cacheKey="a"
+                source={{ uri: cover.generateUrl(data?.coverArt ?? '') }}
+                cacheKey={`${data?.coverArt}-full`}
             />
-            <Title>Playlist{id}</Title>
+            <PlaylistHeader playlist={data} />
         </Container>
     )
 }

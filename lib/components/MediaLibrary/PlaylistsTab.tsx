@@ -28,7 +28,7 @@ export function PlaylistsTab() {
     return (
         <MediaLibraryList
             data={data}
-            onItemPress={() => router.push({ pathname: '/playlists/[id]', params: { id: '1' } })}
+            onItemPress={(item) => router.push({ pathname: '/playlists/[id]', params: { id: item.id } })}
         />
     )
 }

@@ -13,9 +13,10 @@ export type HeaderProps = {
     rightSection?: React.ReactNode;
     withBackIcon?: boolean;
     withAvatar?: boolean;
+    floating?: boolean;
 };
 
-export default function Header({ title, subtitle, rightSection, withBackIcon = false, withAvatar = true }: HeaderProps) {
+export default function Header({ title, subtitle, rightSection, withBackIcon = false, withAvatar = true, floating = false }: HeaderProps) {
     const colors = useColors();
 
     const styles = useMemo(() => StyleSheet.create({

@@ -3,11 +3,11 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ],
       "@lib/*": [
         "./lib/*"
+      ],
+      "@/*": [
+        "./*"
       ],
     }
   },

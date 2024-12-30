@@ -11,6 +11,7 @@ export type MemoryCache = {
 export type MemoryCacheContextType = {
     cache: MemoryCache;
     refreshPlaylists: () => Promise<void>;
+    refreshPlaylist: (id: string) => Promise<void>;
     refreshAlbums: () => Promise<void>;
     clear: () => void;
 }
@@ -22,6 +23,7 @@ export const initialCache: MemoryCacheContextType = {
         allAlbums: [],
     },
     refreshPlaylists: async () => { },
+    refreshPlaylist: async () => { },
     refreshAlbums: async () => { },
     clear: () => { },
 };
@@ -47,6 +49,17 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
         setCache(c => ({ ...c, allPlaylists: playlists }));
     }, [api]);
 
+    const refreshPlaylist = useCallback(async (id: string) => {
+        if (!api) return;
+        console.log('[MemoryCache] Fetching playlist', id);
+
+        const playlistRes = await api.get('/getPlaylist', { params: { id } });
+        const playlist = playlistRes.data?.['subsonic-response']?.playlist as PlaylistWithSongs;
+        if (!playlist) return;
+
+        setCache(c => ({ ...c, playlists: { ...c.playlists, [id]: playlist } }));
+    }, [api]);
+
     const refreshAlbums = useCallback(async () => {
         // TODO: Add pagination support
         if (!api) return;
@@ -56,7 +69,6 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
         const albums = albumsRes.data?.['subsonic-response']?.albumList2?.album as AlbumID3[];
         if (!albums) return;
         console.log({ albums });
-
 
         setCache(c => ({ ...c, allAlbums: albums }));
     }, [api]);
@@ -71,7 +83,7 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
     }, [api, refreshPlaylists, refreshAlbums]);
 
     return (
-        <MemoryCacheContext.Provider value={{ cache, clear, refreshPlaylists, refreshAlbums }}>
+        <MemoryCacheContext.Provider value={{ cache, clear, refreshPlaylists, refreshPlaylist, refreshAlbums }}>
             {children}
         </MemoryCacheContext.Provider>
     )
