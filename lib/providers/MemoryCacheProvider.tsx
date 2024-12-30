@@ -10,8 +10,8 @@ export type MemoryCache = {
 
 export type MemoryCacheContextType = {
     cache: MemoryCache;
-    refreshPlaylists: () => void;
-    refreshAlbums: () => void;
+    refreshPlaylists: () => Promise<void>;
+    refreshAlbums: () => Promise<void>;
     clear: () => void;
 }
 
@@ -21,8 +21,8 @@ export const initialCache: MemoryCacheContextType = {
         playlists: {},
         allAlbums: [],
     },
-    refreshPlaylists: () => { },
-    refreshAlbums: () => { },
+    refreshPlaylists: async () => { },
+    refreshAlbums: async () => { },
     clear: () => { },
 };
 

@@ -9,6 +9,7 @@ import { IconDisc, IconHeart, IconLayoutGrid, IconLayoutList, IconMicrophone2, I
 import React, { useState } from 'react';
 import * as Haptics from 'expo-haptics';
 import { AlbumsTab, PlaylistsTab } from '@/lib/components/MediaLibrary';
+import { SheetManager } from 'react-native-actions-sheet';
 
 const tabs: TTagTab[] = [
     {
@@ -62,7 +63,7 @@ export default function Library() {
     return (
         <Container>
             <Header title="Library" rightSection={<>
-                {tab == 'playlists' && <ActionIcon size={16} icon={IconPlus} />}
+                {tab == 'playlists' && <ActionIcon size={16} icon={IconPlus} onPress={() => SheetManager.show('newPlaylist')} />}
                 <ActionIcon size={16} icon={layout == 'list' ? IconLayoutGrid : IconLayoutList} onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                     setLayout(l => l == 'list' ? 'grid' : 'list');

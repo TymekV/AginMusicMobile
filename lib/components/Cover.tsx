@@ -1,5 +1,4 @@
-import CachedImage from '@/lib/components/CachedImage';
-import { ImageSource } from 'expo-image';
+import { Image, ImageSource } from 'expo-image';
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -36,7 +35,7 @@ export default function Cover({ source, size, radius, withShadow = true, cacheKe
 
     return (
         <View style={withShadow && styles.container}>
-            <CachedImage uri={source.uri ?? ''} cacheKey={cacheKey} style={styles.image} />
+            <Image source={{ ...source, cacheKey }} style={styles.image} cachePolicy="disk" />
         </View>
     )
 }

@@ -1,9 +1,11 @@
 import { registerSheet, SheetDefinition } from 'react-native-actions-sheet';
 import PlaybackSheet from './playback';
 import ConfirmSheet from './Confirm';
+import NewPlaylsitSheet from './NewPlaylist';
 
 registerSheet('playback', PlaybackSheet);
 registerSheet('confirm', ConfirmSheet);
+registerSheet('newPlaylist', NewPlaylsitSheet);
 
 // We extend some of the types here to give us great intellisense
 // across the app for all registered sheets.
@@ -18,6 +20,15 @@ declare module 'react-native-actions-sheet' {
                 cancelText?: string;
             },
             returnValue: boolean;
+        }>;
+        'newPlaylist': SheetDefinition<{
+            payload: {
+                editId?: string;
+            },
+            returnValue: {
+                created: boolean;
+                id?: string;
+            };
         }>;
     }
 }

@@ -15,9 +15,10 @@ type VariantConfig = {
 export interface ButtonProps extends TouchableHighlightProps {
     children?: React.ReactNode;
     variant?: ButtonVariant;
+    disabled?: boolean;
 }
 
-export default function Button({ children, variant = 'primary', ...props }: ButtonProps) {
+export default function Button({ children, variant = 'primary', disabled, onPress, ...props }: ButtonProps) {
     const colors = useColors();
 
     const variants = useMemo<Record<ButtonVariant, VariantConfig>>(() => ({
@@ -57,12 +58,13 @@ export default function Button({ children, variant = 'primary', ...props }: Butt
             justifyContent: 'center',
             alignItems: 'center',
             gap: 10,
-            ...variantStyles.styles
+            opacity: disabled ? 0.5 : 1,
+            ...variantStyles.styles,
         },
-    }), [variantStyles]);
+    }), [variantStyles, disabled]);
 
     return (
-        <TouchableHighlight {...props} style={styles.touchable}>
+        <TouchableHighlight onPress={disabled ? undefined : onPress} {...props} style={styles.touchable}>
             <View style={styles.button}>
                 <Title size={15} fontFamily={variantStyles.fontFamily} color={variantStyles.textColor}>{children}</Title>
             </View>
