@@ -4,6 +4,7 @@ import { demoAccounts } from '@/lib/demoAccounts';
 import { useQueue, useServer, useCache, useMemoryCache } from '@/lib/hooks';
 import { Button } from 'react-native';
 import React from 'react';
+import { router } from 'expo-router';
 
 export default function Home() {
     const server = useServer();
@@ -45,6 +46,7 @@ export default function Home() {
                 <Button title="Play Something" onPress={async () => await queue.add('506270e419db3dfbf65bcf51a57bde3e')} />
                 <Button title="Play Something" onPress={async () => await queue.add('488ce4e2dac87919abe8f15941203dc2')} />
             </>}
+            <Button title="Playlist" onPress={() => router.push('/playlists/1')} />
             <Button title="Clear Cache" onPress={async () => {
                 await cache.clearAll();
                 memoryCache.clear();

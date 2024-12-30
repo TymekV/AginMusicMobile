@@ -3,7 +3,7 @@ import MediaLibraryList from '@lib/components/MediaLibraryList';
 import { TMediaLibItem } from '@lib/components/MediaLibraryList/Item';
 import { useCoverBuilder, useMemoryCache } from '@/lib/hooks';
 import { formatDistanceToNow } from 'date-fns';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 
 export function PlaylistsTab() {
     const cache = useMemoryCache();
@@ -28,7 +28,7 @@ export function PlaylistsTab() {
     return (
         <MediaLibraryList
             data={data}
-            onItemPress={() => { }}
+            onItemPress={() => router.push({ pathname: '/playlists/[id]', params: { id: '1' } })}
         />
     )
 }
