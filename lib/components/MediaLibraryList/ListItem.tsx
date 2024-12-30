@@ -7,7 +7,7 @@ import Cover from '../Cover';
 import { LibCompact } from '.';
 import { IconChevronRight } from '@tabler/icons-react-native';
 
-export default function ListItem({ title, subtitle, coverUri, coverCacheKey }: TMediaLibItem) {
+export default function ListItem({ title, subtitle, coverUri }: TMediaLibItem) {
     const compact = useContext(LibCompact);
     const colors = useColors();
     const styles = useMemo(() => StyleSheet.create({
@@ -39,7 +39,6 @@ export default function ListItem({ title, subtitle, coverUri, coverCacheKey }: T
             <View style={styles.itemLeft}>
                 <Cover
                     source={{ uri: coverUri }}
-                    cacheKey={coverCacheKey}
                     size={compact ? 40 : 60}
                     radius={compact ? 6 : 8}
                     withShadow={false}

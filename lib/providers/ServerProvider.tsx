@@ -12,6 +12,8 @@ export type Server = {
     auth: {
         username?: string;
         password?: string;
+        saltedPassword?: string;
+        salt?: string;
         apiKey?: string;
     };
     version: string;
@@ -52,9 +54,12 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
                 if (server?.auth?.password) {
                     await SecureStore.setItemAsync('password', server.auth.password);
                 }
+                if (server?.auth?.saltedPassword) {
+                    await SecureStore.setItemAsync('saltedPassword', server.auth.saltedPassword);
+                }
 
                 const { auth, ...rest } = server || {};
-                const serverObject = { ...rest, auth: { ...auth, password: undefined, apiKey: undefined } };
+                const serverObject = { ...rest, auth: { ...auth, password: undefined, apiKey: undefined, saltedPassword: undefined } };
 
                 await AsyncStorage.setItem('server', JSON.stringify(serverObject));
             } catch (error) {
@@ -79,6 +84,11 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
                 const storedPassword = await SecureStore.getItemAsync('password');
                 if (storedPassword) {
                     updatedServer.auth = { ...updatedServer.auth, password: storedPassword };
+                }
+
+                const storedSaltedPassword = await SecureStore.getItemAsync('password');
+                if (storedSaltedPassword) {
+                    updatedServer.auth = { ...updatedServer.auth, saltedPassword: storedSaltedPassword };
                 }
 
                 setServer(updatedServer);
@@ -181,7 +191,7 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
             if (res.status != 'ok') return console.log('server returnred error', res);
             console.log('ok');
 
-            setServer(s => ({ ...s, auth: { ...s.auth, username, password } }));
+            setServer(s => ({ ...s, auth: { ...s.auth, username, password, salt, saltedPassword: hash } }));
         } catch (error) {
             console.log('data', (error as any).response.data);
 

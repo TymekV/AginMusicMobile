@@ -44,14 +44,12 @@ const mockData: TMediaLibItem[] = [
         title: 'Song 1',
         subtitle: 'Artist 1',
         coverUri: 'https://picsum.photos/200',
-        coverCacheKey: '',
     },
     {
         id: '2',
         title: 'Song 2',
         subtitle: 'Artist 2',
         coverUri: 'https://picsum.photos/200',
-        coverCacheKey: '',
     },
 ]
 
