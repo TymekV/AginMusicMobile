@@ -9,7 +9,8 @@ import { IconTrash } from '@tabler/icons-react-native';
 import { IdContext } from '.';
 import { SheetManager } from 'react-native-actions-sheet';
 import { StructuredLyrics } from '@/lib/types';
-import LyricsView from '@/lib/components/LyricsView';
+import SycnedLyricsView from '@/lib/components/LyricsView';
+import UnsyncedLyricsView from '@/lib/components/UnsyncedLyricsView';
 
 export default function LyricsTab() {
     const colors = useColors();
@@ -53,7 +54,7 @@ export default function LyricsTab() {
             <View style={styles.top}>
                 <SmallNowPlaying />
             </View>
-            <LyricsView lyrics={lyrics?.[0]} />
+            {lyrics?.[0]?.synced == false ? <UnsyncedLyricsView lyrics={lyrics?.[0]} /> : <SycnedLyricsView lyrics={lyrics?.[0]} />}
         </>
     )
 }

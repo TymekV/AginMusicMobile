@@ -48,6 +48,7 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
     const isExternalPlaybackAvailable = true;// useExternalPlaybackAvailability();
 
     const [gestureEnabled, setGestureEnabled] = useState(true);
+    const [isAnimated, setIsAnimated] = useState(false);
 
     const styles = useMemo(() => StyleSheet.create({
         container: {
@@ -106,11 +107,17 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
             useBottomSafeAreaPadding={true}
             overlayColor={colors.background}
             defaultOverlayOpacity={1}
+            onBeforeShow={() => {
+                setIsAnimated(false);
+                setTimeout(() => {
+                    setIsAnimated(true);
+                }, 1000);
+            }}
         >
             <GestureEnabledContext.Provider value={[gestureEnabled, setGestureEnabled]}>
                 <IdContext.Provider value={sheetId}>
                     <TabContext.Provider value={{ tab: currentTab, changeTab: handleTabChange }}>
-                        <BlurredBackground source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} animated />
+                        <BlurredBackground source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} animated={isAnimated} />
                         <View style={styles.container}>
                             <View style={styles.tabContainer}>
                                 {currentTab == 'main' && <Animated.View style={styles.tab} exiting={exitUp} entering={enterDown}>

@@ -9,7 +9,7 @@ export type LyricsViewProps = {
     lyrics: StructuredLyrics;
 }
 
-export default function LyricsView({ lyrics }: LyricsViewProps) {
+export default function SycnedLyricsView({ lyrics }: LyricsViewProps) {
     const [activeLine, setActiveLine] = useState<number>(-1);
     const [enableAutoScroll, setEnableAutoScroll] = useState<boolean>(true);
     const enableTimeout = useRef<NodeJS.Timeout | null>(null);
