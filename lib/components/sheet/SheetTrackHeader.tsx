@@ -39,7 +39,7 @@ export default function SheetTrackHeader({ title, cover, coverCacheKey, artist }
             <Cover source={cover} size={50} radius={10} cacheKey={coverCacheKey} />
             <View style={styles.metadata}>
                 <Title size={14} fontFamily="Poppins-Medium" numberOfLines={1}>{title}</Title>
-                <Title size={12} color={colors.text[1]} fontFamily="Poppins-Regular" numberOfLines={1}>{artist}</Title>
+                {artist && <Title size={12} color={colors.text[1]} fontFamily="Poppins-Regular" numberOfLines={1}>{artist}</Title>}
             </View>
         </View>
     )

@@ -31,7 +31,7 @@ export default function Button({ children, variant = 'primary', disabled, onPres
         },
         subtle: {
             styles: {
-                backgroundColor: colors.background,
+                backgroundColor: 'transparent',
             },
             textColor: colors.text[1],
             fontFamily: 'Poppins-SemiBold',

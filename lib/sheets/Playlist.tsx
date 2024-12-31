@@ -2,32 +2,30 @@ import { StyledActionSheet } from '@lib/components/StyledActionSheet';
 import { Platform } from 'react-native';
 import { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useCache, useColors, useCoverBuilder, usePins, useQueue } from '@lib/hooks';
+import { useCoverBuilder, useMemoryCache, usePins, useQueue } from '@lib/hooks';
 import { useEffect, useState } from 'react';
-import { Child } from '@lib/types';
+import { Playlist } from '@lib/types';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
-import { IconCircleMinus, IconCirclePlus, IconDisc, IconMicrophone2, IconPin, IconPinnedOff, IconPlayerTrackNext, IconPlaylistAdd } from '@tabler/icons-react-native';
+import { IconArrowsSort, IconEdit, IconPencil, IconPin, IconPinnedOff, IconPlayerTrackNext, IconTrash } from '@tabler/icons-react-native';
+import { formatDistanceToNow } from 'date-fns';
 
-function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
+function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
     const insets = useSafeAreaInsets();
-    const cache = useCache();
+    const memoryCache = useMemoryCache();
     const cover = useCoverBuilder();
-    const queue = useQueue();
 
     const pins = usePins();
     const isPinned = pins.isPinned(payload?.id ?? '');
 
-    const [data, setData] = useState<Child | undefined>(payload?.data);
+    const data = memoryCache.cache.playlists[payload?.id ?? ''];
 
     useEffect(() => {
         (async () => {
             if (!payload?.id) return;
-
-            const data = await cache.fetchChild(payload?.id);
-            if (data) setData(data);
+            await memoryCache.refreshPlaylist(payload?.id);
         })();
-    }, [payload?.id]);
+    }, [payload?.id, memoryCache.refreshPlaylist]);
 
     return (
         <StyledActionSheet
@@ -38,71 +36,50 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
             <SheetTrackHeader
                 cover={{ uri: cover.generateUrl(data?.coverArt ?? '', { size: 128 }) }}
                 coverCacheKey={`${data?.coverArt}-128x128`}
-                title={data?.title}
-                artist={data?.artist}
+                title={data?.name}
+                artist={`${data?.songCount} songs • edited ${formatDistanceToNow(new Date(data?.changed), { addSuffix: true })}`}
             />
             <SheetOption
-                icon={IconPlayerTrackNext}
-                label='Play Next'
+                icon={IconPencil}
+                label='Edit'
                 onPress={() => {
                     SheetManager.hide(sheetId);
                 }}
             />
             <SheetOption
-                icon={IconPlaylistAdd}
-                label='Add to Queue'
-                onPress={async () => {
-                    await queue.add(data?.id ?? '');
-                    SheetManager.hide(sheetId);
-                }}
-            />
-            <SheetOption
-                icon={IconMicrophone2}
-                label='Go to Artist'
-                onPress={() => {
-                    SheetManager.hide(sheetId);
-                }}
-            />
-            <SheetOption
-                icon={IconDisc}
-                label='Go to Album'
+                icon={IconArrowsSort}
+                label='Sort By'
+                description='Playlist Order'
                 onPress={() => {
                     SheetManager.hide(sheetId);
                 }}
             />
             <SheetOption
                 icon={isPinned ? IconPinnedOff : IconPin}
-                label={isPinned ? 'Unpin Track' : 'Pin Track'}
+                label={isPinned ? 'Unpin Playlist' : 'Pin Playlist'}
                 onPress={async () => {
                     if (!payload?.id) return;
                     if (isPinned) await pins.removePin(payload?.id);
                     else await pins.addPin({
                         id: payload?.id,
-                        name: data?.title ?? '',
-                        description: data?.artist ?? '',
-                        type: 'track',
+                        name: data?.name ?? '',
+                        description: '',
+                        type: 'playlist',
                         coverArt: data?.coverArt ?? '',
                     });
                     SheetManager.hide(sheetId);
                 }}
             />
             <SheetOption
-                icon={IconCirclePlus}
-                label='Add to a Playlist'
-                onPress={() => {
-                    SheetManager.hide(sheetId);
-                }}
-            />
-            {payload?.context == 'playlist' && <SheetOption
-                icon={IconCircleMinus}
-                label='Remove from this Playlist'
+                icon={IconTrash}
+                label='Remove Playlist'
                 variant='destructive'
                 onPress={() => {
                     SheetManager.hide(sheetId);
                 }}
-            />}
+            />
         </StyledActionSheet>
     );
 }
 
-export default TrackSheet;
+export default PlaylistSheet;

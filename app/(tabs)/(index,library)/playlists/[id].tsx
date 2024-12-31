@@ -30,7 +30,15 @@ export default function Playlist() {
         <Container edges={['left', 'right', 'bottom']}>
             <Header withBackIcon withAvatar={false} floating rightSection={<>
                 <ActionIcon icon={IconSearch} size={16} variant='secondary' />
-                <ActionIcon icon={IconDots} size={16} variant='secondary' />
+                <ActionIcon icon={IconDots} size={16} variant='secondary' onPress={() => {
+                    Haptics.selectionAsync();
+                    SheetManager.show('playlist', {
+                        payload: {
+                            id: data.id,
+                            data,
+                        }
+                    });
+                }} />
             </>} />
             <PlaylistBackground
                 source={{ uri: cover.generateUrl(data?.coverArt ?? '') }}

@@ -10,3 +10,4 @@ export * from './useColors';
 export * from './useCache';
 export * from './useMemoryCache';
 export * from './useSetupTrackPlayer';
+export * from './usePins';

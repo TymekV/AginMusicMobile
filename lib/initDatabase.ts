@@ -16,4 +16,14 @@ export default async function initDatabase(db: SQLiteDatabase) {
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP not null,
         primary key (id)
     )`);
+
+    await db.execAsync(`CREATE TABLE IF NOT EXISTS pins (
+        id TEXT not null,
+        name TEXT not null,
+        description TEXT not null,
+        type TEXT not null,
+        coverArt TEXT not null,
+        pinOrder INT not null,
+        primary key (id)
+    )`);
 }

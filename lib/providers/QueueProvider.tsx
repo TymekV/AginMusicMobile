@@ -106,9 +106,17 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         setQueue(queue as TQueueItem[]);
     }, []);
 
+    const updateActive = useCallback(async () => {
+        const trackNumber = await TrackPlayer.getCurrentTrack();
+        if (trackNumber == null) return;
+
+        setActiveIndex(trackNumber);
+    }, []);
+
     useEffect(() => {
         updateNowPlaying();
         updateQueue();
+        updateActive();
     }, []);
 
     const modifyQueue = useCallback(async (tracks: TQueueItem[]): Promise<void> => {
@@ -141,6 +149,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         await TrackPlayer.add(afterCurrent, updatedQueue.length);
 
         await updateQueue();
+        await updateActive();
     }, []);
 
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
@@ -157,6 +166,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         TrackPlayer.play();
 
         await updateQueue();
+        await updateActive();
     }, [cache, convertToTrack]);
 
     const replace = useCallback(async (items: Child[], initialIndex?: number) => {
@@ -166,6 +176,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         TrackPlayer.play();
 
         await updateQueue();
+        await updateActive();
     }, [convertToTrack]);
 
     const clear = useCallback(async () => {
@@ -173,6 +184,8 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
 
         setQueue([]);
         await updateQueue();
+        await updateActive();
+        setNowPlaying(initialQueueContext.nowPlaying);
     }, []);
 
     const clearConfirm = useCallback(async (options?: ClearConfirmOptions) => {
@@ -202,17 +215,22 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         console.log('jumping to', index);
 
         TrackPlayer.skip(index);
+        updateActive();
     }, [queue]);
 
-    const skipForward = useCallback(() => {
-        TrackPlayer.skipToNext();
+    const skipForward = useCallback(async () => {
+        await TrackPlayer.skipToNext();
+        updateActive();
     }, []);
 
-    const skipBackward = useCallback(() => {
+    const skipBackward = useCallback(async () => {
+        console.log('skipping backward', position);
+
         if (position > 5) {
-            TrackPlayer.skipToPrevious();
+            await TrackPlayer.seekTo(0);
         } else {
-            TrackPlayer.seekTo(0);
+            await TrackPlayer.skipToPrevious();
+            await updateActive();
         }
     }, [jumpTo, position]);
 

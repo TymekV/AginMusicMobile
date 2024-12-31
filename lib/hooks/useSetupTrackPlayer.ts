@@ -22,7 +22,7 @@ async function setupPlayer() {
         ],
 
         compactCapabilities: [Capability.Play, Capability.Pause],
-        progressUpdateEventInterval: 500,
+        progressUpdateEventInterval: 300,
     });
 
     // await TrackPlayer.setVolume(1);
