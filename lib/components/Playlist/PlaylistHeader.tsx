@@ -1,8 +1,8 @@
-import { useColors, useCoverBuilder } from '@lib/hooks';
+import { useColors, useCoverBuilder, useQueue } from '@lib/hooks';
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Cover from '../Cover';
-import { Playlist } from '@lib/types';
+import { Playlist, PlaylistWithSongs } from '@lib/types';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Title from '../Title';
 import { formatDistanceToNow } from 'date-fns';
@@ -11,12 +11,13 @@ import ActionIcon from '../ActionIcon';
 import { IconArrowsShuffle, IconDownload, IconPlayerPlayFilled } from '@tabler/icons-react-native';
 
 export type PlaylistHeaderProps = {
-    playlist?: Playlist;
+    playlist?: PlaylistWithSongs;
 };
 
 export function PlaylistHeader({ playlist }: PlaylistHeaderProps) {
     const colors = useColors();
     const cover = useCoverBuilder();
+    const queue = useQueue();
 
     const styles = useMemo(() => StyleSheet.create({
         container: {
@@ -48,7 +49,10 @@ export function PlaylistHeader({ playlist }: PlaylistHeaderProps) {
             </View>
             <View style={styles.actions}>
                 <ActionIcon icon={IconDownload} variant='subtleFilled' size={20} extraSize={24} />
-                <ActionIcon icon={IconPlayerPlayFilled} variant='primary' isFilled size={24} extraSize={32} />
+                <ActionIcon icon={IconPlayerPlayFilled} variant='primary' isFilled size={24} extraSize={32} onPress={() => {
+                    if (!playlist?.entry) return;
+                    queue.replace(playlist.entry, 0);
+                }} />
                 <ActionIcon icon={IconArrowsShuffle} variant='subtleFilled' size={20} extraSize={24} />
             </View>
         </SafeAreaView>
