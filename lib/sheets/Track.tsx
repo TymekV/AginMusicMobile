@@ -1,15 +1,13 @@
-import { SheetContainer, StyledActionSheet } from '@lib/components/StyledActionSheet';
-import { Platform, StyleSheet, View } from 'react-native';
+import { StyledActionSheet } from '@lib/components/StyledActionSheet';
+import { Platform } from 'react-native';
 import { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCache, useColors, useCoverBuilder, useQueue } from '@lib/hooks';
-import { useEffect, useMemo, useState } from 'react';
-import Title from '@lib/components/Title';
-import Button from '@lib/components/Button';
+import { useEffect, useState } from 'react';
 import { Child } from '@lib/types';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
-import { IconCircleMinus, IconCirclePlus, IconDisc, IconMicrophone2, IconPlayerSkipForward, IconPlayerTrackNext, IconPlaylist, IconPlaylistAdd, IconTrash } from '@tabler/icons-react-native';
+import { IconCircleMinus, IconCirclePlus, IconDisc, IconMicrophone2, IconPlayerTrackNext, IconPlaylistAdd } from '@tabler/icons-react-native';
 
 function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
     const insets = useSafeAreaInsets();
@@ -62,7 +60,6 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                 onPress={() => {
                     SheetManager.hide(sheetId);
                 }}
-            // description={data?.artist}
             />
             <SheetOption
                 icon={IconDisc}
@@ -70,7 +67,6 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                 onPress={() => {
                     SheetManager.hide(sheetId);
                 }}
-            // description={data?.album}
             />
             <SheetOption
                 icon={IconCirclePlus}
