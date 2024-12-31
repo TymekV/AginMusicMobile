@@ -1,7 +1,6 @@
 import Container from '@/lib/components/Container';
 import Header from '@/lib/components/Header';
 import { PlaylistBackground, PlaylistHeader } from '@lib/components/Playlist';
-import Title from '@/lib/components/Title';
 import { useColors, useCoverBuilder, useMemoryCache, useQueue } from '@lib/hooks';
 import ActionIcon from '@lib/components/ActionIcon';
 import { LibSize, LibLayout, LibSeparators } from '@lib/components/MediaLibraryList';
@@ -10,6 +9,8 @@ import { IconDots, IconSearch } from '@tabler/icons-react-native';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo } from 'react';
 import { FlatList } from 'react-native';
+import { SheetManager } from 'react-native-actions-sheet';
+import * as Haptics from 'expo-haptics';
 
 export default function Playlist() {
     const { id } = useLocalSearchParams();
@@ -49,7 +50,17 @@ export default function Playlist() {
                                     coverUri={cover.generateUrl(item.coverArt ?? '', { size: 128 })}
                                     coverCacheKey={`${item.coverArt}-128x128`}
                                     rightSection={<>
-                                        <ActionIcon icon={IconDots} size={16} variant='secondaryTransparent' />
+                                        <ActionIcon icon={IconDots} size={16} variant='secondaryTransparent' onPress={() => {
+                                            Haptics.selectionAsync();
+                                            SheetManager.show('track', {
+                                                payload: {
+                                                    id: item.id,
+                                                    data: item,
+                                                    context: 'playlist',
+                                                    contextId: data.id,
+                                                }
+                                            });
+                                        }} />
                                     </>}
                                     onPress={() => {
                                         if (!data.entry) return;

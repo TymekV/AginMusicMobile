@@ -3,10 +3,12 @@ import PlaybackSheet from './playback';
 import ConfirmSheet from './Confirm';
 import NewPlaylsitSheet from './NewPlaylist';
 import { Child } from '@lib/types';
+import TrackSheet from './Track';
 
 registerSheet('playback', PlaybackSheet);
 registerSheet('confirm', ConfirmSheet);
 registerSheet('newPlaylist', NewPlaylsitSheet);
+registerSheet('track', TrackSheet);
 
 // We extend some of the types here to give us great intellisense
 // across the app for all registered sheets.
@@ -35,6 +37,8 @@ declare module 'react-native-actions-sheet' {
             payload: {
                 id: string;
                 data?: Child;
+                context?: 'playlist';
+                contextId?: string;
             },
         }>;
     }

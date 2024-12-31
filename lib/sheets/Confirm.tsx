@@ -29,7 +29,6 @@ function ConfirmSheet({ sheetId, payload }: SheetProps<'confirm'>) {
         <StyledActionSheet
             gestureEnabled={true}
             safeAreaInsets={insets}
-            containerStyle={{ backgroundColor: colors.background }}
             isModal={Platform.OS == 'android' ? false : true}
         >
             <View style={styles.container}>

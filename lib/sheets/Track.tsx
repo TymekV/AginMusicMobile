@@ -1,17 +1,22 @@
-import { StyledActionSheet } from '@lib/components/StyledActionSheet';
+import { SheetContainer, StyledActionSheet } from '@lib/components/StyledActionSheet';
 import { Platform, StyleSheet, View } from 'react-native';
 import { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useCache, useColors } from '@lib/hooks';
+import { useCache, useColors, useCoverBuilder, useQueue } from '@lib/hooks';
 import { useEffect, useMemo, useState } from 'react';
 import Title from '@lib/components/Title';
 import Button from '@lib/components/Button';
 import { Child } from '@lib/types';
+import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
+import SheetOption from '@lib/components/sheet/SheetOption';
+import { IconCircleMinus, IconCirclePlus, IconDisc, IconMicrophone2, IconPlayerSkipForward, IconPlayerTrackNext, IconPlaylist, IconPlaylistAdd, IconTrash } from '@tabler/icons-react-native';
 
 function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
     const insets = useSafeAreaInsets();
     const colors = useColors();
     const cache = useCache();
+    const cover = useCoverBuilder();
+    const queue = useQueue();
 
     const [data, setData] = useState<Child | undefined>(payload?.data);
 
@@ -24,30 +29,64 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
         })();
     }, [payload?.id]);
 
-    const styles = useMemo(() => StyleSheet.create({
-        container: {
-            padding: 15,
-            paddingBottom: Platform.OS == 'ios' ? 0 : 15,
-        },
-        subtitle: {
-            marginTop: 5,
-            marginBottom: 20,
-        },
-        button: {
-            marginBottom: 5,
-        }
-    }), []);
-
     return (
         <StyledActionSheet
             gestureEnabled={true}
             safeAreaInsets={insets}
-            containerStyle={{ backgroundColor: colors.background }}
             isModal={Platform.OS == 'android' ? false : true}
         >
-            <View style={styles.container}>
-
-            </View>
+            <SheetTrackHeader
+                cover={{ uri: cover.generateUrl(data?.coverArt ?? '', { size: 128 }) }}
+                coverCacheKey={`${data?.coverArt}-128x128`}
+                title={data?.title}
+                artist={data?.artist}
+            />
+            <SheetOption
+                icon={IconPlayerTrackNext}
+                label='Play Next'
+                onPress={() => {
+                    SheetManager.hide(sheetId);
+                }}
+            />
+            <SheetOption
+                icon={IconPlaylistAdd}
+                label='Add to Queue'
+                onPress={async () => {
+                    await queue.add(data?.id ?? '');
+                    SheetManager.hide(sheetId);
+                }}
+            />
+            <SheetOption
+                icon={IconMicrophone2}
+                label='Go to Artist'
+                onPress={() => {
+                    SheetManager.hide(sheetId);
+                }}
+            // description={data?.artist}
+            />
+            <SheetOption
+                icon={IconDisc}
+                label='Go to Album'
+                onPress={() => {
+                    SheetManager.hide(sheetId);
+                }}
+            // description={data?.album}
+            />
+            <SheetOption
+                icon={IconCirclePlus}
+                label='Add to a Playlist'
+                onPress={() => {
+                    SheetManager.hide(sheetId);
+                }}
+            />
+            {payload?.context == 'playlist' && <SheetOption
+                icon={IconCircleMinus}
+                label='Remove from this Playlist'
+                variant='destructive'
+                onPress={() => {
+                    SheetManager.hide(sheetId);
+                }}
+            />}
         </StyledActionSheet>
     );
 }

@@ -59,7 +59,6 @@ function NewPlaylsitSheet({ sheetId, payload }: SheetProps<'newPlaylist'>) {
         <StyledActionSheet
             gestureEnabled={true}
             safeAreaInsets={insets}
-            containerStyle={{ backgroundColor: colors.background }}
             isModal={Platform.OS == 'android' ? false : true}
         >
             <View style={styles.container}>
