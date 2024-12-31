@@ -1,24 +1,27 @@
 import { Child, PlayQueue } from '@lib/types';
 import React, { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { useCache } from '@lib/hooks/useCache';
-import { useApi, useGlobalPlayer, useServer, useSubsonicParams } from '@lib/hooks';
+import { useApi, useCoverBuilder, useGlobalPlayer, useServer, useSubsonicParams } from '@lib/hooks';
 import qs from 'qs';
 import { useAudioPlayerStatus } from 'expo-audio';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
+import TrackPlayer, { Event, Track, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
 
 export type ClearConfirmOptions = {
     wait?: boolean;
     onConfirm?: () => void;
 }
 
+export type TQueueItem = Track & { _child: Child };
+
 export type QueueContextType = {
-    queue: PlayQueue;
+    queue: TQueueItem[];
     nowPlaying: Child;
     activeIndex: number;
     canGoForward: boolean;
     canGoBackward: boolean;
-    setQueue: React.Dispatch<React.SetStateAction<PlayQueue>>;
+    setQueue: (queue: TQueueItem[]) => void;
     add: (id: string) => Promise<void>;
     clear: () => void;
     clearConfirm: (options?: ClearConfirmOptions) => Promise<boolean>;
@@ -28,17 +31,8 @@ export type QueueContextType = {
     replace: (items: Child[], initialIndex?: number) => void;
 }
 
-const initialQueue: PlayQueue = {
-    changed: new Date(0),
-    changedBy: '',
-    current: 0,
-    position: 0,
-    username: '',
-    entry: [],
-};
-
 const initialQueueContext: QueueContextType = {
-    queue: initialQueue,
+    queue: [],
     nowPlaying: {
         id: '',
         isDir: false,
@@ -68,48 +62,117 @@ export type StreamOptions = {
 }
 
 export default function QueueProvider({ children }: { children?: React.ReactNode }) {
-    const [queue, setQueue] = useState<PlayQueue>(initialQueue);
+    const [queue, setQueue] = useState<TQueueItem[]>([]);
     const [nowPlaying, setNowPlaying] = useState<Child>(initialQueueContext.nowPlaying);
     const [activeIndex, setActiveIndex] = useState<number>(0);
 
     const canGoBackward = nowPlaying.id != '';
-    const canGoForward = activeIndex < (queue.entry?.length ?? 0) - 1;
+    const canGoForward = activeIndex < (queue.length ?? 0) - 1;
 
     const cache = useCache();
     const api = useApi();
     const params = useSubsonicParams();
     const { server } = useServer();
-    const player = useGlobalPlayer();
-    const status = player ? useAudioPlayerStatus(player) : null;
-
-    const ended = status ? Math.floor(status.currentTime) == Math.floor(status.duration) && status.currentTime > 2 && status.isBuffering == false && status.playbackRate == 0 : false;
+    const cover = useCoverBuilder();
+    const { position } = useProgress();
 
     const generateMediaUrl = useCallback((options: StreamOptions) => `${server.url}/rest/stream?${qs.stringify({ ...params, ...options })}`, [params, server.url]);
 
-    // const playNow = 
+    const convertToTrack = useCallback((data: Child): Track => ({
+        url: generateMediaUrl({ id: data.id }),
+        album: data.album,
+        artist: data.artist,
+        title: data.title,
+        artwork: cover.generateUrl(data.id),
+        _child: data,
+    }), [generateMediaUrl, cover.generateUrl]);
+
+    const updateNowPlaying = useCallback(async () => {
+        console.log('updating...');
+
+        const trackNumber = await TrackPlayer.getCurrentTrack();
+        if (trackNumber == null) return;
+
+        const track = await TrackPlayer.getTrack(trackNumber);
+        console.log({ track });
+
+        setNowPlaying(track?._child as Child);
+    }, []);
+
+    const updateQueue = useCallback(async () => {
+        const queue = await TrackPlayer.getQueue();
+        console.log('updq', { queue });
+
+        setQueue(queue as TQueueItem[]);
+    }, []);
+
+    useEffect(() => {
+        updateNowPlaying();
+        updateQueue();
+    }, []);
+
+    const modifyQueue = useCallback(async (tracks: TQueueItem[]): Promise<void> => {
+        const currentQueue = await TrackPlayer.getQueue();
+        const currentlyPlaying = await TrackPlayer.getCurrentTrack();
+
+        const toRemove = currentQueue?.map((track, index) => index).filter(index => index !== currentlyPlaying);
+        console.log({ toRemove });
+        toRemove.reverse();
+        // for (const index of toRemove.reverse()) {
+        //     await TrackPlayer.remove(index);
+        // }
+        await TrackPlayer.remove(toRemove);
+        if (currentlyPlaying === null) {
+            await TrackPlayer.reset();
+            await TrackPlayer.add(tracks);
+            return;
+        }
+
+        const currentlyPlayingMetadata = currentQueue[currentlyPlaying];
+        const newCurrentIndex = tracks.findIndex(track => track._child.id === currentlyPlayingMetadata._child.id);
+        const beforeCurrent = tracks.slice(0, newCurrentIndex);
+        const afterCurrent = tracks.slice(newCurrentIndex + 1);
+        console.log({ beforeCurrent, afterCurrent });
+
+
+        await TrackPlayer.add(beforeCurrent, 0);
+        const updatedQueue = await TrackPlayer.getQueue();
+
+        await TrackPlayer.add(afterCurrent, updatedQueue.length);
+
+        await updateQueue();
+    }, []);
+
+    useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
+        if (event.type === Event.PlaybackTrackChanged) {
+            await updateNowPlaying();
+        }
+    });
 
     const add = useCallback(async (id: string) => {
         const data = await cache.fetchChild(id);
-
         if (!data) return;
-        setQueue(q => ({ ...q, entry: [...(q?.entry ?? []), data] }));
 
-        if (nowPlaying.id == '') {
-            setNowPlaying(data);
-            setActiveIndex(0);
-        }
-    }, [cache, queue, nowPlaying]);
+        TrackPlayer.add(convertToTrack(data));
+        TrackPlayer.play();
+
+        await updateQueue();
+    }, [cache, convertToTrack]);
 
     const replace = useCallback(async (items: Child[], initialIndex?: number) => {
-        setQueue(q => ({ ...q, entry: items }));
-        setNowPlaying(items[0]);
-        setActiveIndex(initialIndex ?? 0);
-    }, []);
+        TrackPlayer.reset();
+        TrackPlayer.add(items.map(convertToTrack));
+        TrackPlayer.skip(initialIndex ?? 0);
+        TrackPlayer.play();
+
+        await updateQueue();
+    }, [convertToTrack]);
 
     const clear = useCallback(async () => {
-        setQueue(q => ({ ...q, entry: [] }));
-        setActiveIndex(0);
-        setNowPlaying(initialQueueContext.nowPlaying);
+        TrackPlayer.reset();
+
+        setQueue([]);
+        await updateQueue();
     }, []);
 
     const clearConfirm = useCallback(async (options?: ClearConfirmOptions) => {
@@ -126,108 +189,32 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         if (!confirmed) return false;
 
         if (options?.wait) {
-            if (!player?.paused) player?.pause();
+            TrackPlayer.pause();
             if (options?.onConfirm) options.onConfirm();
             await new Promise(r => setTimeout(r, 500));
         }
 
         clear();
         return true;
-    }, [clear, player]);
+    }, [clear]);
 
     const jumpTo = useCallback((index: number) => {
         console.log('jumping to', index);
 
-        const data = queue.entry?.[index];
-        if (!data) return;
-
-        setActiveIndex(index);
-        setNowPlaying(data);
-    }, [queue.entry]);
+        TrackPlayer.skip(index);
+    }, [queue]);
 
     const skipForward = useCallback(() => {
-        if (!queue.entry) return;
-
-        const nextIndex = queue.entry.findIndex(x => x.id == nowPlaying.id) + 1;
-        jumpTo(nextIndex);
-    }, [jumpTo, queue.entry, nowPlaying]);
+        TrackPlayer.skipToNext();
+    }, []);
 
     const skipBackward = useCallback(() => {
-        if (!queue.entry) return;
-
-        if ((status?.currentTime && status.currentTime > 5000) || activeIndex == 0) {
-            player?.seekTo(0);
-            return;
+        if (position > 5) {
+            TrackPlayer.skipToPrevious();
+        } else {
+            TrackPlayer.seekTo(0);
         }
-
-        const prevIndex = queue.entry.findIndex(x => x.id == nowPlaying.id) - 1;
-        jumpTo(prevIndex);
-    }, [jumpTo, queue.entry, nowPlaying, status, activeIndex]);
-
-    useEffect(() => {
-        if (!queue.entry) return;
-        const index = queue.entry.findIndex(x => x.id == nowPlaying.id);
-        setActiveIndex(index);
-    }, [queue.entry, nowPlaying.id]);
-
-    useEffect(() => {
-        (async () => {
-            // Load queue
-            if (!api) return;
-
-            const rawRes = await api.get('/getPlayQueue');
-            const queue = rawRes.data?.['subsonic-response']?.playQueue as PlayQueue;
-            if (!queue) return console.log('no saved queue');
-
-            if (queue.entry) {
-                for (const entry of queue.entry) {
-                    await cache.cacheChild(entry);
-                }
-            }
-
-            setQueue(queue);
-        })();
-    }, [!!api, !!cache]);
-
-    useEffect(() => {
-        (async () => {
-            // Save queue on the server
-            if (!api) return;
-
-            const queueData = queue.entry?.map(x => x.id);
-            if (queueData?.length == 0 || !queueData) return;
-            console.log('saving', queueData);
-
-            await api.get('/savePlayQueue', {
-                params: {
-                    id: queueData,
-                }
-            });
-        })();
-    }, [!!api, !!queue]);
-
-    useEffect(() => {
-        (async () => {
-            if (!player) return;
-            const url = generateMediaUrl({
-                id: nowPlaying.id,
-            });
-            console.log({ url });
-
-            player.replace({ uri: url });
-            player.play();
-        })();
-    }, [nowPlaying, player]);
-
-    useEffect(() => {
-        console.log('ended', ended);
-
-        if (ended) skipForward();
-    }, [ended, skipForward]);
-
-    useEffect(() => {
-        // console.log('status', status);
-    }, [status]);
+    }, [jumpTo, position]);
 
     return (
         <QueueContext.Provider value={{
@@ -238,7 +225,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
             activeIndex,
             add,
             clear,
-            setQueue,
+            setQueue: modifyQueue,
             jumpTo,
             skipBackward,
             skipForward,

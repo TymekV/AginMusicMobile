@@ -17,6 +17,9 @@ import QueueProvider from '@/lib/providers/QueueProvider';
 import PlayerProvider from '@/lib/providers/PlayerProvider';
 import MemoryCacheProvider from '@/lib/providers/MemoryCacheProvider';
 import { configureReanimatedLogger, ReanimatedLogLevel, } from 'react-native-reanimated';
+import { useSetupTrackPlayer } from '@lib/hooks';
+import TrackPlayer from 'react-native-track-player';
+import { PlaybackService } from '@lib/service';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -27,6 +30,8 @@ configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
   strict: false, // Reanimated runs in strict mode by default
 });
+
+TrackPlayer.registerPlaybackService(() => PlaybackService);
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -49,6 +54,8 @@ export default function RootLayout() {
     'Poppins-Thin': require('../assets/fonts/Poppins/Poppins-Thin.ttf'),
     'Poppins-ThinItalic': require('../assets/fonts/Poppins/Poppins-ThinItalic.ttf'),
   });
+
+  useSetupTrackPlayer({});
 
   useEffect(() => {
     if (loaded) {

@@ -3,13 +3,13 @@ import { AudioPlayer, setAudioModeAsync, useAudioPlayer } from 'expo-audio';
 
 export const PlayerContext = createContext<AudioPlayer | null>(null);
 
-setAudioModeAsync({
-    playsInSilentMode: true,
-    shouldPlayInBackground: true,
-    allowsRecording: true,
-    interruptionMode: 'doNotMix',
-    shouldRouteThroughEarpiece: false,
-});
+// setAudioModeAsync({
+//     playsInSilentMode: true,
+//     shouldPlayInBackground: true,
+//     allowsRecording: true,
+//     interruptionMode: 'doNotMix',
+//     shouldRouteThroughEarpiece: false,
+// });
 
 export default function PlayerProvider({ children }: { children?: React.ReactNode }) {
     const player = useAudioPlayer();

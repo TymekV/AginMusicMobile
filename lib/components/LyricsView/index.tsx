@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useGlobalPlayer } from '@/lib/hooks';
 import { FlatList } from 'react-native';
+import TrackPlayer from 'react-native-track-player';
 
 export type LyricsViewProps = {
     lyrics: StructuredLyrics;
@@ -33,11 +34,13 @@ export default function SycnedLyricsView({ lyrics }: LyricsViewProps) {
     }), []);
 
     useEffect(() => {
-        const interval = setInterval(() => {
+        const interval = setInterval(async () => {
             if (isLocked.current) return console.log('locked :(');
+
+            const position = await TrackPlayer.getPosition();
             let activeLine = lyrics?.line.findIndex(line => {
-                if (!line.start || !player?.currentTime) return false;
-                return line.start >= (player.currentTime * 1000) - 100;
+                if (!line.start) return false;
+                return line.start >= (position * 1000) - 100;
             }) - 1;
             if (activeLine == -2) activeLine = lyrics.line.length - 1;
             setActiveLine(activeLine);
@@ -66,9 +69,9 @@ export default function SycnedLyricsView({ lyrics }: LyricsViewProps) {
         <FlatList
             style={styles.container}
             data={lyrics?.line}
-            renderItem={({ item, index }) => <LyricsLine line={item} active={activeLine == index} onPress={() => {
-                player?.play();
-                player?.seekTo(item.start);
+            renderItem={({ item, index }) => <LyricsLine line={item} active={activeLine == index} onPress={async () => {
+                await TrackPlayer.play();
+                await TrackPlayer.seekTo(item.start / 1000);
                 listRef.current?.scrollToIndex({ index: index - 1 > 0 ? index - 1 : 0, animated: true });
                 isLocked.current = true;
                 setActiveLine(index);

@@ -15,9 +15,10 @@ export type HeaderProps = {
     withBackIcon?: boolean;
     withAvatar?: boolean;
     floating?: boolean;
+    rightSpacing?: number;
 };
 
-export default function Header({ title, subtitle, rightSection, withBackIcon = false, withAvatar = true, floating = false }: HeaderProps) {
+export default function Header({ title, subtitle, rightSection, withBackIcon = false, withAvatar = true, floating = false, rightSpacing = 10 }: HeaderProps) {
     const colors = useColors();
 
     const Root = floating ? SafeAreaView : View;
@@ -47,9 +48,9 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
         rightContent: {
             flexDirection: 'row',
             alignItems: 'center',
-            gap: 10,
+            gap: rightSpacing,
         }
-    }), [colors]);
+    }), [colors, rightSpacing]);
 
     return (
         <Root style={[styles.header, floating && styles.floatingHeader]}>

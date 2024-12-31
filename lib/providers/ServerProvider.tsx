@@ -18,6 +18,11 @@ export type Server = {
     extensions: OpenSubsonicExtensions[];
 };
 
+export type ServerAuth = {
+    salt?: string;
+    hash?: string;
+}
+
 const initialServer: Server = {
     url: '',
     authMethod: '',
@@ -30,12 +35,14 @@ const initialServer: Server = {
 
 export type ServerContextType = {
     server: Server;
+    serverAuth: ServerAuth;
     discoverServer: (url: string) => Promise<DiscoverServerResult> | void;
     saveAndTestPasswordCredentials: (url: string, username: string, password: string) => Promise<void>;
 }
 
 const initialServerContext: ServerContextType = {
     server: initialServer,
+    serverAuth: {},
     discoverServer: () => { },
     saveAndTestPasswordCredentials: async () => { }
 }
@@ -44,6 +51,7 @@ export const ServerContext = createContext<ServerContextType>(initialServerConte
 
 export default function ServerProvider({ children }: { children?: React.ReactNode }) {
     const [server, setServer] = useState<Server>(initialServer);
+    const [serverAuth, setServerAuth] = useState<ServerAuth>({});
 
     useEffect(() => {
         if (server.url == '') return;
@@ -82,6 +90,11 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
                 }
 
                 setServer(updatedServer);
+
+                if (storedPassword) {
+                    const { salt, hash } = await generateSubsonicToken(storedPassword);
+                    setServerAuth({ salt, hash });
+                }
             } catch (error) {
                 console.error('Error loading server data:', error);
             }
@@ -197,7 +210,7 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
     }, [server.url]);
 
     return (
-        <ServerContext.Provider value={{ server, discoverServer, saveAndTestPasswordCredentials }}>
+        <ServerContext.Provider value={{ server, serverAuth, discoverServer, saveAndTestPasswordCredentials }}>
             {children}
         </ServerContext.Provider>
     )

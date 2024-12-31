@@ -2,6 +2,7 @@ import { registerSheet, SheetDefinition } from 'react-native-actions-sheet';
 import PlaybackSheet from './playback';
 import ConfirmSheet from './Confirm';
 import NewPlaylsitSheet from './NewPlaylist';
+import { Child } from '@lib/types';
 
 registerSheet('playback', PlaybackSheet);
 registerSheet('confirm', ConfirmSheet);
@@ -29,6 +30,12 @@ declare module 'react-native-actions-sheet' {
                 created: boolean;
                 id?: string;
             };
+        }>;
+        'track': SheetDefinition<{
+            payload: {
+                id: string;
+                data?: Child;
+            },
         }>;
     }
 }

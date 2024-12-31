@@ -23,13 +23,13 @@ export default function SkipSwipe({ width, renderItem, style }: SkipSwipeProps) 
         <Carousel
             ref={carosuelRef}
             loop={false}
-            data={queue.queue.entry ?? []}
+            data={queue.queue ?? []}
             windowSize={5}
             width={width}
             renderItem={({ index }) => {
-                const item = queue.queue?.entry?.[index];
+                const item = queue.queue?.[index];
                 if (!item) return <View />;
-                return renderItem(item);
+                return renderItem(item._child);
             }}
             onSnapToItem={(index) => {
                 queue.jumpTo(index);

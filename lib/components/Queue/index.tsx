@@ -2,12 +2,15 @@ import { useQueue } from '@/lib/hooks';
 import { StyleSheet, View } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import QueueItem from './QueueItem';
-import { useCallback, useContext, useMemo } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { GestureEnabledContext } from '@/lib/sheets/playback';
 import { Child } from '@/lib/types';
+import { TQueueItem } from '@lib/providers/QueueProvider';
 
 export default function Queue() {
     const { queue, setQueue } = useQueue();
+
+    const [delayedQueue, setDelayedQueue] = useState<TQueueItem[]>(queue ?? []);
 
     const [gestureEnabled, setGestureEnabled] = useContext(GestureEnabledContext);
 
@@ -21,19 +24,24 @@ export default function Queue() {
         },
     }), []);
 
-    const handleDragEnd = useCallback(({ data }: { data: Child[] }) => {
-        setQueue(q => ({ ...q, entry: data }));
+    const handleDragEnd = useCallback(({ data }: { data: TQueueItem[] }) => {
+        setQueue(data);
+        setDelayedQueue(data);
         setGestureEnabled(true);
     }, [setQueue, setGestureEnabled]);
+
+    useEffect(() => {
+        setDelayedQueue(queue);
+    }, [queue]);
 
     return (
         <View style={styles.queue}>
             {/* <QueueItem drag={() => { }} item={queue.entry[0]} /> */}
             <DraggableFlatList
                 style={styles.list}
-                data={queue.entry ?? []}
+                data={delayedQueue ?? []}
                 keyExtractor={(item, index) => `${item.id}-${index}`}
-                renderItem={QueueItem}
+                renderItem={({ item, ...props }) => <QueueItem item={item._child} {...props} />}
                 onDragEnd={handleDragEnd}
             />
         </View>

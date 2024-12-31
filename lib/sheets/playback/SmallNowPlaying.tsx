@@ -3,10 +3,10 @@ import Cover from '@/lib/components/Cover';
 import Title from '@/lib/components/Title';
 import { useColors, useCoverBuilder, useGlobalPlayer, useQueue } from '@lib/hooks';
 import { IconPlayerPauseFilled, IconPlayerPlayFilled, IconPlayerTrackNextFilled } from '@tabler/icons-react-native';
-import { useAudioPlayerStatus } from 'expo-audio';
 import { useContext, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { TabContext } from '.';
+import TrackPlayer, { State, usePlaybackState } from 'react-native-track-player';
 
 export default function SmallNowPlaying() {
     const queue = useQueue();
@@ -16,9 +16,7 @@ export default function SmallNowPlaying() {
 
     const cover = useCoverBuilder();
     const colors = useColors();
-
-    const player = useGlobalPlayer();
-    const status = player ? useAudioPlayerStatus(player) : null;
+    const state = usePlaybackState();
 
     const styles = useMemo(() => StyleSheet.create({
         container: {
@@ -60,7 +58,7 @@ export default function SmallNowPlaying() {
                 </View>
             </TouchableOpacity>
             <View style={styles.actions}>
-                <ActionIcon icon={status?.playing ? IconPlayerPauseFilled : IconPlayerPlayFilled} size={24} stroke="transparent" isFilled onPress={() => status?.playing ? player?.pause() : player?.play()} variant="subtleFilled" />
+                <ActionIcon icon={(state == State.Paused || state == State.None) ? IconPlayerPlayFilled : IconPlayerPauseFilled} size={24} stroke="transparent" isFilled onPress={() => (state == State.Paused || state == State.None) ? TrackPlayer.play() : TrackPlayer.pause()} variant="subtleFilled" />
                 <ActionIcon icon={IconPlayerTrackNextFilled} size={18} isFilled onPress={() => queue.skipForward()} disabled={!queue.canGoForward} />
             </View>
             {/* <NowPlayingActions /> */}

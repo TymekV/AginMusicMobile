@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import TrackPlayer, { State, usePlaybackState, useProgress } from 'react-native-track-player';
 
 export default function MainTab() {
     const insets = useSafeAreaInsets();
@@ -20,9 +21,6 @@ export default function MainTab() {
     const queue = useQueue();
     const { nowPlaying } = queue;
     const cover = useCoverBuilder();
-
-    const player = useGlobalPlayer();
-    const status = player ? useAudioPlayerStatus(player) : null;
 
     const [seeking, setSeeking] = useState(false);
     const [seekingValue, setSeekingValue] = useState(0);
@@ -33,15 +31,15 @@ export default function MainTab() {
 
     const { width, height } = useWindowDimensions();
 
-    const currentTime = seeking ? seekingValue : (status?.currentTime ?? 0);
-    const duration = status?.duration ?? 0;
+    const { position, duration } = useProgress();
+    const state = usePlaybackState();
 
     useEffect(() => {
         if (seeking) return;
         sliderMin.value = 0;
-        sliderMax.value = status?.duration ?? 0;
-        progress.value = status?.currentTime ?? 0;
-    }, [status, seeking]);
+        sliderMax.value = duration;
+        progress.value = position;
+    }, [position, duration, seeking]);
 
     const styles = useMemo(() => StyleSheet.create({
         container: {
@@ -86,6 +84,8 @@ export default function MainTab() {
         }
     }), [insets.bottom, height]);
 
+    const buffering = state === State.Connecting;
+
     return (
         <View style={styles.container}>
             <View style={styles.cover}>
@@ -109,18 +109,17 @@ export default function MainTab() {
                         setSeekingValue(value);
                     }}
                     onSlidingComplete={(value) => {
-                        if (!player) return;
-                        player.seekTo(value);
+                        TrackPlayer.seekTo(value);
                         progress.value = value;
                     }}
                 />
                 <View style={styles.time}>
-                    <Title size={12} color={colors.text[2]} fontFamily="Poppins-SemiBold">{status?.isBuffering ? 'Loading...' : secondsToTimecode(Math.floor(currentTime) / 1000)}</Title>
-                    <Title size={12} color={colors.text[2]} fontFamily="Poppins-SemiBold">{!status?.isBuffering && `-${secondsToTimecode((Math.floor(duration) - Math.floor(currentTime)) / 1000)}`}</Title>
+                    <Title size={12} color={colors.text[2]} fontFamily="Poppins-SemiBold">{buffering ? 'Loading...' : secondsToTimecode(position)}</Title>
+                    <Title size={12} color={colors.text[2]} fontFamily="Poppins-SemiBold">{!buffering && `-${secondsToTimecode(duration - position)}`}</Title>
                 </View>
                 <View style={styles.buttons}>
                     <ActionIcon icon={IconPlayerSkipBackFilled} isFilled size={30} onPress={() => queue.skipBackward()} disabled={!queue.canGoBackward} />
-                    <ActionIcon icon={status?.playing ? IconPlayerPauseFilled : IconPlayerPlayFilled} isFilled size={55} stroke="transparent" onPress={() => status?.playing ? player?.pause() : player?.play()} />
+                    <ActionIcon icon={(state == State.Paused || state == State.None) ? IconPlayerPlayFilled : IconPlayerPauseFilled} isFilled size={55} stroke="transparent" onPress={() => (state == State.Paused || state == State.None) ? TrackPlayer.play() : TrackPlayer.pause()} />
                     <ActionIcon icon={IconPlayerSkipForwardFilled} isFilled size={30} onPress={() => queue.skipForward()} disabled={!queue.canGoForward} />
                 </View>
             </View>

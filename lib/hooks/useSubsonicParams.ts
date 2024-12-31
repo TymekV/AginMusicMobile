@@ -24,32 +24,18 @@ export type SubsonicParams = {
 } | null;
 
 export function useSubsonicParams(): SubsonicParams {
-    const { server } = useServer();
-    const [tokenData, setTokenData] = useState<{ salt: string, hash: string } | null>(null);
-
-    useEffect(() => {
-        (async () => {
-            console.log('generasted token');
-            console.log({ server });
-
-            if (!server.auth.username || !server.auth.password) return;
-
-            const { salt, hash } = await generateSubsonicToken(server.auth.password);
-
-            setTokenData({ salt, hash });
-        })();
-    }, [server.url, server.auth.username, server.auth.password]);
+    const { server, serverAuth } = useServer();
 
     const params = useMemo(() => ({
         c: `${config.clientName}/${config.clientVersion}`,
         f: 'json',
         v: config.protocolVersion,
         u: server.auth.username ?? '',
-        t: tokenData?.hash ?? '',
-        s: tokenData?.salt ?? '',
-    }), [server.url, server.auth.username, server.auth.password, tokenData]);
+        t: serverAuth.hash ?? '',
+        s: serverAuth.salt ?? '',
+    }), [server.url, server.auth.username, server.auth.password, serverAuth.hash, serverAuth.salt]);
 
-    if (!tokenData) return null;
+    if (!serverAuth) return null;
 
     return params;
 }

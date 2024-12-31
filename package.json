@@ -59,6 +59,7 @@
     "react-native-svg": "15.8.0",
     "react-native-swipeable-item": "^2.0.9",
     "react-native-toast-message": "^2.2.1",
+    "react-native-track-player": "^3.2.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5"
   },

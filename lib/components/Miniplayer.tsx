@@ -14,6 +14,7 @@ import Animated, { Easing, FadeInDown, FadeOutDown } from 'react-native-reanimat
 import React from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
+import TrackPlayer, { State, usePlaybackState } from 'react-native-track-player';
 
 function RenderItem(item: Child) {
     const colors = useColors();
@@ -97,8 +98,7 @@ export default function Miniplayer() {
     const queue = useQueue();
     const { nowPlaying } = queue;
 
-    const player = useGlobalPlayer();
-    const status = player ? useAudioPlayerStatus(player) : null;
+    const state = usePlaybackState();
 
     const [carouselWidth, setCarouselWidth] = useState(0);
 
@@ -164,7 +164,7 @@ export default function Miniplayer() {
                     </View>
                     {!isEmpty && (
                         <View style={styles.actions}>
-                            <ActionIcon icon={status?.playing ? IconPlayerPauseFilled : IconPlayerPlayFilled} size={24} stroke="transparent" isFilled onPress={() => status?.playing ? player?.pause() : player?.play()} />
+                            <ActionIcon icon={(state == State.Paused || state == State.None) ? IconPlayerPlayFilled : IconPlayerPauseFilled} size={24} stroke="transparent" isFilled onPress={() => (state == State.Paused || state == State.None) ? TrackPlayer.play() : TrackPlayer.pause()} />
                             <ActionIcon icon={IconPlayerTrackNextFilled} size={18} isFilled onPress={() => queue.skipForward()} disabled={!queue.canGoForward} />
                         </View>
                     )}
