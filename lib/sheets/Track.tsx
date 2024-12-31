@@ -11,7 +11,6 @@ import { IconCircleMinus, IconCirclePlus, IconDisc, IconMicrophone2, IconPlayerT
 
 function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
     const insets = useSafeAreaInsets();
-    const colors = useColors();
     const cache = useCache();
     const cover = useCoverBuilder();
     const queue = useQueue();
