@@ -71,13 +71,13 @@ function UserMenuSheet({ sheetId, payload }: SheetProps<'userMenu'>) {
                     });
                     if (!confirmed) return;
 
+                    SheetManager.hide(sheetId);
+
                     await cache.clearAll();
                     memoryCache.clear();
                     queue.clear();
 
                     await server.logOut();
-
-                    SheetManager.hide(sheetId);
                 }}
             />
         </StyledActionSheet>
