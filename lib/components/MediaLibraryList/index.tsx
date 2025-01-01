@@ -1,8 +1,10 @@
+import { useTabsHeight } from '@lib/hooks';
+import React from 'react';
 import MediaLibItem, { TMediaLibItem } from './Item';
 import { createContext, useMemo } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
-export type MediaLibraryLayout = 'grid' | 'list';
+export type MediaLibraryLayout = 'grid' | 'list' | '';
 
 export type MediaLibrarySize = 'small' | 'medium' | 'large';
 
@@ -19,6 +21,8 @@ export const LibSize = createContext<MediaLibrarySize>('large');
 export const LibSeparators = createContext<boolean>(true);
 
 export default function MediaLibraryList({ data, layout = 'list', size = 'large', withSeparators = true, onItemPress }: MediaLibraryListProps) {
+    const [tabsHeight] = useTabsHeight();
+
     const styles = useMemo(() => StyleSheet.create({
         list: {
             marginTop: layout == 'grid' ? 10 : 5,
@@ -28,6 +32,9 @@ export default function MediaLibraryList({ data, layout = 'list', size = 'large'
         },
         gridSeparator: {
             height: 10,
+        },
+        footer: {
+            height: tabsHeight + 10,
         }
     }), [layout]);
 
@@ -42,6 +49,7 @@ export default function MediaLibraryList({ data, layout = 'list', size = 'large'
                         renderItem={({ item, index }) => <MediaLibItem {...item} onPress={() => onItemPress(item)} style={layout === 'grid' && { flex: 1 / 2 }} index={index} />}
                         numColumns={layout === 'grid' ? 2 : 1}
                         ItemSeparatorComponent={layout === 'grid' ? () => <View style={styles.gridSeparator} /> : undefined}
+                        ListFooterComponent={<View style={styles.footer} />}
                         key={layout}
                     />
                 </LibSeparators.Provider>

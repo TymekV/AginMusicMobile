@@ -31,6 +31,7 @@ export function PlaylistHeader({ playlist, album }: PlaylistHeaderProps) {
         },
         title: {
             marginTop: 20,
+            marginHorizontal: 20,
         },
         actions: {
             flexDirection: 'row',

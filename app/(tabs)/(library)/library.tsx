@@ -41,12 +41,13 @@ const tabs: TTagTab[] = [
 
 export default function Library() {
     const [tab, setTab] = useState('playlists');
-    const [layout, setLayout] = useState<MediaLibraryLayout>('list');
+    const [layout, setLayout] = useState<MediaLibraryLayout>('');
 
     useEffect(() => {
         (async () => {
             const layout = await AsyncStorage.getItem('mediaLibrary.layout');
             if (layout) setLayout(layout as MediaLibraryLayout);
+            else setLayout('grid');
         })();
     }, []);
 

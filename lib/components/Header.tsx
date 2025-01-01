@@ -56,6 +56,11 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
         header: {
             paddingHorizontal: 20,
             paddingTop: 10,
+            overflow: 'hidden',
+            maxWidth: '100%',
+        },
+        titleContainer: {
+            flex: 1,
         },
         floatingHeader: {
             position: 'absolute',
@@ -75,9 +80,11 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
             flexDirection: 'row',
             gap: 8,
             alignItems: 'center',
+            overflow: 'hidden',
         },
         iconGroupLeft: {
             gap: 12,
+            flex: 1,
         },
         rightContent: {
             flexDirection: 'row',
@@ -92,8 +99,8 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
                 <View style={styles.top}>
                     <View style={[styles.iconGroup, styles.iconGroupLeft]}>
                         {withBackIcon && <ActionIcon icon={IconChevronLeft} size={16} variant='secondary' onPress={() => router.back()} />}
-                        <Animated.View style={titleStyle}>
-                            {title && <Title size={titleSize} fontFamily='Poppins-SemiBold'>{title}</Title>}
+                        <Animated.View style={[styles.titleContainer, titleStyle]}>
+                            {title && <Title size={titleSize} fontFamily='Poppins-SemiBold' numberOfLines={1}>{title}</Title>}
                         </Animated.View>
                     </View>
                     <View style={styles.iconGroup}>

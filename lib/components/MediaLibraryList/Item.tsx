@@ -23,7 +23,7 @@ export interface MediaLibItemProps extends TMediaLibItem, Omit<TouchableOpacityP
 
 function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSection, style, index, isAlbumEntry = false, trackNumber, ...props }: MediaLibItemProps) {
     const layout = useContext(LibLayout);
-    const ItemRenderer = layout === 'grid' ? GridItem : ListItem;
+    const ItemRenderer = layout === 'grid' ? GridItem : layout === 'list' ? ListItem : View;
 
     return (
         <TouchableOpacity activeOpacity={.8} style={[style, (index != undefined && layout == 'grid') && (index % 2 == 0 ? { marginRight: 5 } : { marginLeft: 5 })]} {...props}>
