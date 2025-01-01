@@ -26,6 +26,8 @@ export type HeaderProps = {
 
 export default function Header({ title, subtitle, rightSection, withBackIcon = false, withAvatar = true, floating = false, rightSpacing = 10, scrollRef, interpolationRange = [0, 200], initialHideTitle = false, titleSize = 24 }: HeaderProps) {
     const colors = useColors();
+    console.log({ colors });
+
 
     const Root = floating ? SafeAreaView : View;
 
@@ -35,12 +37,12 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
         backgroundColor: interpolateColor(
             scrollOffset ? scrollOffset.value : 0,
             interpolationRange,
-            [colors.background ? (colors.background + '00') : 'transparent', (colors.background || 'transparent')],
+            [colors.background + '00', colors.background],
         ),
         borderColor: interpolateColor(
             scrollOffset ? scrollOffset.value : 0,
             interpolationRange,
-            ['transparent', colors.border[0] || 'transparent'],
+            ['transparent', colors.border[0]],
         ),
     }));
 

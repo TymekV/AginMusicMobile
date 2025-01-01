@@ -12,6 +12,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "rocks.agin.music",
       "appleTeamId": "64X57WU2MF",
+      "userInterfaceStyle": "automatic",
       "infoPlist": {
         "UIBackgroundModes": [
           "audio"
@@ -23,6 +24,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "userInterfaceStyle": "automatic",
       "package": "rocks.agin.music"
     },
     "web": {
