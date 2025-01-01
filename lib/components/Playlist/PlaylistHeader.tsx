@@ -9,6 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
 import ActionIcon from '../ActionIcon';
 import { IconArrowsShuffle, IconDownload, IconPlayerPlayFilled } from '@tabler/icons-react-native';
+import { PlaylistBackground } from './PlaylistBackground';
 
 export type PlaylistHeaderProps = {
     playlist?: PlaylistWithSongs;
@@ -40,6 +41,10 @@ export function PlaylistHeader({ playlist }: PlaylistHeaderProps) {
 
     return (
         <View style={styles.container}>
+            <PlaylistBackground
+                source={{ uri: cover.generateUrl(playlist?.coverArt ?? '') }}
+                cacheKey={`${playlist?.coverArt}-full`}
+            />
             <Cover
                 source={{ uri: cover.generateUrl(playlist?.coverArt ?? '') }}
                 cacheKey={`${playlist?.coverArt}-full`}

@@ -1,5 +1,5 @@
 import { Child } from '@lib/types';
-import Carousel, { CarouselRenderItem, ICarouselInstance } from 'react-native-reanimated-carousel';
+import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel';
 import { useQueue } from '../hooks';
 import { View, ViewStyle } from 'react-native';
 import { ReactElement, useEffect, useRef } from 'react';

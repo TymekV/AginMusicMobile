@@ -7,11 +7,11 @@ import { LibSize, LibLayout, LibSeparators } from '@lib/components/MediaLibraryL
 import MediaLibItem from '@lib/components/MediaLibraryList/Item';
 import { IconDots, IconSearch } from '@tabler/icons-react-native';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { FlatList } from 'react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
-import Animated, { Easing, FadeIn } from 'react-native-reanimated';
+import Animated, { Easing, FadeIn, useAnimatedRef, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export default function Playlist() {
     const { id } = useLocalSearchParams();
@@ -20,8 +20,20 @@ export default function Playlist() {
     const cover = useCoverBuilder();
     const colors = useColors();
     const queue = useQueue();
+    const listRef = useAnimatedRef<FlatList>();
 
-    const data = useMemo(() => cache.cache.playlists[id as string], [cache.cache.playlists, id])
+    const data = useMemo(() => cache.cache.playlists[id as string], [cache.cache.playlists, id]);
+
+    const containerOpacity = useSharedValue(0);
+
+    const containerStyle = useAnimatedStyle(() => ({
+        opacity: containerOpacity.value,
+    }));
+
+    useEffect(() => {
+        if (!data) return;
+        containerOpacity.value = withTiming(1, { duration: 200, easing: Easing.inOut(Easing.ease) });
+    }, [data]);
 
     useFocusEffect(useCallback(() => {
         cache.refreshPlaylist(id as string);
@@ -29,29 +41,35 @@ export default function Playlist() {
 
     return (
         <Container includeTop={false}>
-            <Header withBackIcon withAvatar={false} floating rightSection={<>
-                <ActionIcon icon={IconSearch} size={16} variant='secondary' />
-                <ActionIcon icon={IconDots} size={16} variant='secondary' onPress={() => {
-                    Haptics.selectionAsync();
-                    SheetManager.show('playlist', {
-                        payload: {
-                            id: data.id,
-                            data,
-                        }
-                    });
-                }} />
-            </>} />
-            {data && <Animated.View style={{ flex: 1 }} entering={FadeIn.duration(200).easing(Easing.inOut(Easing.ease))}>
-                <PlaylistBackground
-                    source={{ uri: cover.generateUrl(data?.coverArt ?? '') }}
-                    cacheKey={`${data?.coverArt}-full`}
-                />
+            <Header
+                withBackIcon
+                withAvatar={false}
+                floating
+                scrollRef={listRef}
+                interpolationRange={[200, 350]}
+                title={data?.name}
+                titleSize={18}
+                initialHideTitle
+                rightSection={<>
+                    <ActionIcon icon={IconSearch} size={16} variant='secondary' />
+                    <ActionIcon icon={IconDots} size={16} variant='secondary' onPress={() => {
+                        Haptics.selectionAsync();
+                        SheetManager.show('playlist', {
+                            payload: {
+                                id: data.id,
+                                data,
+                            }
+                        });
+                    }} />
+                </>} />
+            <Animated.View style={[{ flex: 1 }, containerStyle]}>
                 <LibLayout.Provider value="list">
                     <LibSize.Provider value="medium">
                         <LibSeparators.Provider value={false}>
                             <FlatList
                                 data={data?.entry}
                                 keyExtractor={item => item.id}
+                                ref={listRef}
                                 renderItem={({ item, index }) => (
                                     <MediaLibItem
                                         id={item.id}
@@ -83,7 +101,7 @@ export default function Playlist() {
                         </LibSeparators.Provider>
                     </LibSize.Provider>
                 </LibLayout.Provider>
-            </Animated.View>}
+            </Animated.View>
         </Container>
     )
 }

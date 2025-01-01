@@ -40,7 +40,7 @@ export default function Queue() {
             <DraggableFlatList
                 style={styles.list}
                 data={delayedQueue ?? []}
-                keyExtractor={(item, index) => `${item.id}-${index}`}
+                keyExtractor={(item, index) => `${item._child.id}-${index}`}
                 renderItem={({ item, ...props }) => <QueueItem item={item._child} {...props} />}
                 onDragEnd={handleDragEnd}
             />

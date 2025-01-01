@@ -1,12 +1,14 @@
 import { useColors } from '@lib/hooks';
 import React, { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 import Title from './Title';
 import Avatar from './Avatar';
 import ActionIcon from './ActionIcon';
 import { IconChevronLeft } from '@tabler/icons-react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Animated, { AnimatedRef, interpolate, interpolateColor, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
+import { AnimatedScrollView } from 'react-native-reanimated/lib/typescript/component/ScrollView';
 
 export type HeaderProps = {
     title?: string;
@@ -16,12 +18,39 @@ export type HeaderProps = {
     withAvatar?: boolean;
     floating?: boolean;
     rightSpacing?: number;
+    scrollRef?: AnimatedRef<any>;
+    interpolationRange?: [number, number];
+    initialHideTitle?: boolean;
+    titleSize?: number;
 };
 
-export default function Header({ title, subtitle, rightSection, withBackIcon = false, withAvatar = true, floating = false, rightSpacing = 10 }: HeaderProps) {
+export default function Header({ title, subtitle, rightSection, withBackIcon = false, withAvatar = true, floating = false, rightSpacing = 10, scrollRef, interpolationRange = [0, 200], initialHideTitle = false, titleSize = 24 }: HeaderProps) {
     const colors = useColors();
 
     const Root = floating ? SafeAreaView : View;
+
+    const scrollOffset = useScrollViewOffset(scrollRef ?? null);
+
+    const navbarStyle = useAnimatedStyle(() => ({
+        backgroundColor: interpolateColor(
+            scrollOffset ? scrollOffset.value : 0,
+            interpolationRange,
+            [colors.background ? (colors.background + '00') : 'transparent', (colors.background || 'transparent')],
+        ),
+        borderColor: interpolateColor(
+            scrollOffset ? scrollOffset.value : 0,
+            interpolationRange,
+            ['transparent', colors.border[0] || 'transparent'],
+        ),
+    }));
+
+    const titleStyle = useAnimatedStyle(() => ({
+        opacity: initialHideTitle ? interpolate(
+            scrollOffset ? scrollOffset.value : 0,
+            interpolationRange,
+            [0, 1],
+        ) : 1,
+    }));
 
     const styles = useMemo(() => StyleSheet.create({
         header: {
@@ -34,6 +63,8 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
             left: 0,
             right: 0,
             zIndex: 100,
+            paddingBottom: 15,
+            borderBottomWidth: 1,
         },
         top: {
             flexDirection: 'row',
@@ -45,6 +76,9 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
             gap: 8,
             alignItems: 'center',
         },
+        iconGroupLeft: {
+            gap: 12,
+        },
         rightContent: {
             flexDirection: 'row',
             alignItems: 'center',
@@ -53,22 +87,24 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
     }), [colors, rightSpacing]);
 
     return (
-        <Root style={[styles.header, floating && styles.floatingHeader]}>
-            <View style={styles.top}>
-                <View style={styles.iconGroup}>
-                    {withBackIcon && <ActionIcon icon={IconChevronLeft} size={16} variant='secondary' onPress={() => router.back()} />}
-                    <View>
-                        {title && <Title size={24} fontFamily='Poppins-SemiBold'>{title}</Title>}
+        <Animated.View style={[floating && styles.floatingHeader, navbarStyle]}>
+            <Root style={styles.header} edges={['top']}>
+                <View style={styles.top}>
+                    <View style={[styles.iconGroup, styles.iconGroupLeft]}>
+                        {withBackIcon && <ActionIcon icon={IconChevronLeft} size={16} variant='secondary' onPress={() => router.back()} />}
+                        <Animated.View style={titleStyle}>
+                            {title && <Title size={titleSize} fontFamily='Poppins-SemiBold'>{title}</Title>}
+                        </Animated.View>
+                    </View>
+                    <View style={styles.iconGroup}>
+                        <View style={styles.rightContent}>
+                            {rightSection}
+                        </View>
+                        {withAvatar && <Avatar />}
                     </View>
                 </View>
-                <View style={styles.iconGroup}>
-                    <View style={styles.rightContent}>
-                        {rightSection}
-                    </View>
-                    {withAvatar && <Avatar />}
-                </View>
-            </View>
-            {subtitle && <Title size={14} fontFamily='Poppins-Regular' color={colors.text[1]}>{subtitle}</Title>}
-        </Root>
+                {subtitle && <Title size={14} fontFamily='Poppins-Regular' color={colors.text[1]}>{subtitle}</Title>}
+            </Root>
+        </Animated.View>
     )
 }
