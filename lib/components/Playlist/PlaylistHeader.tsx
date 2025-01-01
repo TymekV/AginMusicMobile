@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Cover from '../Cover';
 import { Playlist, PlaylistWithSongs } from '@lib/types';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Title from '../Title';
 import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
@@ -19,10 +19,12 @@ export function PlaylistHeader({ playlist }: PlaylistHeaderProps) {
     const cover = useCoverBuilder();
     const queue = useQueue();
 
+    const insets = useSafeAreaInsets();
+
     const styles = useMemo(() => StyleSheet.create({
         container: {
             alignItems: 'center',
-            paddingTop: 50,
+            paddingTop: 50 + insets.top,
             paddingBottom: 10,
         },
         title: {
@@ -34,10 +36,10 @@ export function PlaylistHeader({ playlist }: PlaylistHeaderProps) {
             gap: 15,
             alignItems: 'center',
         }
-    }), [colors]);
+    }), [colors, insets]);
 
     return (
-        <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.container}>
             <Cover
                 source={{ uri: cover.generateUrl(playlist?.coverArt ?? '') }}
                 cacheKey={`${playlist?.coverArt}-full`}
@@ -55,6 +57,6 @@ export function PlaylistHeader({ playlist }: PlaylistHeaderProps) {
                 }} />
                 <ActionIcon icon={IconArrowsShuffle} variant='subtleFilled' size={20} extraSize={24} />
             </View>
-        </SafeAreaView>
+        </View>
     )
 }

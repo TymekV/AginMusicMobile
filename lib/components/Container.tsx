@@ -1,5 +1,6 @@
 import { useColors } from "@/lib/hooks/useColors";
-import { SafeAreaView, SafeAreaViewProps } from "react-native-safe-area-context";
+import { View } from "react-native";
+import { SafeAreaView, SafeAreaViewProps, useSafeAreaInsets } from "react-native-safe-area-context";
 
 export interface ContainerProps extends SafeAreaViewProps {
     children?: React.ReactNode;
@@ -8,9 +9,11 @@ export interface ContainerProps extends SafeAreaViewProps {
 export default function Container({ children, ...props }: ContainerProps) {
     const colors = useColors();
 
+    const insets = useSafeAreaInsets();
+
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}{...props}>
+        <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom }} {...props}>
             {children}
-        </SafeAreaView>
+        </View>
     )
 }

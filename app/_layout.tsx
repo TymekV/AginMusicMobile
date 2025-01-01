@@ -20,6 +20,7 @@ import { configureReanimatedLogger, ReanimatedLogLevel, } from 'react-native-rea
 import { useSetupTrackPlayer } from '@lib/hooks';
 import TrackPlayer from 'react-native-track-player';
 import { PlaybackService } from '@lib/service';
+import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -69,25 +70,27 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <SQLiteProvider databaseName="cache.db" onInit={initDatabase}>
-        <PlayerProvider>
-          <ServerProvider>
-            <QueueProvider>
-              <MemoryCacheProvider>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                  <SheetProvider>
-                    <Stack>
-                      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                      <Stack.Screen name="+not-found" />
-                    </Stack>
-                    <StatusBar style="auto" />
-                  </SheetProvider>
-                </GestureHandlerRootView>
-              </MemoryCacheProvider>
-            </QueueProvider>
-          </ServerProvider>
-        </PlayerProvider>
-      </SQLiteProvider>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+        <SQLiteProvider databaseName="cache.db" onInit={initDatabase}>
+          <PlayerProvider>
+            <ServerProvider>
+              <QueueProvider>
+                <MemoryCacheProvider>
+                  <GestureHandlerRootView style={{ flex: 1 }}>
+                    <SheetProvider>
+                      <Stack>
+                        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                        <Stack.Screen name="+not-found" />
+                      </Stack>
+                      <StatusBar style="auto" />
+                    </SheetProvider>
+                  </GestureHandlerRootView>
+                </MemoryCacheProvider>
+              </QueueProvider>
+            </ServerProvider>
+          </PlayerProvider>
+        </SQLiteProvider>
+      </SafeAreaProvider>
     </ThemeProvider>
   );
 }

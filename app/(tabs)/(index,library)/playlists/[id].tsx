@@ -11,6 +11,7 @@ import React, { useCallback, useMemo } from 'react';
 import { FlatList } from 'react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
+import Animated, { Easing, FadeIn } from 'react-native-reanimated';
 
 export default function Playlist() {
     const { id } = useLocalSearchParams();
@@ -40,47 +41,49 @@ export default function Playlist() {
                     });
                 }} />
             </>} />
-            <PlaylistBackground
-                source={{ uri: cover.generateUrl(data?.coverArt ?? '') }}
-                cacheKey={`${data?.coverArt}-full`}
-            />
-            <LibLayout.Provider value="list">
-                <LibSize.Provider value="medium">
-                    <LibSeparators.Provider value={false}>
-                        <FlatList
-                            data={data?.entry}
-                            keyExtractor={item => item.id}
-                            renderItem={({ item, index }) => (
-                                <MediaLibItem
-                                    id={item.id}
-                                    title={item.title}
-                                    subtitle={item.artist}
-                                    coverUri={cover.generateUrl(item.coverArt ?? '', { size: 128 })}
-                                    coverCacheKey={`${item.coverArt}-128x128`}
-                                    rightSection={<>
-                                        <ActionIcon icon={IconDots} size={16} variant='secondaryTransparent' onPress={() => {
-                                            Haptics.selectionAsync();
-                                            SheetManager.show('track', {
-                                                payload: {
-                                                    id: item.id,
-                                                    data: item,
-                                                    context: 'playlist',
-                                                    contextId: data.id,
-                                                }
-                                            });
-                                        }} />
-                                    </>}
-                                    onPress={() => {
-                                        if (!data.entry) return;
-                                        queue.replace(data.entry, data.entry.findIndex(x => x.id === item.id));
-                                    }}
-                                />
-                            )}
-                            ListHeaderComponent={<PlaylistHeader playlist={data} />}
-                        />
-                    </LibSeparators.Provider>
-                </LibSize.Provider>
-            </LibLayout.Provider>
+            {data && <Animated.View style={{ flex: 1 }} entering={FadeIn.duration(200).easing(Easing.inOut(Easing.ease))}>
+                <PlaylistBackground
+                    source={{ uri: cover.generateUrl(data?.coverArt ?? '') }}
+                    cacheKey={`${data?.coverArt}-full`}
+                />
+                <LibLayout.Provider value="list">
+                    <LibSize.Provider value="medium">
+                        <LibSeparators.Provider value={false}>
+                            <FlatList
+                                data={data?.entry}
+                                keyExtractor={item => item.id}
+                                renderItem={({ item, index }) => (
+                                    <MediaLibItem
+                                        id={item.id}
+                                        title={item.title}
+                                        subtitle={item.artist}
+                                        coverUri={cover.generateUrl(item.coverArt ?? '', { size: 128 })}
+                                        coverCacheKey={`${item.coverArt}-128x128`}
+                                        rightSection={<>
+                                            <ActionIcon icon={IconDots} size={16} variant='secondaryTransparent' onPress={() => {
+                                                Haptics.selectionAsync();
+                                                SheetManager.show('track', {
+                                                    payload: {
+                                                        id: item.id,
+                                                        data: item,
+                                                        context: 'playlist',
+                                                        contextId: data.id,
+                                                    }
+                                                });
+                                            }} />
+                                        </>}
+                                        onPress={() => {
+                                            if (!data.entry) return;
+                                            queue.replace(data.entry, data.entry.findIndex(x => x.id === item.id));
+                                        }}
+                                    />
+                                )}
+                                ListHeaderComponent={<PlaylistHeader playlist={data} />}
+                            />
+                        </LibSeparators.Provider>
+                    </LibSize.Provider>
+                </LibLayout.Provider>
+            </Animated.View>}
         </Container>
     )
 }
