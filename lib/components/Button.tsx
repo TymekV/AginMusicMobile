@@ -10,6 +10,7 @@ type VariantConfig = {
     styles: ViewStyle;
     fontFamily?: CustomFont;
     textColor: string;
+    underlayColor?: string;
 }
 
 export interface ButtonProps extends TouchableHighlightProps {
@@ -35,12 +36,13 @@ export default function Button({ children, variant = 'primary', disabled, onPres
             },
             textColor: colors.text[1],
             fontFamily: 'Poppins-SemiBold',
+            underlayColor: colors.secondaryBackground,
         },
         danger: {
             styles: {
                 backgroundColor: colors.danger,
             },
-            textColor: colors.text[0],
+            textColor: colors.dangerText,
             fontFamily: 'Poppins-SemiBold',
         }
     }), [colors]);
@@ -64,7 +66,7 @@ export default function Button({ children, variant = 'primary', disabled, onPres
     }), [variantStyles, disabled]);
 
     return (
-        <TouchableHighlight onPress={disabled ? undefined : onPress} {...props} style={styles.touchable}>
+        <TouchableHighlight underlayColor={variantStyles.underlayColor} onPress={disabled ? undefined : onPress} {...props} style={styles.touchable}>
             <View style={styles.button}>
                 <Title size={15} fontFamily={variantStyles.fontFamily} color={variantStyles.textColor}>{children}</Title>
             </View>

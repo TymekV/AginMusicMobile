@@ -8,7 +8,8 @@ import { IconChevronLeft } from '@tabler/icons-react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { AnimatedRef, interpolate, interpolateColor, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
-import { AnimatedScrollView } from 'react-native-reanimated/lib/typescript/component/ScrollView';
+import { SheetManager } from 'react-native-actions-sheet';
+import * as Haptics from 'expo-haptics';
 
 export type HeaderProps = {
     title?: string;
@@ -107,7 +108,10 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
                         <View style={styles.rightContent}>
                             {rightSection}
                         </View>
-                        {withAvatar && <Avatar />}
+                        {withAvatar && <Avatar onPress={() => {
+                            Haptics.selectionAsync();
+                            SheetManager.show('userMenu');
+                        }} />}
                     </View>
                 </View>
                 {subtitle && <Title size={14} fontFamily='Poppins-Regular' color={colors.text[1]}>{subtitle}</Title>}

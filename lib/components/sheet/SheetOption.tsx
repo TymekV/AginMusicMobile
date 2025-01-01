@@ -28,7 +28,7 @@ export default function SheetOption({ icon: Icon, label, description, variant = 
     }), [colors]);
 
     return (
-        <TouchableHighlight {...props}>
+        <TouchableHighlight underlayColor={colors.secondaryBackground} {...props}>
             <View style={styles.option}>
                 {Icon && <Icon size={20} color={variant == 'destructive' ? colors.danger : colors.text[0]} />}
                 <View>

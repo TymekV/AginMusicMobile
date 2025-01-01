@@ -50,7 +50,7 @@ export default function Playlist() {
                 data,
             }
         });
-    }, []);
+    }, [data]);
 
     return (
         <Container includeTop={false} includeBottom={false}>

@@ -48,7 +48,7 @@ export default function Album() {
                 data,
             }
         });
-    }, []);
+    }, [data]);
 
     return (
         <Container includeTop={false} includeBottom={false}>

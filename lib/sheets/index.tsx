@@ -6,6 +6,10 @@ import { AlbumID3, Child, Playlist } from '@lib/types';
 import TrackSheet from './Track';
 import PlaylistSheet from './Playlist';
 import AlbumSheet from './Album';
+import UserMenuSheet from './UserMenu';
+import { SettingSelectOption } from '@lib/components/Setting';
+import { Icon } from '@tabler/icons-react-native';
+import SettingSelectSheet from './SettingSelect';
 
 registerSheet('playback', PlaybackSheet);
 registerSheet('confirm', ConfirmSheet);
@@ -13,12 +17,15 @@ registerSheet('newPlaylist', NewPlaylsitSheet);
 registerSheet('track', TrackSheet);
 registerSheet('playlist', PlaylistSheet);
 registerSheet('album', AlbumSheet);
+registerSheet('userMenu', UserMenuSheet);
+registerSheet('settingSelect', SettingSelectSheet);
 
 // We extend some of the types here to give us great intellisense
 // across the app for all registered sheets.
 declare module 'react-native-actions-sheet' {
     interface Sheets {
         'playback': SheetDefinition<{}>;
+        'userMenu': SheetDefinition<{}>;
         'confirm': SheetDefinition<{
             payload: {
                 title: string;
@@ -57,6 +64,20 @@ declare module 'react-native-actions-sheet' {
                 id: string;
                 data?: AlbumID3;
             },
+        }>;
+        'settingSelect': SheetDefinition<{
+            payload: {
+                setting: {
+                    label?: string;
+                    description?: string;
+                    icon?: Icon;
+                },
+                options: SettingSelectOption[];
+                value: string;
+            },
+            returnValue: {
+                value: string;
+            }
         }>;
     }
 }
