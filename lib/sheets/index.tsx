@@ -23,6 +23,7 @@ declare module 'react-native-actions-sheet' {
                 message: string;
                 confirmText?: string;
                 cancelText?: string;
+                variant?: 'default' | 'danger';
             },
             returnValue: boolean;
         }>;

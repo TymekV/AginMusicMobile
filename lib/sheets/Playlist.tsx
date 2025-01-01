@@ -2,18 +2,20 @@ import { StyledActionSheet } from '@lib/components/StyledActionSheet';
 import { Platform } from 'react-native';
 import { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useCoverBuilder, useMemoryCache, usePins, useQueue } from '@lib/hooks';
-import { useEffect, useState } from 'react';
-import { Playlist } from '@lib/types';
+import { useApiHelpers, useCoverBuilder, useMemoryCache, usePins } from '@lib/hooks';
+import { useEffect } from 'react';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
-import { IconArrowsSort, IconEdit, IconPencil, IconPin, IconPinnedOff, IconPlayerTrackNext, IconTrash } from '@tabler/icons-react-native';
+import { IconArrowsSort, IconPencil, IconPin, IconPinnedOff, IconTrash } from '@tabler/icons-react-native';
 import { formatDistanceToNow } from 'date-fns';
+import * as Haptics from 'expo-haptics';
+import { router } from 'expo-router';
 
 function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
     const insets = useSafeAreaInsets();
     const memoryCache = useMemoryCache();
     const cover = useCoverBuilder();
+    const helpers = useApiHelpers();
 
     const pins = usePins();
     const isPinned = pins.isPinned(payload?.id ?? '');
@@ -74,8 +76,15 @@ function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
                 icon={IconTrash}
                 label='Remove Playlist'
                 variant='destructive'
-                onPress={() => {
+                onPress={async () => {
+                    if (!payload?.id) return;
+
+                    const removed = await helpers.removePlaylistConfirm(payload?.id);
+                    if (!removed) return;
+
                     SheetManager.hide(sheetId);
+                    router.back();
+                    await memoryCache.refreshPlaylists();
                 }}
             />
         </StyledActionSheet>

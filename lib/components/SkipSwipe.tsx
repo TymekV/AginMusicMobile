@@ -32,6 +32,7 @@ export default function SkipSwipe({ width, renderItem, style }: SkipSwipeProps) 
                 return renderItem(item._child);
             }}
             onSnapToItem={(index) => {
+                if (index == queue.activeIndex) return;
                 queue.jumpTo(index);
             }}
             panGestureHandlerProps={{

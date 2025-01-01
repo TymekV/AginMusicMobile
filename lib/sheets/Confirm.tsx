@@ -37,7 +37,7 @@ function ConfirmSheet({ sheetId, payload }: SheetProps<'confirm'>) {
                     <Title size={14} align="center" fontFamily="Poppins-Regular" color={colors.text[1]}>{payload?.message}</Title>
                 </View>
                 <View style={styles.button}>
-                    <Button variant='primary' onPress={() => SheetManager.hide(sheetId, { payload: true })}>{payload?.confirmText}</Button>
+                    <Button variant={payload?.variant == 'danger' ? 'danger' : 'primary'} onPress={() => SheetManager.hide(sheetId, { payload: true })}>{payload?.confirmText}</Button>
                 </View>
                 <Button variant='subtle' onPress={() => SheetManager.hide(sheetId, { payload: false })}>{payload?.cancelText}</Button>
             </View>
