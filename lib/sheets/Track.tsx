@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Child } from '@lib/types';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
-import { IconCircleMinus, IconCirclePlus, IconCopy, IconDisc, IconMicrophone2, IconPin, IconPinnedOff, IconPlayerTrackNext, IconPlaylistAdd } from '@tabler/icons-react-native';
+import { IconCircleMinus, IconCirclePlus, IconCopy, IconDisc, IconDownload, IconMicrophone2, IconPin, IconPinnedOff, IconPlayerTrackNext, IconPlaylistAdd } from '@tabler/icons-react-native';
 import * as Clipboard from 'expo-clipboard';
 
 function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
@@ -70,6 +70,13 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
             {payload?.context != 'album' && <SheetOption
                 icon={IconDisc}
                 label='Go to Album'
+                onPress={() => {
+                    SheetManager.hide(sheetId);
+                }}
+            />}
+            {payload?.context != 'nowPlaying' && <SheetOption
+                icon={IconDownload}
+                label='Download'
                 onPress={() => {
                     SheetManager.hide(sheetId);
                 }}

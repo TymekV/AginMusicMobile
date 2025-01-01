@@ -65,6 +65,8 @@ export default function Login() {
                 onChangeText={setUrl}
                 returnKeyType='next'
                 onSubmitEditing={goNext}
+                submitBehavior='submit'
+                enablesReturnKeyAutomatically
             />
         </SetupPage>
     )

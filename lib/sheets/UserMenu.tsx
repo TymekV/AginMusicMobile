@@ -2,7 +2,7 @@ import { StyledActionSheet } from '@lib/components/StyledActionSheet';
 import { Linking, Platform } from 'react-native';
 import { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useCache, useMemoryCache, useServer } from '@lib/hooks';
+import { useCache, useMemoryCache, useQueue, useServer } from '@lib/hooks';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
 import { IconArrowsSort, IconBrandGithub, IconExclamationCircle, IconLogout, IconMusic, IconSettings } from '@tabler/icons-react-native';
@@ -16,6 +16,7 @@ function UserMenuSheet({ sheetId, payload }: SheetProps<'userMenu'>) {
     const server = useServer();
     const cache = useCache();
     const memoryCache = useMemoryCache();
+    const queue = useQueue();
 
     return (
         <StyledActionSheet
@@ -72,6 +73,7 @@ function UserMenuSheet({ sheetId, payload }: SheetProps<'userMenu'>) {
 
                     await cache.clearAll();
                     memoryCache.clear();
+                    queue.clear();
 
                     await server.logOut();
 

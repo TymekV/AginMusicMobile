@@ -24,7 +24,10 @@ export const TabBar = forwardRef(({ children }: TabBarProps, ref: Ref<View>) => 
             left: 0,
             right: 0,
             bottom: 0,
-            paddingBottom: insets.bottom,
+        },
+        barFiller: {
+            backgroundColor: colors.background,
+            height: insets.bottom,
         },
         barContainer: {
             position: 'relative',
@@ -56,6 +59,7 @@ export const TabBar = forwardRef(({ children }: TabBarProps, ref: Ref<View>) => 
                     {children}
                 </View>
             </View>
+            <View style={styles.barFiller} />
         </View>
     )
 });

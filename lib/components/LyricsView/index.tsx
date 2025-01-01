@@ -2,7 +2,6 @@ import { StructuredLyrics } from '@lib/types';
 import LyricsLine from './Line';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useGlobalPlayer } from '@/lib/hooks';
 import { FlatList } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 
@@ -16,8 +15,6 @@ export default function SycnedLyricsView({ lyrics }: LyricsViewProps) {
     const enableTimeout = useRef<NodeJS.Timeout | null>(null);
 
     const isLocked = useRef<boolean>(false);
-
-    const player = useGlobalPlayer();
 
     const listRef = useRef<FlatList>(null);
 

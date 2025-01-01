@@ -63,6 +63,10 @@ export default function Login() {
                     onChangeText={setUsername}
                     returnKeyType='next'
                     onSubmitEditing={() => passwordRef.current?.focus()}
+                    textContentType='username'
+                    autoComplete='username'
+                    submitBehavior='submit'
+                    enablesReturnKeyAutomatically
                 />
                 <Input
                     icon={IconKey}
@@ -75,6 +79,10 @@ export default function Login() {
                     returnKeyType='done'
                     ref={passwordRef}
                     onSubmitEditing={logIn}
+                    textContentType='password'
+                    autoComplete='current-password'
+                    submitBehavior='submit'
+                    enablesReturnKeyAutomatically
                 />
             </View>
         </SetupPage>
