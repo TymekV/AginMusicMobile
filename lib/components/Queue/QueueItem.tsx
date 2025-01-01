@@ -8,8 +8,9 @@ import Title from '../Title';
 import { IconMenu } from '@tabler/icons-react-native';
 import * as Haptics from 'expo-haptics';
 import { GestureEnabledContext } from '@/lib/sheets/playback';
+import React from 'react';
 
-export default function QueueItem({ item, getIndex, drag, isActive }: RenderItemParams<Child>) {
+function QueueItem({ item, getIndex, drag, isActive }: RenderItemParams<Child>) {
     const colors = useColors();
     const cover = useCoverBuilder();
 
@@ -79,3 +80,5 @@ export default function QueueItem({ item, getIndex, drag, isActive }: RenderItem
         </TouchableOpacity>
     )
 }
+
+export default React.memo(QueueItem);

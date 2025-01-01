@@ -26,8 +26,6 @@ export type HeaderProps = {
 
 export default function Header({ title, subtitle, rightSection, withBackIcon = false, withAvatar = true, floating = false, rightSpacing = 10, scrollRef, interpolationRange = [0, 200], initialHideTitle = false, titleSize = 24 }: HeaderProps) {
     const colors = useColors();
-    console.log({ colors });
-
 
     const Root = floating ? SafeAreaView : View;
 

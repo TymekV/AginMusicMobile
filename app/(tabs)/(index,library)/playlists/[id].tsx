@@ -24,6 +24,8 @@ export default function Playlist() {
 
     const data = useMemo(() => cache.cache.playlists[id as string], [cache.cache.playlists, id]);
 
+    const entryData = useMemo(() => data?.entry, [data?.entry]);
+
     const containerOpacity = useSharedValue(0);
 
     const containerStyle = useAnimatedStyle(() => ({
@@ -67,8 +69,8 @@ export default function Playlist() {
                     <LibSize.Provider value="medium">
                         <LibSeparators.Provider value={false}>
                             <FlatList
-                                data={data?.entry}
-                                keyExtractor={item => item.id}
+                                data={entryData}
+                                keyExtractor={(item) => item.id ?? `fallback-${Math.random()}`}
                                 ref={listRef}
                                 renderItem={({ item, index }) => (
                                     <MediaLibItem

@@ -4,6 +4,7 @@ import { LibLayout } from '.';
 import { useContext } from 'react';
 import ListItem from './ListItem';
 import GridItem from './GridItem';
+import React from 'react';
 
 export type TMediaLibItem = {
     id: string;
@@ -18,7 +19,7 @@ export interface MediaLibItemProps extends TMediaLibItem, Omit<TouchableOpacityP
     index?: number;
 }
 
-export default function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSection, style, index, ...props }: MediaLibItemProps) {
+function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSection, style, index, ...props }: MediaLibItemProps) {
     const layout = useContext(LibLayout);
     const ItemRenderer = layout === 'grid' ? GridItem : ListItem;
 
@@ -28,3 +29,5 @@ export default function MediaLibItem({ id, title, subtitle, coverUri, coverCache
         </TouchableOpacity>
     )
 }
+
+export default React.memo(MediaLibItem);
