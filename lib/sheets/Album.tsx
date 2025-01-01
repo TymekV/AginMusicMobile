@@ -2,17 +2,20 @@ import { StyledActionSheet } from '@lib/components/StyledActionSheet';
 import { Platform } from 'react-native';
 import { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useApiHelpers, useCoverBuilder, useMemoryCache, usePins } from '@lib/hooks';
+import { useApiHelpers, useCoverBuilder, useMemoryCache, usePins, useSetting } from '@lib/hooks';
 import { useEffect } from 'react';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
-import { IconArrowsSort, IconCirclePlus, IconPin, IconPinnedOff } from '@tabler/icons-react-native';
+import { IconArrowsSort, IconCirclePlus, IconCopy, IconPin, IconPinnedOff } from '@tabler/icons-react-native';
+import * as Clipboard from 'expo-clipboard';
 
 function AlbumSheet({ sheetId, payload }: SheetProps<'album'>) {
     const insets = useSafeAreaInsets();
     const memoryCache = useMemoryCache();
     const cover = useCoverBuilder();
     const helpers = useApiHelpers();
+
+    const copyIdEnabled = useSetting('developer.copyId');
 
     const pins = usePins();
     const isPinned = pins.isPinned(payload?.id ?? '');
@@ -62,6 +65,14 @@ function AlbumSheet({ sheetId, payload }: SheetProps<'album'>) {
                     SheetManager.hide(sheetId);
                 }}
             />
+            {copyIdEnabled && <SheetOption
+                icon={IconCopy}
+                label='Copy ID'
+                onPress={async () => {
+                    await Clipboard.setStringAsync(payload?.id ?? '');
+                    SheetManager.hide(sheetId);
+                }}
+            />}
             <SheetOption
                 icon={IconCirclePlus}
                 label='Add to a Playlist'

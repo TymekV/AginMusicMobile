@@ -15,6 +15,8 @@ const qualityLevels: SettingSelectOption[] = [
     { label: 'Lossless', description: 'ALAC, 24-bit/48 kHz', value: 'lossless' },
 ];
 
+export type SettingId = 'audioQuality.wifi' | 'audioQuality.celluar' | 'audioQuality.download' | 'audioQuality.atmos' | 'storage.clearCache' | 'developer.copyId';
+
 export default function Settings() {
     const cache = useCache();
     const memoryCache = useMemoryCache();
@@ -31,6 +33,7 @@ export default function Settings() {
             <View style={styles.settings}>
                 <SettingsSection label='Audio Quality' />
                 <Setting
+                    id='audioQuality.wifi'
                     type='select'
                     label='Wi-Fi Streaming'
                     description='Maximum quality on Wi-Fi'
@@ -38,6 +41,7 @@ export default function Settings() {
                     options={qualityLevels}
                 />
                 <Setting
+                    id='audioQuality.celluar'
                     type='select'
                     label='Cellular Streaming'
                     description='Maximum quality on cellular data'
@@ -45,6 +49,7 @@ export default function Settings() {
                     options={qualityLevels}
                 />
                 <Setting
+                    id='audioQuality.download'
                     type='select'
                     label='Download Quality'
                     description='Maximum quality for downloaded music'
@@ -52,12 +57,14 @@ export default function Settings() {
                     options={qualityLevels}
                 />
                 <Setting
+                    id='audioQuality.atmos'
                     type='switch'
                     label='Dolby Atmos'
                     description='Enable Dolby Atmos when available'
                 />
                 <SettingsSection label='Storage' />
                 <Setting
+                    id='storage.clearCache'
                     type='button'
                     label='Clear Cache'
                     description='This will not remove downloaded music'
@@ -79,6 +86,7 @@ export default function Settings() {
                 />
                 <SettingsSection label='Developer Options' />
                 <Setting
+                    id='developer.copyId'
                     type='switch'
                     label='Copy ID Option'
                     description='Show the copy ID option across the app'

@@ -1,21 +1,24 @@
 import { StyledActionSheet } from '@lib/components/StyledActionSheet';
-import { Platform } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useApiHelpers, useCoverBuilder, useMemoryCache, usePins } from '@lib/hooks';
+import { useApiHelpers, useCoverBuilder, useMemoryCache, usePins, useSetting } from '@lib/hooks';
 import { useEffect } from 'react';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
-import { IconArrowsSort, IconPencil, IconPin, IconPinnedOff, IconTrash } from '@tabler/icons-react-native';
+import { IconArrowsSort, IconCopy, IconPencil, IconPin, IconPinnedOff, IconTrash } from '@tabler/icons-react-native';
 import { formatDistanceToNow } from 'date-fns';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
+import * as Clipboard from 'expo-clipboard';
 
 function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
     const insets = useSafeAreaInsets();
     const memoryCache = useMemoryCache();
     const cover = useCoverBuilder();
     const helpers = useApiHelpers();
+
+    const copyIdEnabled = useSetting('developer.copyId');
 
     const pins = usePins();
     const isPinned = pins.isPinned(payload?.id ?? '');
@@ -72,6 +75,14 @@ function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
                     SheetManager.hide(sheetId);
                 }}
             />
+            {copyIdEnabled && <SheetOption
+                icon={IconCopy}
+                label='Copy ID'
+                onPress={async () => {
+                    await Clipboard.setStringAsync(payload?.id ?? '');
+                    SheetManager.hide(sheetId);
+                }}
+            />}
             <SheetOption
                 icon={IconTrash}
                 label='Remove Playlist'

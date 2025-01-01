@@ -72,7 +72,7 @@ export const Input = forwardRef<TextInput, InputProps>((props, ref) => {
             {label && <Text style={styles.label}>{label}</Text>}
             <TouchableWithoutFeedback onPress={onPress}>
                 <View style={[styles.inputContainer, withBg ? { backgroundColor: colors.background } : {}]}>
-                    {Icon && <Icon />}
+                    {Icon && <Icon size={20} color={colors.text[1]} />}
                     <TextInput
                         placeholder={placeholder ?? ''}
                         placeholderTextColor={colors.text[1]}

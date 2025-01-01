@@ -13,7 +13,6 @@ import ServerProvider from '@/lib/providers/ServerProvider';
 import { SQLiteProvider } from 'expo-sqlite';
 import initDatabase from '@/lib/initDatabase';
 import QueueProvider from '@/lib/providers/QueueProvider';
-import PlayerProvider from '@/lib/providers/PlayerProvider';
 import MemoryCacheProvider from '@/lib/providers/MemoryCacheProvider';
 import { configureReanimatedLogger, ReanimatedLogLevel, } from 'react-native-reanimated';
 import { useSetupTrackPlayer } from '@lib/hooks';
@@ -73,23 +72,23 @@ export default function RootLayout() {
       <SafeAreaProvider initialMetrics={initialWindowMetrics}>
         <SQLiteProvider databaseName="cache.db" onInit={initDatabase}>
           <TabsHeightProvider>
-            <PlayerProvider>
-              <ServerProvider>
-                <QueueProvider>
-                  <MemoryCacheProvider>
-                    <GestureHandlerRootView style={{ flex: 1 }}>
-                      <SheetProvider>
-                        <Stack>
-                          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                          <Stack.Screen name="+not-found" />
-                        </Stack>
-                        <StatusBar style="auto" />
-                      </SheetProvider>
-                    </GestureHandlerRootView>
-                  </MemoryCacheProvider>
-                </QueueProvider>
-              </ServerProvider>
-            </PlayerProvider>
+            <ServerProvider>
+              <QueueProvider>
+                <MemoryCacheProvider>
+                  <GestureHandlerRootView style={{ flex: 1 }}>
+                    <SheetProvider>
+                      <Stack>
+                        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                        <Stack.Screen name="+not-found" />
+                        <Stack.Screen name="login" options={{ headerShown: false }} />
+                        <Stack.Screen name="login-password" options={{ headerShown: false }} />
+                      </Stack>
+                      <StatusBar style="auto" />
+                    </SheetProvider>
+                  </GestureHandlerRootView>
+                </MemoryCacheProvider>
+              </QueueProvider>
+            </ServerProvider>
           </TabsHeightProvider>
         </SQLiteProvider>
       </SafeAreaProvider>

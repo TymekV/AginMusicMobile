@@ -1,9 +1,8 @@
-import { Child, PlayQueue } from '@lib/types';
-import React, { createContext, useCallback, useEffect, useRef, useState } from 'react';
+import { Child } from '@lib/types';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { useCache } from '@lib/hooks/useCache';
-import { useApi, useCoverBuilder, useGlobalPlayer, useServer, useSubsonicParams } from '@lib/hooks';
+import { useApi, useCoverBuilder, useServer, useSubsonicParams } from '@lib/hooks';
 import qs from 'qs';
-import { useAudioPlayerStatus } from 'expo-audio';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
 import TrackPlayer, { Event, Track, useProgress, useTrackPlayerEvents } from 'react-native-track-player';

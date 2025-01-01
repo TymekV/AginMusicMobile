@@ -4,9 +4,21 @@ import { useColorScheme } from '@/lib/hooks/useColorScheme';
 import { TabBar } from '@/lib/components/TabBar';
 import { TabButton } from '@/lib/components/TabBar/TabButton';
 import { IconCircleArrowDown, IconHome, IconLayoutGrid, IconSearch } from '@tabler/icons-react-native';
+import { useColors, useServer } from '@lib/hooks';
+import { Redirect } from 'expo-router';
+import { View } from 'react-native';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const colors = useColors();
+  const { server, isLoading } = useServer();
+
+  if (isLoading) {
+    return <View style={{ flex: 1, backgroundColor: colors.background }}></View>
+  }
+
+  if (server.url === '' || server.auth.username === '') {
+    return <Redirect href="/login" />;
+  }
 
   return (
     <>

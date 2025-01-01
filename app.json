@@ -44,8 +44,7 @@
         }
       ],
       "expo-secure-store",
-      "expo-sqlite",
-      "expo-audio"
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true

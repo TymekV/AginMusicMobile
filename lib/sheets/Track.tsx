@@ -2,12 +2,13 @@ import { StyledActionSheet } from '@lib/components/StyledActionSheet';
 import { Platform } from 'react-native';
 import { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useApiHelpers, useCache, useCoverBuilder, usePins, useQueue } from '@lib/hooks';
+import { useApiHelpers, useCache, useCoverBuilder, usePins, useQueue, useSetting } from '@lib/hooks';
 import { useEffect, useState } from 'react';
 import { Child } from '@lib/types';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
-import { IconCircleMinus, IconCirclePlus, IconDisc, IconMicrophone2, IconPin, IconPinnedOff, IconPlayerTrackNext, IconPlaylistAdd } from '@tabler/icons-react-native';
+import { IconCircleMinus, IconCirclePlus, IconCopy, IconDisc, IconMicrophone2, IconPin, IconPinnedOff, IconPlayerTrackNext, IconPlaylistAdd } from '@tabler/icons-react-native';
+import * as Clipboard from 'expo-clipboard';
 
 function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
     const insets = useSafeAreaInsets();
@@ -15,6 +16,8 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
     const cover = useCoverBuilder();
     const queue = useQueue();
     const helpers = useApiHelpers();
+
+    const copyIdEnabled = useSetting('developer.copyId');
 
     const pins = usePins();
     const isPinned = pins.isPinned(payload?.id ?? '');
@@ -87,6 +90,14 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                     SheetManager.hide(sheetId);
                 }}
             />
+            {copyIdEnabled && <SheetOption
+                icon={IconCopy}
+                label='Copy ID'
+                onPress={async () => {
+                    await Clipboard.setStringAsync(payload?.id ?? '');
+                    SheetManager.hide(sheetId);
+                }}
+            />}
             <SheetOption
                 icon={IconCirclePlus}
                 label='Add to a Playlist'

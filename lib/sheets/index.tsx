@@ -33,6 +33,7 @@ declare module 'react-native-actions-sheet' {
                 confirmText?: string;
                 cancelText?: string;
                 variant?: 'default' | 'danger';
+                withCancel?: boolean;
             },
             returnValue: boolean;
         }>;

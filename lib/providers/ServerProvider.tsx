@@ -37,14 +37,18 @@ export type ServerContextType = {
     server: Server;
     serverAuth: ServerAuth;
     discoverServer: (url: string) => Promise<DiscoverServerResult> | void;
-    saveAndTestPasswordCredentials: (url: string, username: string, password: string) => Promise<void>;
+    saveAndTestPasswordCredentials: (username: string, password: string) => Promise<boolean>;
+    isLoading: boolean;
+    logOut: () => Promise<void>;
 }
 
 const initialServerContext: ServerContextType = {
     server: initialServer,
     serverAuth: {},
     discoverServer: () => { },
-    saveAndTestPasswordCredentials: async () => { }
+    saveAndTestPasswordCredentials: async () => { return false; },
+    isLoading: true,
+    logOut: async () => { },
 }
 
 export const ServerContext = createContext<ServerContextType>(initialServerContext);
@@ -52,6 +56,7 @@ export const ServerContext = createContext<ServerContextType>(initialServerConte
 export default function ServerProvider({ children }: { children?: React.ReactNode }) {
     const [server, setServer] = useState<Server>(initialServer);
     const [serverAuth, setServerAuth] = useState<ServerAuth>({});
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (server.url == '') return;
@@ -91,16 +96,20 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
 
                 setServer(updatedServer);
 
-                if (storedPassword) {
-                    const { salt, hash } = await generateSubsonicToken(storedPassword);
-                    setServerAuth({ salt, hash });
-                }
+                setIsLoading(false);
             } catch (error) {
                 console.error('Error loading server data:', error);
             }
         })();
     }, []);
 
+    useEffect(() => {
+        (async () => {
+            if (!server.auth.password) return;
+            const { salt, hash } = await generateSubsonicToken(server.auth.password);
+            setServerAuth({ salt, hash });
+        })();
+    }, [server.auth.password]);
 
     const discoverServer = useCallback(async (url: string): Promise<DiscoverServerResult> => {
         let correctUrl = '';
@@ -173,7 +182,7 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
         }
     }, []);
 
-    const saveAndTestPasswordCredentials = useCallback(async (url: string, username: string, password: string) => {
+    const saveAndTestPasswordCredentials = useCallback(async (username: string, password: string) => {
         // TODO: Add error handling
         console.log(server.url);
         const { salt, hash } = await generateSubsonicToken(password);
@@ -191,7 +200,7 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
                 }
             });
             const res = rawRes.data['subsonic-response'] as BaseResponse;
-            if (res.status != 'ok') return console.log('server returnred error', res);
+            if (res.status != 'ok') return false;
             console.log('ok');
 
             setServer(s => ({ ...s, auth: { ...s.auth, username, password } }));
@@ -206,11 +215,20 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
                 t: hash,
                 s: salt,
             });
+            return false;
         }
+        return true;
     }, [server.url]);
 
+    const logOut = useCallback(async () => {
+        setServer(initialServer);
+        setServerAuth({});
+        await SecureStore.deleteItemAsync('password');
+        await AsyncStorage.removeItem('server');
+    }, []);
+
     return (
-        <ServerContext.Provider value={{ server, serverAuth, discoverServer, saveAndTestPasswordCredentials }}>
+        <ServerContext.Provider value={{ server, serverAuth, discoverServer, saveAndTestPasswordCredentials, isLoading, logOut }}>
             {children}
         </ServerContext.Provider>
     )

@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { AlbumID3, AlbumList2, AlbumWithSongsID3, Playlist, PlaylistWithSongs } from '@lib/types';
-import { useApi } from '@lib/hooks';
+import { useApi, useServer } from '@lib/hooks';
 
 export type MemoryCache = {
     allPlaylists: Playlist[];
@@ -37,6 +37,7 @@ export const MemoryCacheContext = createContext<MemoryCacheContextType>(initialC
 export default function MemoryCacheProvider({ children }: { children?: React.ReactNode }) {
     const [cache, setCache] = useState<MemoryCache>(initialCache.cache);
     const api = useApi();
+    const { server } = useServer();
 
     const clear = useCallback(() => {
         setCache(initialCache.cache);
@@ -44,7 +45,6 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
 
     const refreshPlaylists = useCallback(async () => {
         if (!api) return;
-        console.log('[MemoryCache] Fetching playlists');
 
         const playlistsRes = await api.get('/getPlaylists');
         const playlists = playlistsRes.data?.['subsonic-response']?.playlists?.playlist as Playlist[];
@@ -52,7 +52,7 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
 
         setCache(c => ({ ...c, allPlaylists: playlists }));
         return playlists;
-    }, [api]);
+    }, [api, server.url]);
 
     const refreshPlaylist = useCallback(async (id: string) => {
         if (!api) return;
@@ -64,7 +64,7 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
 
         setCache(c => ({ ...c, playlists: { ...c.playlists, [id]: playlist } }));
         return playlist;
-    }, [api]);
+    }, [api, server.url]);
 
     const refreshAlbums = useCallback(async () => {
         // TODO: Add pagination support
@@ -78,7 +78,7 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
 
         setCache(c => ({ ...c, allAlbums: albums }));
         return albums;
-    }, [api]);
+    }, [api, server.url]);
 
     const refreshAlbum = useCallback(async (id: string) => {
         if (!api) return;
@@ -91,7 +91,7 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
 
         setCache(c => ({ ...c, albums: { ...c.albums, [id]: album } }));
         return album;
-    }, [api]);
+    }, [api, server.url]);
 
     // Prefetch the data
     useEffect(() => {
@@ -100,7 +100,7 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
             await refreshPlaylists();
             await refreshAlbums();
         })();
-    }, [api, refreshPlaylists, refreshAlbums]);
+    }, [api, server.url, refreshPlaylists, refreshAlbums]);
 
     return (
         <MemoryCacheContext.Provider value={{ cache, clear, refreshPlaylists, refreshPlaylist, refreshAlbums, refreshAlbum }}>
