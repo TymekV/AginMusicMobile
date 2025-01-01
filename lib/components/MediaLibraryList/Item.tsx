@@ -3,6 +3,7 @@ import { TouchableOpacityProps } from 'react-native-gesture-handler';
 import { LibLayout } from '.';
 import { useContext } from 'react';
 import ListItem from './ListItem';
+import GridItem from './GridItem';
 
 export type TMediaLibItem = {
     id: string;
@@ -14,14 +15,15 @@ export type TMediaLibItem = {
 
 export interface MediaLibItemProps extends TMediaLibItem, Omit<TouchableOpacityProps, 'id'> {
     rightSection?: React.ReactNode;
+    index?: number;
 }
 
-export default function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSection, ...props }: MediaLibItemProps) {
+export default function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSection, style, index, ...props }: MediaLibItemProps) {
     const layout = useContext(LibLayout);
-    const ItemRenderer = layout === 'grid' ? ListItem : ListItem;
+    const ItemRenderer = layout === 'grid' ? GridItem : ListItem;
 
     return (
-        <TouchableOpacity activeOpacity={.8} {...props}>
+        <TouchableOpacity activeOpacity={.8} style={[style, (index != undefined && layout == 'grid') && (index % 2 == 0 ? { marginRight: 5 } : { marginLeft: 5 })]} {...props}>
             <ItemRenderer id={id} title={title} subtitle={subtitle} coverUri={coverUri} coverCacheKey={coverCacheKey} rightSection={rightSection} />
         </TouchableOpacity>
     )

@@ -1,15 +1,15 @@
 import ActionIcon from '@/lib/components/ActionIcon';
 import Container from '@/lib/components/Container';
 import Header from '@/lib/components/Header';
-import MediaLibraryList, { MediaLibraryLayout } from '@/lib/components/MediaLibraryList';
-import { TMediaLibItem } from '@/lib/components/MediaLibraryList/Item';
+import { LibLayout, MediaLibraryLayout } from '@/lib/components/MediaLibraryList';
 import TagTabs from '@/lib/components/TagTabs';
 import { TTagTab } from '@/lib/components/TagTabs/TagTab';
-import { IconDisc, IconHeart, IconLayoutGrid, IconLayoutList, IconMicrophone2, IconMusic, IconPlaylist, IconPlus } from '@tabler/icons-react-native';
-import React, { useState } from 'react';
+import { IconDisc, IconLayoutGrid, IconLayoutList, IconMicrophone2, IconMusic, IconPlaylist, IconPlus } from '@tabler/icons-react-native';
+import React, { useEffect, useState } from 'react';
 import * as Haptics from 'expo-haptics';
 import { AlbumsTab, PlaylistsTab } from '@/lib/components/MediaLibrary';
 import { SheetManager } from 'react-native-actions-sheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const tabs: TTagTab[] = [
     {
@@ -39,26 +39,22 @@ const tabs: TTagTab[] = [
     }
 ];
 
-const mockData: TMediaLibItem[] = [
-    {
-        id: '1',
-        title: 'Song 1',
-        subtitle: 'Artist 1',
-        coverUri: 'https://picsum.photos/200',
-        coverCacheKey: '',
-    },
-    {
-        id: '2',
-        title: 'Song 2',
-        subtitle: 'Artist 2',
-        coverUri: 'https://picsum.photos/200',
-        coverCacheKey: '',
-    },
-]
-
 export default function Library() {
     const [tab, setTab] = useState('playlists');
     const [layout, setLayout] = useState<MediaLibraryLayout>('list');
+
+    useEffect(() => {
+        (async () => {
+            const layout = await AsyncStorage.getItem('mediaLibrary.layout');
+            if (layout) setLayout(layout as MediaLibraryLayout);
+        })();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            await AsyncStorage.setItem('mediaLibrary.layout', layout);
+        })();
+    }, [layout]);
 
     return (
         <Container>
@@ -70,8 +66,10 @@ export default function Library() {
                 }} />
             </>} />
             <TagTabs data={tabs} tab={tab} onChange={setTab} />
-            {tab == 'playlists' && <PlaylistsTab />}
-            {tab == 'albums' && <AlbumsTab />}
+            <LibLayout.Provider value={layout}>
+                {tab == 'playlists' && <PlaylistsTab />}
+                {tab == 'albums' && <AlbumsTab />}
+            </LibLayout.Provider>
         </Container>
     )
 }

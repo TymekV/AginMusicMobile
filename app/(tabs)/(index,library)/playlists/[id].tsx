@@ -7,7 +7,7 @@ import { LibSize, LibLayout, LibSeparators } from '@lib/components/MediaLibraryL
 import MediaLibItem from '@lib/components/MediaLibraryList/Item';
 import { IconDots, IconSearch } from '@tabler/icons-react-native';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FlatList } from 'react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
