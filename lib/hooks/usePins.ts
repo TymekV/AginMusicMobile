@@ -1,3 +1,5 @@
+import showToast from "@lib/showToast";
+import { IconPin, IconPinnedOff } from "@tabler/icons-react-native";
 import { useSQLiteContext } from "expo-sqlite";
 import { useCallback, useEffect, useState } from "react";
 
@@ -32,11 +34,25 @@ export function usePins() {
             $pinOrder: pin.pinOrder,
         });
         setPins([...pins, pin]);
+        await showToast({
+            title: 'Pinned',
+            subtitle: pin.name,
+            icon: IconPin,
+        });
     }, []);
 
     const removePin = useCallback(async (id: string) => {
+        const pin = await db.getFirstAsync<Pin>('SELECT * FROM pins WHERE id = $id', { $id: id });
+        if (!pin) return;
+
         await db.runAsync('DELETE FROM pins WHERE id = $id', { $id: id });
         setPins(pins.filter(p => p.id !== id));
+
+        await showToast({
+            title: 'Unpinned',
+            subtitle: pin.name,
+            icon: IconPinnedOff,
+        });
     }, []);
 
     const isPinned = useCallback((id: string) => pins.some(p => p.id === id), [pins]);

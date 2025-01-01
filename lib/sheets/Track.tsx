@@ -9,6 +9,10 @@ import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
 import { IconCircleMinus, IconCirclePlus, IconCopy, IconDisc, IconDownload, IconMicrophone2, IconPin, IconPinnedOff, IconPlayerTrackNext, IconPlaylistAdd } from '@tabler/icons-react-native';
 import * as Clipboard from 'expo-clipboard';
+import Toast from 'react-native-toast-message';
+import { SmallToastProps } from '@lib/components/SmallToast';
+import * as Haptics from 'expo-haptics';
+import showToast from '@lib/showToast';
 
 function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
     const insets = useSafeAreaInsets();
@@ -48,7 +52,12 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
             <SheetOption
                 icon={IconPlayerTrackNext}
                 label='Play Next'
-                onPress={() => {
+                onPress={async () => {
+                    await showToast({
+                        title: 'Playing Next',
+                        subtitle: data?.title,
+                        cover: { uri: cover.generateUrl(data?.coverArt ?? '', { size: 128 }), cacheKey: `${data?.coverArt}-128x128` },
+                    });
                     SheetManager.hide(sheetId);
                 }}
             />
@@ -57,6 +66,11 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                 label='Add to Queue'
                 onPress={async () => {
                     await queue.add(data?.id ?? '');
+                    await showToast({
+                        title: 'Added to Queue',
+                        subtitle: data?.title,
+                        cover: { uri: cover.generateUrl(data?.coverArt ?? '', { size: 128 }), cacheKey: `${data?.coverArt}-128x128` },
+                    });
                     SheetManager.hide(sheetId);
                 }}
             />
@@ -109,6 +123,15 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                 icon={IconCirclePlus}
                 label='Add to a Playlist'
                 onPress={() => {
+                    // const toastProps: SmallToastProps = {
+                    //     title: 'Added to Playlist',
+                    //     subtitle: data?.title,
+                    //     cover: { uri: cover.generateUrl(data?.coverArt ?? '', { size: 128 }), cacheKey: `${data?.coverArt}-128x128` },
+                    // }
+                    // Toast.show({
+                    //     type: 'info',
+                    //     props: toastProps,
+                    // });
                     SheetManager.hide(sheetId);
                 }}
             />

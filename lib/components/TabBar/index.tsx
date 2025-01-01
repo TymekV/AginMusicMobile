@@ -24,6 +24,7 @@ export const TabBar = forwardRef(({ children }: TabBarProps, ref: Ref<View>) => 
             left: 0,
             right: 0,
             bottom: 0,
+            zIndex: 999,
         },
         barFiller: {
             backgroundColor: colors.background,

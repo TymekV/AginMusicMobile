@@ -20,6 +20,9 @@ import TrackPlayer from 'react-native-track-player';
 import { PlaybackService } from '@lib/service';
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
 import TabsHeightProvider from '@lib/providers/TabsHeightProvider';
+import Toast from 'react-native-toast-message';
+import { toastConfig } from '@lib/toastConfig';
+import ToastWrapper from '@lib/components/ToastWrapper';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -83,6 +86,7 @@ export default function RootLayout() {
                         <Stack.Screen name="login" options={{ headerShown: false }} />
                         <Stack.Screen name="login-password" options={{ headerShown: false }} />
                       </Stack>
+                      <ToastWrapper />
                       <StatusBar style="auto" />
                     </SheetProvider>
                   </GestureHandlerRootView>
