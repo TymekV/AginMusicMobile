@@ -59,7 +59,6 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
                     {withBackIcon && <ActionIcon icon={IconChevronLeft} size={16} variant='secondary' onPress={() => router.back()} />}
                     <View>
                         {title && <Title size={24} fontFamily='Poppins-SemiBold'>{title}</Title>}
-                        {subtitle && <Title size={14} fontFamily='Poppins-Regular' color={colors.text[1]}>{subtitle}</Title>}
                     </View>
                 </View>
                 <View style={styles.iconGroup}>
@@ -69,6 +68,7 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
                     {withAvatar && <Avatar />}
                 </View>
             </View>
+            {subtitle && <Title size={14} fontFamily='Poppins-Regular' color={colors.text[1]}>{subtitle}</Title>}
         </Root>
     )
 }

@@ -4,15 +4,16 @@ import { SafeAreaView, SafeAreaViewProps, useSafeAreaInsets } from "react-native
 
 export interface ContainerProps extends SafeAreaViewProps {
     children?: React.ReactNode;
+    includeTop?: boolean;
 }
 
-export default function Container({ children, ...props }: ContainerProps) {
+export default function Container({ children, edges, includeTop = true, ...props }: ContainerProps) {
     const colors = useColors();
 
     const insets = useSafeAreaInsets();
 
     return (
-        <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: insets.top, paddingBottom: insets.bottom }} {...props}>
+        <View style={{ flex: 1, backgroundColor: colors.background, paddingTop: includeTop ? insets.top : 0, paddingBottom: insets.bottom }} {...props}>
             {children}
         </View>
     )

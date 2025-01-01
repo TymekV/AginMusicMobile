@@ -28,7 +28,7 @@ export default function Playlist() {
     }, [cache.refreshPlaylist, id]));
 
     return (
-        <Container edges={['left', 'right', 'bottom']}>
+        <Container includeTop={false}>
             <Header withBackIcon withAvatar={false} floating rightSection={<>
                 <ActionIcon icon={IconSearch} size={16} variant='secondary' />
                 <ActionIcon icon={IconDots} size={16} variant='secondary' onPress={() => {
