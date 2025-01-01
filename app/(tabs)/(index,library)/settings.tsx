@@ -3,11 +3,12 @@ import Header from '@lib/components/Header';
 import Setting, { SettingSelectOption } from '@lib/components/Setting';
 import SettingsSection from '@lib/components/SettingsSection';
 import { useCache, useMemoryCache } from '@lib/hooks';
-import { IconDownload, IconMobiledata, IconWifi } from '@tabler/icons-react-native';
+import { IconCircleCheck, IconDownload, IconMobiledata, IconWifi } from '@tabler/icons-react-native';
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
+import showToast from '@lib/showToast';
 
 const qualityLevels: SettingSelectOption[] = [
     { label: 'Normal', description: '128kbps', value: '128kbps' },
@@ -82,6 +83,12 @@ export default function Settings() {
 
                         await cache.clearAll();
                         memoryCache.clear();
+
+                        await showToast({
+                            title: 'Cache Cleared',
+                            subtitle: 'The cache has been cleared successfully.',
+                            icon: IconCircleCheck,
+                        });
                     }}
                 />
                 <SettingsSection label='Developer Options' />
