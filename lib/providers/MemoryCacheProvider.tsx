@@ -10,9 +10,9 @@ export type MemoryCache = {
 
 export type MemoryCacheContextType = {
     cache: MemoryCache;
-    refreshPlaylists: () => Promise<void>;
-    refreshPlaylist: (id: string) => Promise<void>;
-    refreshAlbums: () => Promise<void>;
+    refreshPlaylists: () => Promise<Playlist[] | void>;
+    refreshPlaylist: (id: string) => Promise<PlaylistWithSongs | void>;
+    refreshAlbums: () => Promise<AlbumID3[] | void>;
     clear: () => void;
 }
 
@@ -47,6 +47,7 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
         if (!playlists) return;
 
         setCache(c => ({ ...c, allPlaylists: playlists }));
+        return playlists;
     }, [api]);
 
     const refreshPlaylist = useCallback(async (id: string) => {
@@ -58,6 +59,7 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
         if (!playlist) return;
 
         setCache(c => ({ ...c, playlists: { ...c.playlists, [id]: playlist } }));
+        return playlist;
     }, [api]);
 
     const refreshAlbums = useCallback(async () => {
@@ -71,6 +73,7 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
         console.log({ albums });
 
         setCache(c => ({ ...c, allAlbums: albums }));
+        return albums;
     }, [api]);
 
     // Prefetch the data

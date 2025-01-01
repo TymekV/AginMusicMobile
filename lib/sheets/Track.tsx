@@ -2,7 +2,7 @@ import { StyledActionSheet } from '@lib/components/StyledActionSheet';
 import { Platform } from 'react-native';
 import { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useCache, useColors, useCoverBuilder, usePins, useQueue } from '@lib/hooks';
+import { useApiHelpers, useCache, useCoverBuilder, usePins, useQueue } from '@lib/hooks';
 import { useEffect, useState } from 'react';
 import { Child } from '@lib/types';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
@@ -14,6 +14,7 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
     const cache = useCache();
     const cover = useCoverBuilder();
     const queue = useQueue();
+    const helpers = useApiHelpers();
 
     const pins = usePins();
     const isPinned = pins.isPinned(payload?.id ?? '');
@@ -97,7 +98,10 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                 icon={IconCircleMinus}
                 label='Remove from this Playlist'
                 variant='destructive'
-                onPress={() => {
+                onPress={async () => {
+                    if (!payload.contextId || !payload.id) return;
+
+                    await helpers.removeTrackFromPlaylist(payload.contextId, payload.id);
                     SheetManager.hide(sheetId);
                 }}
             />}
