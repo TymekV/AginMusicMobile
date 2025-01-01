@@ -6,8 +6,8 @@ import ActionIcon from '@lib/components/ActionIcon';
 import { LibSize, LibLayout, LibSeparators } from '@lib/components/MediaLibraryList';
 import MediaLibItem from '@lib/components/MediaLibraryList/Item';
 import { IconDots, IconSearch } from '@tabler/icons-react-native';
-import { useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useMemo } from 'react';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { FlatList } from 'react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
@@ -20,11 +20,11 @@ export default function Playlist() {
     const colors = useColors();
     const queue = useQueue();
 
-    const data = useMemo(() => cache.cache.playlists[id as string], [cache.cache.playlists, id]);
+    const data = useMemo(() => cache.cache.playlists[id as string], [cache.cache.playlists, id])
 
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
         cache.refreshPlaylist(id as string);
-    }, [cache.refreshPlaylist, id]);
+    }, [cache.refreshPlaylist, id]));
 
     return (
         <Container edges={['left', 'right', 'bottom']}>
