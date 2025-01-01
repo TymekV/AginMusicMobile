@@ -1,7 +1,7 @@
 import Container from '@/lib/components/Container';
 import Header from '@/lib/components/Header';
-import { PlaylistBackground, PlaylistHeader } from '@lib/components/Playlist';
-import { useColors, useCoverBuilder, useMemoryCache, useQueue, useTabsHeight } from '@lib/hooks';
+import { PlaylistHeader } from '@lib/components/Playlist';
+import { useCoverBuilder, useMemoryCache, useTabsHeight } from '@lib/hooks';
 import ActionIcon from '@lib/components/ActionIcon';
 import { LibSize, LibLayout, LibSeparators } from '@lib/components/MediaLibraryList';
 import MediaLibItem from '@lib/components/MediaLibraryList/Item';
@@ -11,7 +11,7 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { FlatList, View } from 'react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
-import Animated, { Easing, FadeIn, useAnimatedRef, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedRef, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export default function Album() {
     const { id } = useLocalSearchParams();
@@ -40,6 +40,16 @@ export default function Album() {
         cache.refreshAlbum(id as string);
     }, [cache.refreshAlbum, id]));
 
+    const showContextMenu = useCallback(async () => {
+        Haptics.selectionAsync();
+        SheetManager.show('album', {
+            payload: {
+                id: data.id,
+                data,
+            }
+        });
+    }, []);
+
     return (
         <Container includeTop={false} includeBottom={false}>
             <Header
@@ -53,7 +63,7 @@ export default function Album() {
                 initialHideTitle
                 rightSection={<>
                     <ActionIcon icon={IconSearch} size={16} variant='secondary' />
-                    <ActionIcon icon={IconDots} size={16} variant='secondary' />
+                    <ActionIcon icon={IconDots} size={16} variant='secondary' onPress={showContextMenu} />
                 </>} />
             <Animated.View style={[{ flex: 1 }, containerStyle]}>
                 <LibLayout.Provider value="list">
@@ -88,7 +98,7 @@ export default function Album() {
                                         }}
                                     />
                                 )}
-                                ListHeaderComponent={<PlaylistHeader album={data} />}
+                                ListHeaderComponent={<PlaylistHeader album={data} onTitlePress={showContextMenu} />}
                                 ListFooterComponent={<View style={{ height: tabsHeight + 10 }} />}
                             />
                         </LibSeparators.Provider>

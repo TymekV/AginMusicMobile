@@ -42,6 +42,16 @@ export default function Playlist() {
         cache.refreshPlaylist(id as string);
     }, [cache.refreshPlaylist, id]));
 
+    const showContextMenu = useCallback(async () => {
+        Haptics.selectionAsync();
+        SheetManager.show('playlist', {
+            payload: {
+                id: data.id,
+                data,
+            }
+        });
+    }, []);
+
     return (
         <Container includeTop={false} includeBottom={false}>
             <Header
@@ -55,15 +65,7 @@ export default function Playlist() {
                 initialHideTitle
                 rightSection={<>
                     <ActionIcon icon={IconSearch} size={16} variant='secondary' />
-                    <ActionIcon icon={IconDots} size={16} variant='secondary' onPress={() => {
-                        Haptics.selectionAsync();
-                        SheetManager.show('playlist', {
-                            payload: {
-                                id: data.id,
-                                data,
-                            }
-                        });
-                    }} />
+                    <ActionIcon icon={IconDots} size={16} variant='secondary' onPress={showContextMenu} />
                 </>} />
             <Animated.View style={[{ flex: 1 }, containerStyle]}>
                 <LibLayout.Provider value="list">
@@ -99,7 +101,7 @@ export default function Playlist() {
                                         }}
                                     />
                                 )}
-                                ListHeaderComponent={<PlaylistHeader playlist={data} />}
+                                ListHeaderComponent={<PlaylistHeader playlist={data} onTitlePress={showContextMenu} />}
                                 ListFooterComponent={<View style={{ height: tabsHeight + 10 }} />}
                             />
                         </LibSeparators.Provider>

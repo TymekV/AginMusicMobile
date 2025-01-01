@@ -1,6 +1,6 @@
 import { useColors, useCoverBuilder, useQueue } from '@lib/hooks';
 import { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Cover from '../Cover';
 import { AlbumWithSongsID3, Playlist, PlaylistWithSongs } from '@lib/types';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -14,9 +14,10 @@ import { PlaylistBackground } from './PlaylistBackground';
 export type PlaylistHeaderProps = {
     playlist?: PlaylistWithSongs;
     album?: AlbumWithSongsID3;
+    onTitlePress?: () => void;
 };
 
-export function PlaylistHeader({ playlist, album }: PlaylistHeaderProps) {
+export function PlaylistHeader({ playlist, album, onTitlePress }: PlaylistHeaderProps) {
     const colors = useColors();
     const cover = useCoverBuilder();
     const queue = useQueue();
@@ -55,7 +56,9 @@ export function PlaylistHeader({ playlist, album }: PlaylistHeaderProps) {
                 size={250}
             />
             <View style={styles.title}>
-                <Title align="center" size={24} fontFamily="Poppins-SemiBold">{playlist?.name ?? album?.name}</Title>
+                <Pressable onPress={onTitlePress}>
+                    <Title align="center" size={24} fontFamily="Poppins-SemiBold">{playlist?.name ?? album?.name}</Title>
+                </Pressable>
                 <Title align="center" size={14} fontFamily="Poppins-Regular" color={colors.text[1]}>{playlist && `${playlist.songCount} songs • edited ${formatDistanceToNow(new Date(playlist.changed), { addSuffix: true })}`}{album && `${album.artist} • ${album.year}`}</Title>
             </View>
             <View style={styles.actions}>
