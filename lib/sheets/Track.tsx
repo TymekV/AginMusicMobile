@@ -116,6 +116,11 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                 label='Copy ID'
                 onPress={async () => {
                     await Clipboard.setStringAsync(payload?.id ?? '');
+                    await showToast({
+                        title: 'Copied ID',
+                        subtitle: payload?.id,
+                        icon: IconCopy,
+                    });
                     SheetManager.hide(sheetId);
                 }}
             />}

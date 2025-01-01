@@ -8,6 +8,7 @@ import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
 import { IconArrowsSort, IconCirclePlus, IconCopy, IconPin, IconPinnedOff } from '@tabler/icons-react-native';
 import * as Clipboard from 'expo-clipboard';
+import showToast from '@lib/showToast';
 
 function AlbumSheet({ sheetId, payload }: SheetProps<'album'>) {
     const insets = useSafeAreaInsets();
@@ -70,6 +71,11 @@ function AlbumSheet({ sheetId, payload }: SheetProps<'album'>) {
                 label='Copy ID'
                 onPress={async () => {
                     await Clipboard.setStringAsync(payload?.id ?? '');
+                    await showToast({
+                        title: 'Copied ID',
+                        subtitle: payload?.id,
+                        icon: IconCopy,
+                    });
                     SheetManager.hide(sheetId);
                 }}
             />}

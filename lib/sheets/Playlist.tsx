@@ -11,6 +11,7 @@ import { formatDistanceToNow } from 'date-fns';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
+import showToast from '@lib/showToast';
 
 function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
     const insets = useSafeAreaInsets();
@@ -80,6 +81,11 @@ function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
                 label='Copy ID'
                 onPress={async () => {
                     await Clipboard.setStringAsync(payload?.id ?? '');
+                    await showToast({
+                        title: 'Copied ID',
+                        subtitle: payload?.id,
+                        icon: IconCopy,
+                    });
                     SheetManager.hide(sheetId);
                 }}
             />}
