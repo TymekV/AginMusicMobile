@@ -49,7 +49,7 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                 title={data?.title}
                 artist={data?.artist}
             />
-            <SheetOption
+            {payload?.context != 'nowPlaying' && <SheetOption
                 icon={IconPlayerTrackNext}
                 label='Play Next'
                 onPress={async () => {
@@ -60,8 +60,8 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                     });
                     SheetManager.hide(sheetId);
                 }}
-            />
-            <SheetOption
+            />}
+            {payload?.context != 'nowPlaying' && <SheetOption
                 icon={IconPlaylistAdd}
                 label='Add to Queue'
                 onPress={async () => {
@@ -73,7 +73,7 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                     });
                     SheetManager.hide(sheetId);
                 }}
-            />
+            />}
             <SheetOption
                 icon={IconMicrophone2}
                 label='Go to Artist'
@@ -144,6 +144,12 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
 
                     await helpers.removeTrackFromPlaylist(payload.contextId, payload.id);
                     SheetManager.hide(sheetId);
+
+                    await showToast({
+                        title: 'Removed from Playlist',
+                        subtitle: data?.title,
+                        cover: { uri: cover.generateUrl(data?.coverArt ?? '', { size: 128 }), cacheKey: `${data?.coverArt}-128x128` },
+                    });
                 }}
             />}
         </StyledActionSheet>
