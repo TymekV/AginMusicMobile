@@ -16,6 +16,7 @@ import { enterDown, enterUp, exitDown, exitUp } from './animations';
 import Title from '@/lib/components/Title';
 import QueueTab from './QueueTab';
 import LyricsTab from './LyricsTab';
+import { ColorSchemeOverride } from '@lib/providers/ColorSchemeOverride';
 
 type GestureEnabledContextType = [
     boolean,
@@ -42,7 +43,7 @@ export const TabContext = createContext<TabContextType>({
 // TODO: Fix dragging the sheet
 function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
     const insets = useSafeAreaInsets();
-    const colors = useColors();
+    const colors = useColors({ forceTheme: 'dark' });
     const { nowPlaying } = useQueue();
     const cover = useCoverBuilder();
     const isExternalPlaybackAvailable = true;// useExternalPlaybackAvailability();
@@ -93,49 +94,51 @@ function PlaybackSheet({ sheetId, payload }: SheetProps<'playback'>) {
     ], []);
 
     return (
-        <StyledActionSheet
-            gestureEnabled={gestureEnabled}
-            fullHeight
-            safeAreaInsets={{ ...insets, bottom: 0, }}
-            overdrawEnabled={false}
-            drawUnderStatusBar
-            containerStyle={{ backgroundColor: colors.background, margin: 0, padding: 0, overflow: 'hidden', position: 'relative' }}
-            openAnimationConfig={{ bounciness: 0 }}
-            closeAnimationConfig={{ bounciness: 0 }}
-            isModal={Platform.OS == 'android' ? false : true}
-            CustomHeaderComponent={<View></View>}
-            useBottomSafeAreaPadding={true}
-            overlayColor={colors.background}
-            defaultOverlayOpacity={1}
-            onBeforeShow={() => {
-                setIsAnimated(false);
-                setTimeout(() => {
-                    setIsAnimated(true);
-                }, 1000);
-            }}
-        >
-            <GestureEnabledContext.Provider value={[gestureEnabled, setGestureEnabled]}>
-                <IdContext.Provider value={sheetId}>
-                    <TabContext.Provider value={{ tab: currentTab, changeTab: handleTabChange }}>
-                        <BlurredBackground source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} animated={isAnimated} />
-                        <View style={styles.container}>
-                            <View style={styles.tabContainer}>
-                                {currentTab == 'main' && <Animated.View style={styles.tab} exiting={exitUp} entering={enterDown}>
-                                    <MainTab />
-                                </Animated.View>}
-                                {currentTab == 'queue' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
-                                    <QueueTab />
-                                </Animated.View>}
-                                {currentTab == 'lyrics' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
-                                    <LyricsTab />
-                                </Animated.View>}
+        <ColorSchemeOverride.Provider value="dark">
+            <StyledActionSheet
+                gestureEnabled={gestureEnabled}
+                fullHeight
+                safeAreaInsets={{ ...insets, bottom: 0, }}
+                overdrawEnabled={false}
+                drawUnderStatusBar
+                containerStyle={{ backgroundColor: colors.background, margin: 0, padding: 0, overflow: 'hidden', position: 'relative' }}
+                openAnimationConfig={{ bounciness: 0 }}
+                closeAnimationConfig={{ bounciness: 0 }}
+                isModal={Platform.OS == 'android' ? false : true}
+                CustomHeaderComponent={<View></View>}
+                useBottomSafeAreaPadding={true}
+                overlayColor={colors.background}
+                defaultOverlayOpacity={1}
+                onBeforeShow={() => {
+                    setIsAnimated(false);
+                    setTimeout(() => {
+                        setIsAnimated(true);
+                    }, 1000);
+                }}
+            >
+                <GestureEnabledContext.Provider value={[gestureEnabled, setGestureEnabled]}>
+                    <IdContext.Provider value={sheetId}>
+                        <TabContext.Provider value={{ tab: currentTab, changeTab: handleTabChange }}>
+                            <BlurredBackground source={{ uri: cover.generateUrl(nowPlaying.coverArt ?? '') }} cacheKey={nowPlaying.coverArt ? `${nowPlaying.coverArt}-full` : 'empty-full'} animated={isAnimated} />
+                            <View style={styles.container}>
+                                <View style={styles.tabContainer}>
+                                    {currentTab == 'main' && <Animated.View style={styles.tab} exiting={exitUp} entering={enterDown}>
+                                        <MainTab />
+                                    </Animated.View>}
+                                    {currentTab == 'queue' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
+                                        <QueueTab />
+                                    </Animated.View>}
+                                    {currentTab == 'lyrics' && <Animated.View style={styles.tab} exiting={exitDown} entering={enterUp}>
+                                        <LyricsTab />
+                                    </Animated.View>}
+                                </View>
+                                <Tabs tabs={tabs} active={currentTab} onChange={handleTabChange} />
                             </View>
-                            <Tabs tabs={tabs} active={currentTab} onChange={handleTabChange} />
-                        </View>
-                    </TabContext.Provider>
-                </IdContext.Provider>
-            </GestureEnabledContext.Provider>
-        </StyledActionSheet>
+                        </TabContext.Provider>
+                    </IdContext.Provider>
+                </GestureEnabledContext.Provider>
+            </StyledActionSheet>
+        </ColorSchemeOverride.Provider>
     );
 }
 

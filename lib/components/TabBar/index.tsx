@@ -38,7 +38,7 @@ export const TabBar = forwardRef(({ children }: TabBarProps, ref: Ref<View>) => 
         <SafeAreaView style={styles.bar} ref={ref} edges={['bottom']}>
             <View style={styles.barContainer}>
                 <LinearGradient
-                    colors={['transparent', colors.background + '99', colors.background]}
+                    colors={[colors.theme === 'dark' ? '#00000000' : '#ffffff00', colors.background + '99', colors.background]}
                     locations={[0, 0.3, .85]}
                     style={styles.gradient}
                 />
