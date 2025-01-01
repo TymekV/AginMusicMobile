@@ -1,11 +1,12 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
-import { AlbumID3, AlbumList2, Playlist, PlaylistWithSongs } from '@lib/types';
+import { AlbumID3, AlbumList2, AlbumWithSongsID3, Playlist, PlaylistWithSongs } from '@lib/types';
 import { useApi } from '@lib/hooks';
 
 export type MemoryCache = {
     allPlaylists: Playlist[];
     playlists: Record<string, PlaylistWithSongs>;
     allAlbums: AlbumID3[];
+    albums: Record<string, AlbumWithSongsID3>;
 };
 
 export type MemoryCacheContextType = {
@@ -13,6 +14,7 @@ export type MemoryCacheContextType = {
     refreshPlaylists: () => Promise<Playlist[] | void>;
     refreshPlaylist: (id: string) => Promise<PlaylistWithSongs | void>;
     refreshAlbums: () => Promise<AlbumID3[] | void>;
+    refreshAlbum: (id: string) => Promise<AlbumWithSongsID3 | void>;
     clear: () => void;
 }
 
@@ -21,10 +23,12 @@ export const initialCache: MemoryCacheContextType = {
         allPlaylists: [],
         playlists: {},
         allAlbums: [],
+        albums: {},
     },
     refreshPlaylists: async () => { },
     refreshPlaylist: async () => { },
     refreshAlbums: async () => { },
+    refreshAlbum: async () => { },
     clear: () => { },
 };
 
@@ -76,6 +80,19 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
         return albums;
     }, [api]);
 
+    const refreshAlbum = useCallback(async (id: string) => {
+        if (!api) return;
+        console.log('[MemoryCache] Fetching album');
+
+        const albumRes = await api.get('/getAlbum', { params: { id } });
+        const album = albumRes.data?.['subsonic-response']?.album as AlbumWithSongsID3;
+        if (!album) return;
+        console.log({ album });
+
+        setCache(c => ({ ...c, albums: { ...c.albums, [id]: album } }));
+        return album;
+    }, [api]);
+
     // Prefetch the data
     useEffect(() => {
         if (!api) return;
@@ -86,7 +103,7 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
     }, [api, refreshPlaylists, refreshAlbums]);
 
     return (
-        <MemoryCacheContext.Provider value={{ cache, clear, refreshPlaylists, refreshPlaylist, refreshAlbums }}>
+        <MemoryCacheContext.Provider value={{ cache, clear, refreshPlaylists, refreshPlaylist, refreshAlbums, refreshAlbum }}>
             {children}
         </MemoryCacheContext.Provider>
     )

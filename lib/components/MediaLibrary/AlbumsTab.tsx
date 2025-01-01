@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import MediaLibraryList, { LibLayout } from '@lib/components/MediaLibraryList';
 import { TMediaLibItem } from '@lib/components/MediaLibraryList/Item';
 import { useCoverBuilder, useMemoryCache } from '@/lib/hooks';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 
 export function AlbumsTab() {
     const cache = useMemoryCache();
@@ -29,7 +29,7 @@ export function AlbumsTab() {
     return (
         <MediaLibraryList
             data={data}
-            onItemPress={() => { }}
+            onItemPress={(item) => router.push({ pathname: '/albums/[id]', params: { id: item.id } })}
             layout={layout}
         />
     )

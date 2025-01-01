@@ -18,6 +18,7 @@ export default function Home() {
             <Button title="Log in (Account 1)" onPress={async () => {
                 const serverInfo = await server.discoverServer(demoAccounts[0].server);
                 await cache.clearAll();
+                memoryCache.clear();
                 console.log('si', serverInfo);
 
                 await server.saveAndTestPasswordCredentials(serverInfo?.url ?? '', demoAccounts[0].username, demoAccounts[0].password);
@@ -28,6 +29,7 @@ export default function Home() {
             <Button title="Log in (Account 2)" onPress={async () => {
                 const serverInfo = await server.discoverServer(demoAccounts[1].server);
                 await cache.clearAll();
+                memoryCache.clear();
                 console.log('si', serverInfo);
 
                 await server.saveAndTestPasswordCredentials(serverInfo?.url ?? '', demoAccounts[1].username, demoAccounts[1].password);

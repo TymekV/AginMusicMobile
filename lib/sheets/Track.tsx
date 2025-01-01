@@ -64,13 +64,13 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                     SheetManager.hide(sheetId);
                 }}
             />
-            <SheetOption
+            {payload?.context != 'album' && <SheetOption
                 icon={IconDisc}
                 label='Go to Album'
                 onPress={() => {
                     SheetManager.hide(sheetId);
                 }}
-            />
+            />}
             <SheetOption
                 icon={isPinned ? IconPinnedOff : IconPin}
                 label={isPinned ? 'Unpin Track' : 'Pin Track'}

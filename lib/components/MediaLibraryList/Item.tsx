@@ -12,6 +12,8 @@ export type TMediaLibItem = {
     subtitle?: string;
     coverUri?: string;
     coverCacheKey?: string;
+    isAlbumEntry?: boolean;
+    trackNumber?: number;
 }
 
 export interface MediaLibItemProps extends TMediaLibItem, Omit<TouchableOpacityProps, 'id'> {
@@ -19,13 +21,13 @@ export interface MediaLibItemProps extends TMediaLibItem, Omit<TouchableOpacityP
     index?: number;
 }
 
-function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSection, style, index, ...props }: MediaLibItemProps) {
+function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSection, style, index, isAlbumEntry = false, trackNumber, ...props }: MediaLibItemProps) {
     const layout = useContext(LibLayout);
     const ItemRenderer = layout === 'grid' ? GridItem : ListItem;
 
     return (
         <TouchableOpacity activeOpacity={.8} style={[style, (index != undefined && layout == 'grid') && (index % 2 == 0 ? { marginRight: 5 } : { marginLeft: 5 })]} {...props}>
-            <ItemRenderer id={id} title={title} subtitle={subtitle} coverUri={coverUri} coverCacheKey={coverCacheKey} rightSection={rightSection} />
+            <ItemRenderer id={id} title={title} subtitle={subtitle} coverUri={coverUri} coverCacheKey={coverCacheKey} rightSection={rightSection} isAlbumEntry={isAlbumEntry} trackNumber={trackNumber} />
         </TouchableOpacity>
     )
 }

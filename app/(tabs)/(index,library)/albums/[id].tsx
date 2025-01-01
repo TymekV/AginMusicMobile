@@ -13,19 +13,17 @@ import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
 import Animated, { Easing, FadeIn, useAnimatedRef, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-export default function Playlist() {
+export default function Album() {
     const { id } = useLocalSearchParams();
 
     const cache = useMemoryCache();
     const cover = useCoverBuilder();
-    const colors = useColors();
-    const queue = useQueue();
     const [tabsHeight] = useTabsHeight();
     const listRef = useAnimatedRef<FlatList>();
 
-    const data = useMemo(() => cache.cache.playlists[id as string], [cache.cache.playlists, id]);
+    const data = useMemo(() => cache.cache.albums[id as string], [cache.cache.albums, id]);
 
-    const entryData = useMemo(() => data?.entry, [data?.entry]);
+    const tracksData = useMemo(() => data?.song, [data?.song]);
 
     const containerOpacity = useSharedValue(0);
 
@@ -39,8 +37,8 @@ export default function Playlist() {
     }, [data]);
 
     useFocusEffect(useCallback(() => {
-        cache.refreshPlaylist(id as string);
-    }, [cache.refreshPlaylist, id]));
+        cache.refreshAlbum(id as string);
+    }, [cache.refreshAlbum, id]));
 
     return (
         <Container includeTop={false} includeBottom={false}>
@@ -55,31 +53,24 @@ export default function Playlist() {
                 initialHideTitle
                 rightSection={<>
                     <ActionIcon icon={IconSearch} size={16} variant='secondary' />
-                    <ActionIcon icon={IconDots} size={16} variant='secondary' onPress={() => {
-                        Haptics.selectionAsync();
-                        SheetManager.show('playlist', {
-                            payload: {
-                                id: data.id,
-                                data,
-                            }
-                        });
-                    }} />
+                    <ActionIcon icon={IconDots} size={16} variant='secondary' />
                 </>} />
             <Animated.View style={[{ flex: 1 }, containerStyle]}>
                 <LibLayout.Provider value="list">
                     <LibSize.Provider value="medium">
                         <LibSeparators.Provider value={false}>
                             <FlatList
-                                data={entryData}
+                                data={tracksData}
                                 keyExtractor={(item) => item.id ?? `fallback-${Math.random()}`}
                                 ref={listRef}
                                 renderItem={({ item, index }) => (
                                     <MediaLibItem
                                         id={item.id}
                                         title={item.title}
-                                        subtitle={item.artist}
                                         coverUri={cover.generateUrl(item.coverArt ?? '', { size: 128 })}
                                         coverCacheKey={`${item.coverArt}-128x128`}
+                                        isAlbumEntry
+                                        trackNumber={item.track}
                                         rightSection={<>
                                             <ActionIcon icon={IconDots} size={16} variant='secondaryTransparent' onPress={() => {
                                                 Haptics.selectionAsync();
@@ -87,19 +78,17 @@ export default function Playlist() {
                                                     payload: {
                                                         id: item.id,
                                                         data: item,
-                                                        context: 'playlist',
-                                                        contextId: data.id,
+                                                        context: 'album',
                                                     }
                                                 });
                                             }} />
                                         </>}
                                         onPress={() => {
-                                            if (!data.entry) return;
-                                            queue.replace(data.entry, data.entry.findIndex(x => x.id === item.id));
+
                                         }}
                                     />
                                 )}
-                                ListHeaderComponent={<PlaylistHeader playlist={data} />}
+                                ListHeaderComponent={<PlaylistHeader album={data} />}
                                 ListFooterComponent={<View style={{ height: tabsHeight + 10 }} />}
                             />
                         </LibSeparators.Provider>

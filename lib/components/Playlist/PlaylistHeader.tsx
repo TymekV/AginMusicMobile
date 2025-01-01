@@ -2,7 +2,7 @@ import { useColors, useCoverBuilder, useQueue } from '@lib/hooks';
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Cover from '../Cover';
-import { Playlist, PlaylistWithSongs } from '@lib/types';
+import { AlbumWithSongsID3, Playlist, PlaylistWithSongs } from '@lib/types';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Title from '../Title';
 import { formatDistanceToNow } from 'date-fns';
@@ -13,9 +13,10 @@ import { PlaylistBackground } from './PlaylistBackground';
 
 export type PlaylistHeaderProps = {
     playlist?: PlaylistWithSongs;
+    album?: AlbumWithSongsID3;
 };
 
-export function PlaylistHeader({ playlist }: PlaylistHeaderProps) {
+export function PlaylistHeader({ playlist, album }: PlaylistHeaderProps) {
     const colors = useColors();
     const cover = useCoverBuilder();
     const queue = useQueue();
@@ -39,20 +40,22 @@ export function PlaylistHeader({ playlist }: PlaylistHeaderProps) {
         }
     }), [colors, insets]);
 
+    const art = playlist?.coverArt ?? album?.coverArt ?? '';
+
     return (
         <View style={styles.container}>
             <PlaylistBackground
-                source={{ uri: cover.generateUrl(playlist?.coverArt ?? '') }}
-                cacheKey={`${playlist?.coverArt}-full`}
+                source={{ uri: cover.generateUrl(art) }}
+                cacheKey={`${art}-full`}
             />
             <Cover
-                source={{ uri: cover.generateUrl(playlist?.coverArt ?? '') }}
-                cacheKey={`${playlist?.coverArt}-full`}
+                source={{ uri: cover.generateUrl(art) }}
+                cacheKey={`${art}-full`}
                 size={250}
             />
             <View style={styles.title}>
-                <Title align="center" size={24} fontFamily="Poppins-SemiBold">{playlist?.name}</Title>
-                <Title align="center" size={14} fontFamily="Poppins-Regular" color={colors.text[1]}>{playlist && `${playlist.songCount} songs • edited ${formatDistanceToNow(new Date(playlist.changed), { addSuffix: true })}`}</Title>
+                <Title align="center" size={24} fontFamily="Poppins-SemiBold">{playlist?.name ?? album?.name}</Title>
+                <Title align="center" size={14} fontFamily="Poppins-Regular" color={colors.text[1]}>{playlist && `${playlist.songCount} songs • edited ${formatDistanceToNow(new Date(playlist.changed), { addSuffix: true })}`}{album && `${album.artist} • ${album.year}`}</Title>
             </View>
             <View style={styles.actions}>
                 <ActionIcon icon={IconDownload} variant='subtleFilled' size={20} extraSize={24} />

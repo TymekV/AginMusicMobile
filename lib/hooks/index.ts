@@ -12,3 +12,4 @@ export * from './useMemoryCache';
 export * from './useSetupTrackPlayer';
 export * from './usePins';
 export * from './useApiHelpers';
+export * from './useTabsHeight';

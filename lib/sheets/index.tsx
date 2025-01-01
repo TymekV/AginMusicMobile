@@ -40,7 +40,7 @@ declare module 'react-native-actions-sheet' {
             payload: {
                 id: string;
                 data?: Child;
-                context?: 'playlist';
+                context?: 'playlist' | 'album';
                 contextId?: string;
             },
         }>;

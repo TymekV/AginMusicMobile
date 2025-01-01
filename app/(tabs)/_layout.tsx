@@ -1,8 +1,6 @@
 import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
-import React from 'react';
-
+import React, { } from 'react';
 import { useColorScheme } from '@/lib/hooks/useColorScheme';
-import Title from '@/lib/components/Title';
 import { TabBar } from '@/lib/components/TabBar';
 import { TabButton } from '@/lib/components/TabBar/TabButton';
 import { IconCircleArrowDown, IconHome, IconLayoutGrid, IconSearch } from '@tabler/icons-react-native';

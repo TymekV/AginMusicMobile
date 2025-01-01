@@ -7,7 +7,7 @@ import Cover from '../Cover';
 import { LibSize, LibSeparators } from '.';
 import { IconChevronRight } from '@tabler/icons-react-native';
 
-export default function ListItem({ title, subtitle, coverUri, coverCacheKey, rightSection }: MediaLibItemProps) {
+export default function ListItem({ title, subtitle, coverUri, coverCacheKey, rightSection, isAlbumEntry, trackNumber }: MediaLibItemProps) {
     const size = useContext(LibSize);
     const withSeparators = useContext(LibSeparators);
 
@@ -40,19 +40,28 @@ export default function ListItem({ title, subtitle, coverUri, coverCacheKey, rig
             flexDirection: 'row',
             alignItems: 'center',
             gap: 5,
+        },
+        albumNumberContainer: {
+            width: 35,
+            height: 35,
+            justifyContent: 'center',
+            alignItems: 'flex-end',
+            paddingRight: 10,
         }
     }), [colors, size, withSeparators]);
 
     return (
         <View style={[styles.item, withSeparators && styles.separator]}>
             <View style={styles.itemLeft}>
-                <Cover
+                {isAlbumEntry ? <View style={styles.albumNumberContainer}>
+                    <Title size={18} color={colors.text[1]}>{trackNumber}</Title>
+                </View> : <Cover
                     source={{ uri: coverUri }}
                     cacheKey={coverCacheKey}
                     size={size == 'small' ? 40 : size == 'medium' ? 50 : 60}
                     radius={(size == 'small' || size == 'medium') ? 6 : 8}
                     withShadow={false}
-                />
+                />}
                 <View style={styles.metadata}>
                     <Title size={(size == 'small' || size == 'medium') ? 14 : 16} numberOfLines={1}>{title}</Title>
                     {subtitle && <Title size={12} color={colors.text[1]} fontFamily='Poppins-Regular' numberOfLines={1}>{subtitle}</Title>}
