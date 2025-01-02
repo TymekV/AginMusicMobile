@@ -7,7 +7,7 @@ import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
 import { SettingValue, useSetting } from '@lib/hooks/useSetting';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SettingId } from '@/app/(tabs)/(index,library,downloads,search)/settings';
+import { SettingId } from '@/app/(tabs)/(index,library,search)/settings';
 
 export type SettingSelectOption = {
     icon?: Icon;

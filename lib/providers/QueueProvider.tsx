@@ -174,8 +174,9 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     const add = useCallback(async (id: string) => {
         const data = await cache.fetchChild(id);
         if (!data) return;
-
-        TrackPlayer.add(convertToTrack(data));
+        const currentlyPlaying = await TrackPlayer.getCurrentTrack();
+        await TrackPlayer.add(convertToTrack(data));
+        if (currentlyPlaying == null) await TrackPlayer.play();
         // TrackPlayer.play();
 
         await updateQueue();
