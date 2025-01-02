@@ -103,11 +103,11 @@ export default function Miniplayer() {
 
     const containerRef = useRef<View>(null);
 
-    useLayoutEffect(() => {
-        containerRef.current?.measureInWindow((x, y, width) => {
-            setCarouselWidth(width);
-        });
-    }, [containerRef.current]);
+    // useLayoutEffect(() => {
+    //     containerRef.current?.measureInWindow((x, y, width) => {
+    //         setCarouselWidth(width);
+    //     });
+    // }, [containerRef.current]);
 
     const styles = useMemo(() => StyleSheet.create({
         miniplayer: {
@@ -156,7 +156,10 @@ export default function Miniplayer() {
         <>
             {!isEmpty && <Animated.View entering={FadeInDown.duration(300).easing(Easing.inOut(Easing.ease))} exiting={FadeOutDown.duration(300).easing(Easing.inOut(Easing.ease))}>
                 <Pressable onPress={() => SheetManager.show('playback')} style={styles.miniplayer}>
-                    <View style={styles.swipeContainer} ref={containerRef}>
+                    <View style={styles.swipeContainer} onLayout={(event) => {
+                        const { x, y, width, height } = event.nativeEvent.layout;
+                        setCarouselWidth(width);
+                    }}>
                         {carouselWidth != 0 && <SkipSwipe width={carouselWidth} renderItem={RenderItem} />}
                         <Overlay position="left" />
                         <Overlay position="right" />

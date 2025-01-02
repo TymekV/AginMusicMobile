@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "aginmusic",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "rocks.agin.music",
