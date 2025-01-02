@@ -151,11 +151,12 @@ export default function Search() {
                 <Header withAvatar={false}>
                     <Input compact icon={IconSearch} placeholder='Search songs, artists, albums...' autoFocus ref={inputRef} clearButtonMode='always' value={query} onChangeText={setQuery} />
                 </Header>
-                {query !== '' && <Animated.View entering={entering} exiting={exiting}>
+                {/* Had to do this beacuse Navidrome returns empty response for one character queries */}
+                {query.length > 1 && <Animated.View entering={entering} exiting={exiting}>
                     <TagTabs data={tabs} tab={tab} onChange={setTab} keyboardShouldPersistTaps='handled' />
                     <MediaLibraryList data={filteredResults} onItemPress={() => { }} size='medium' keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
                 </Animated.View>}
-                {query === '' && <Animated.View style={styles.history} entering={entering} exiting={exiting}>
+                {query.length <= 1 && <Animated.View style={styles.history} entering={entering} exiting={exiting}>
                     {mappedHistory.length !== 0 && <SearchSection label='Recently Searched' />}
                     <MediaLibraryList data={mappedHistory} onItemPress={() => { }} size='medium' withTopMargin={false} keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
                 </Animated.View>}
