@@ -1,4 +1,4 @@
-import { SettingId } from "@/app/(tabs)/(index,library)/settings";
+import { SettingId } from "@/app/(tabs)/(index,library,downloads,search)/settings";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 

@@ -37,7 +37,7 @@ export type ServerContextType = {
     server: Server;
     serverAuth: ServerAuth;
     discoverServer: (url: string) => Promise<DiscoverServerResult> | void;
-    saveAndTestPasswordCredentials: (username: string, password: string) => Promise<boolean>;
+    saveAndTestPasswordCredentials: (username: string, password: string, serverOverride?: string) => Promise<boolean>;
     isLoading: boolean;
     logOut: () => Promise<void>;
 }
@@ -182,14 +182,15 @@ export default function ServerProvider({ children }: { children?: React.ReactNod
         }
     }, []);
 
-    const saveAndTestPasswordCredentials = useCallback(async (username: string, password: string) => {
+    const saveAndTestPasswordCredentials = useCallback(async (username: string, password: string, serverOverride?: string) => {
         // TODO: Add error handling
-        console.log(server.url);
+        const url = serverOverride ? serverOverride : server.url;
+        console.log(url);
         const { salt, hash } = await generateSubsonicToken(password);
-        console.log('TESTING1', username, password, salt, hash, server.url);
+        console.log('TESTING1', username, password, salt, hash, url);
 
         try {
-            const rawRes = await axios.get(`${server.url}/rest/ping`, {
+            const rawRes = await axios.get(`${url}/rest/ping`, {
                 params: {
                     c: `${config.clientName}/${config.clientVersion}`,
                     f: 'json',

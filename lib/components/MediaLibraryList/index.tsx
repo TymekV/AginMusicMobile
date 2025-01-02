@@ -2,30 +2,32 @@ import { useTabsHeight } from '@lib/hooks';
 import React from 'react';
 import MediaLibItem, { TMediaLibItem } from './Item';
 import { createContext, useMemo } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, FlatListProps, StyleSheet, View } from 'react-native';
 
 export type MediaLibraryLayout = 'grid' | 'list' | '';
 
 export type MediaLibrarySize = 'small' | 'medium' | 'large';
 
-export type MediaLibraryListProps = {
+export interface MediaLibraryListProps extends Omit<FlatListProps<TMediaLibItem>, 'renderItem' | 'data'> {
     data: TMediaLibItem[];
     onItemPress: (item: TMediaLibItem) => void;
     layout?: MediaLibraryLayout;
     size?: MediaLibrarySize;
     withSeparators?: boolean;
+    withTopMargin?: boolean;
+    rightSection?: ({ item, index }: { item: TMediaLibItem, index: number }) => React.ReactNode;
 }
 
 export const LibLayout = createContext<MediaLibraryLayout>('list');
 export const LibSize = createContext<MediaLibrarySize>('large');
 export const LibSeparators = createContext<boolean>(true);
 
-export default function MediaLibraryList({ data, layout = 'list', size = 'large', withSeparators = true, onItemPress }: MediaLibraryListProps) {
+export default function MediaLibraryList({ data, layout = 'list', size = 'large', withSeparators = true, withTopMargin = true, onItemPress, rightSection: RightSection, ...props }: MediaLibraryListProps) {
     const [tabsHeight] = useTabsHeight();
 
     const styles = useMemo(() => StyleSheet.create({
         list: {
-            marginTop: layout == 'grid' ? 10 : 5,
+            marginTop: withTopMargin ? layout == 'grid' ? 10 : 5 : 0,
         },
         gridList: {
             paddingHorizontal: 20,
@@ -36,7 +38,7 @@ export default function MediaLibraryList({ data, layout = 'list', size = 'large'
         footer: {
             height: tabsHeight + 10,
         }
-    }), [layout]);
+    }), [layout, withTopMargin]);
 
     return (
         <LibLayout.Provider value={layout}>
@@ -46,11 +48,12 @@ export default function MediaLibraryList({ data, layout = 'list', size = 'large'
                         style={[styles.list, layout === 'grid' && styles.gridList]}
                         data={data}
                         keyExtractor={(item) => item.id}
-                        renderItem={({ item, index }) => <MediaLibItem {...item} onPress={() => onItemPress(item)} style={layout === 'grid' && { flex: 1 / 2 }} index={index} />}
+                        renderItem={({ item, index }) => <MediaLibItem {...item} onPress={() => onItemPress(item)} style={layout === 'grid' && { flex: 1 / 2 }} index={index} rightSection={RightSection ? <RightSection item={item} index={index} /> : undefined} />}
                         numColumns={layout === 'grid' ? 2 : 1}
                         ItemSeparatorComponent={layout === 'grid' ? () => <View style={styles.gridSeparator} /> : undefined}
                         ListFooterComponent={<View style={styles.footer} />}
                         key={layout}
+                        {...props}
                     />
                 </LibSeparators.Provider>
             </LibSize.Provider>

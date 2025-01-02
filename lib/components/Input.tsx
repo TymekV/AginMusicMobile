@@ -22,30 +22,24 @@ export const Input = forwardRef<TextInput, InputProps>((props, ref) => {
 
     const styles = useMemo(() => StyleSheet.create({
         inputContainer: {
-            width: compact ? 45 : '100%',
-            height: 60,
-            paddingHorizontal: compact ? 0 : 20,
-            borderWidth: 1.5,
+            width: '100%',
+            height: compact ? 40 : 60,
+            paddingHorizontal: compact ? 12 : 20,
+            borderWidth: compact ? 0 : 1.5,
             borderColor: isFocused ? colors.tint : colors.border[0],
-            borderRadius: 15,
+            borderRadius: compact ? 12 : 15,
             flexDirection: 'row',
             alignItems: 'center',
-            gap: 16,
-            ...(compact && {
-                flexDirection: 'row',
-                justifyContent: 'center',
-            }),
+            gap: compact ? 8 : 16,
+            backgroundColor: compact ? colors.secondaryBackground : 'transparent',
             ...containerStyle,
         },
         input: {
-            fontFamily: 'Poppins-Medium',
-            fontSize: compact ? 20 : 15,
+            fontFamily: compact ? 'Poppins-Regular' : 'Poppins-Medium',
+            fontSize: 15,
             color: colors.text[0],
             flex: 1,
             height: '100%',
-            ...(compact && {
-                textAlign: 'center',
-            }),
             ...inputStyle,
         },
         label: {
@@ -55,7 +49,7 @@ export const Input = forwardRef<TextInput, InputProps>((props, ref) => {
             marginLeft: 12,
             marginBottom: 5,
         }
-    }), [inputStyle, colors, isFocused]);
+    }), [inputStyle, colors, isFocused, compact]);
 
     const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
         setIsFocused(true);
@@ -72,7 +66,7 @@ export const Input = forwardRef<TextInput, InputProps>((props, ref) => {
             {label && <Text style={styles.label}>{label}</Text>}
             <TouchableWithoutFeedback onPress={onPress}>
                 <View style={[styles.inputContainer, withBg ? { backgroundColor: colors.background } : {}]}>
-                    {Icon && <Icon size={20} color={colors.text[1]} />}
+                    {Icon && <Icon size={compact ? 16 : 20} color={colors.text[1]} />}
                     <TextInput
                         placeholder={placeholder ?? ''}
                         placeholderTextColor={colors.text[1]}

@@ -14,17 +14,17 @@ export type Pin = {
 
 export function usePins() {
     const db = useSQLiteContext();
-    const [pins, setPins] = useState<Pin[]>([]);
+    const [history, setHistory] = useState<Pin[]>([]);
 
     useEffect(() => {
         (async () => {
             const result = await db.getAllAsync<Pin>('SELECT * FROM pins ORDER BY pinOrder ASC');
-            setPins(result);
+            setHistory(result);
         })();
     }, []);
 
     const addPin = useCallback(async (pin: Pin) => {
-        if (!pin.pinOrder) pin.pinOrder = pins.length;
+        if (!pin.pinOrder) pin.pinOrder = history.length;
         await db.runAsync('INSERT INTO pins (id, name, description, type, coverArt, pinOrder) VALUES ($id, $name, $description, $type, $coverArt, $pinOrder)', {
             $id: pin.id,
             $name: pin.name,
@@ -33,7 +33,7 @@ export function usePins() {
             $coverArt: pin.coverArt,
             $pinOrder: pin.pinOrder,
         });
-        setPins([...pins, pin]);
+        setHistory([...history, pin]);
         await showToast({
             title: 'Pinned',
             subtitle: pin.name,
@@ -46,7 +46,7 @@ export function usePins() {
         if (!pin) return;
 
         await db.runAsync('DELETE FROM pins WHERE id = $id', { $id: id });
-        setPins(pins.filter(p => p.id !== id));
+        setHistory(history.filter(p => p.id !== id));
 
         await showToast({
             title: 'Unpinned',
@@ -55,10 +55,10 @@ export function usePins() {
         });
     }, []);
 
-    const isPinned = useCallback((id: string) => pins.some(p => p.id === id), [pins]);
+    const isPinned = useCallback((id: string) => history.some(p => p.id === id), [history]);
 
     return {
-        pins,
+        pins: history,
         addPin,
         removePin,
         isPinned,

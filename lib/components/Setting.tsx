@@ -7,13 +7,14 @@ import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
 import { SettingValue, useSetting } from '@lib/hooks/useSetting';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { SettingId } from '@/app/(tabs)/(index,library)/settings';
+import { SettingId } from '@/app/(tabs)/(index,library,downloads,search)/settings';
 
 export type SettingSelectOption = {
     icon?: Icon;
     label: string;
     description?: string;
     value: string;
+    shortLabel?: string;
 }
 
 export interface SettingProps extends TouchableHighlightProps {
@@ -23,17 +24,18 @@ export interface SettingProps extends TouchableHighlightProps {
     description?: string;
     type: 'select' | 'switch' | 'button';
     options?: SettingSelectOption[];
+    defaultValue?: SettingValue;
 }
 
-export default function Setting({ id, icon, label, description, type, options, ...props }: SettingProps) {
+export default function Setting({ id, icon, label, description, type, options, defaultValue, ...props }: SettingProps) {
     const colors = useColors();
     const [value, setValue] = useState<SettingValue>();
 
     const initialValue = useSetting(id);
 
     useEffect(() => {
-        setValue(initialValue);
-    }, [initialValue]);
+        setValue(initialValue ?? defaultValue);
+    }, [initialValue, defaultValue]);
 
     const styles = useMemo(() => StyleSheet.create({
         option: {
@@ -71,6 +73,8 @@ export default function Setting({ id, icon, label, description, type, options, .
         }
     }, [icon, label, description, value, options]);
 
+    const val = options?.find(o => o.value == value);
+
     return (
         <TouchableHighlight onPress={handlePress} underlayColor={colors.secondaryBackground} {...props}>
             <View style={styles.option}>
@@ -85,7 +89,7 @@ export default function Setting({ id, icon, label, description, type, options, .
                     value={!!value}
                     onValueChange={(value) => setValue(value)}
                 />}
-                {type == 'select' && <Title size={12} color={colors.text[1]}>{value}</Title>}
+                {type == 'select' && <Title size={12} color={colors.text[1]}>{val?.shortLabel ?? val?.label}</Title>}
             </View>
         </TouchableHighlight>
     )

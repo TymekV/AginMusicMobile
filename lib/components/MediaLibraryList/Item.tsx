@@ -14,6 +14,7 @@ export type TMediaLibItem = {
     coverCacheKey?: string;
     isAlbumEntry?: boolean;
     trackNumber?: number;
+    type?: 'album' | 'artist' | 'track' | 'playlist';
 }
 
 export interface MediaLibItemProps extends TMediaLibItem, Omit<TouchableOpacityProps, 'id'> {

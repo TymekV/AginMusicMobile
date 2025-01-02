@@ -23,9 +23,23 @@ export type HeaderProps = {
     interpolationRange?: [number, number];
     initialHideTitle?: boolean;
     titleSize?: number;
+    children?: React.ReactNode;
 };
 
-export default function Header({ title, subtitle, rightSection, withBackIcon = false, withAvatar = true, floating = false, rightSpacing = 10, scrollRef, interpolationRange = [0, 200], initialHideTitle = false, titleSize = 24 }: HeaderProps) {
+export default function Header({
+    title,
+    subtitle,
+    rightSection,
+    withBackIcon = false,
+    withAvatar = true,
+    floating = false,
+    rightSpacing = 10,
+    scrollRef,
+    interpolationRange = [0, 200],
+    initialHideTitle = false,
+    titleSize = 24,
+    children,
+}: HeaderProps) {
     const colors = useColors();
 
     const Root = floating ? SafeAreaView : View;
@@ -101,6 +115,7 @@ export default function Header({ title, subtitle, rightSection, withBackIcon = f
                     <View style={[styles.iconGroup, styles.iconGroupLeft]}>
                         {withBackIcon && <ActionIcon icon={IconChevronLeft} size={16} variant='secondary' onPress={() => router.back()} />}
                         <Animated.View style={[styles.titleContainer, titleStyle]}>
+                            {children}
                             {title && <Title size={titleSize} fontFamily='Poppins-SemiBold' numberOfLines={1}>{title}</Title>}
                         </Animated.View>
                     </View>

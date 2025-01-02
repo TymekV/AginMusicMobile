@@ -16,7 +16,7 @@ const qualityLevels: SettingSelectOption[] = [
     { label: 'Lossless', description: 'ALAC, 24-bit/48 kHz', value: 'lossless' },
 ];
 
-export type SettingId = 'audioQuality.wifi' | 'audioQuality.celluar' | 'audioQuality.download' | 'audioQuality.atmos' | 'storage.clearCache' | 'developer.copyId';
+export type SettingId = 'audioQuality.wifi' | 'audioQuality.celluar' | 'audioQuality.download' | 'audioQuality.atmos' | 'storage.clearCache' | 'developer.copyId' | 'ui.toastPosition' | 'ui.autoFocusSearchBar';
 
 export default function Settings() {
     const cache = useCache();
@@ -90,6 +90,31 @@ export default function Settings() {
                             icon: IconCircleCheck,
                         });
                     }}
+                />
+                <SettingsSection label='Layout' />
+                <Setting
+                    id='ui.toastPosition'
+                    type='select'
+                    label='Toast Position'
+                    description='Change the position of the toast notifications'
+                    defaultValue='top'
+                    options={[
+                        {
+                            label: 'Top',
+                            value: 'top',
+                        },
+                        {
+                            label: 'Bottom',
+                            value: 'bottom',
+                        }
+                    ]}
+                />
+                <Setting
+                    id='ui.autoFocusSearchBar'
+                    type='switch'
+                    label='Automatically Focus Search Bar'
+                    description='Focus the search bar when opening the search tab'
+                    defaultValue={true}
                 />
                 <SettingsSection label='Developer Options' />
                 <Setting

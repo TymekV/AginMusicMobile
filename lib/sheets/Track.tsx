@@ -9,9 +9,6 @@ import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
 import { IconCircleMinus, IconCirclePlus, IconCopy, IconDisc, IconDownload, IconMicrophone2, IconPin, IconPinnedOff, IconPlayerTrackNext, IconPlaylistAdd } from '@tabler/icons-react-native';
 import * as Clipboard from 'expo-clipboard';
-import Toast from 'react-native-toast-message';
-import { SmallToastProps } from '@lib/components/SmallToast';
-import * as Haptics from 'expo-haptics';
 import showToast from '@lib/showToast';
 import { router } from 'expo-router';
 

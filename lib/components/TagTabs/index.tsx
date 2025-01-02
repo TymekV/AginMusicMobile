@@ -1,16 +1,16 @@
 import { useColors } from '@lib/hooks';
 import { useMemo } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, FlatListProps, StyleSheet, View } from 'react-native';
 import TagTab, { TTagTab } from './TagTab';
 import * as Haptics from 'expo-haptics';
 
-export type TagTabsProps = {
+export interface TagTabsProps extends Omit<FlatListProps<TTagTab>, 'renderItem' | 'data'> {
     data: TTagTab[];
     tab: string;
     onChange: (tab: string) => void;
 };
 
-export default function TagTabs({ data, tab, onChange }: TagTabsProps) {
+export default function TagTabs({ data, tab, onChange, ...props }: TagTabsProps) {
     const colors = useColors();
 
     const styles = useMemo(() => StyleSheet.create({
@@ -39,6 +39,7 @@ export default function TagTabs({ data, tab, onChange }: TagTabsProps) {
                 showsHorizontalScrollIndicator={false}
                 ListHeaderComponent={() => <View style={styles.horizontalSpacer} />}
                 ListFooterComponent={() => <View style={styles.horizontalSpacer} />}
+                {...props}
             />
         </View>
     )
