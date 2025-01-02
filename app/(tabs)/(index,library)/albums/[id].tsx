@@ -1,7 +1,7 @@
 import Container from '@/lib/components/Container';
 import Header from '@/lib/components/Header';
 import { PlaylistHeader } from '@lib/components/Playlist';
-import { useCoverBuilder, useMemoryCache, useTabsHeight } from '@lib/hooks';
+import { useCoverBuilder, useMemoryCache, useQueue, useTabsHeight } from '@lib/hooks';
 import ActionIcon from '@lib/components/ActionIcon';
 import { LibSize, LibLayout, LibSeparators } from '@lib/components/MediaLibraryList';
 import MediaLibItem from '@lib/components/MediaLibraryList/Item';
@@ -18,6 +18,7 @@ export default function Album() {
 
     const cache = useMemoryCache();
     const cover = useCoverBuilder();
+    const queue = useQueue();
     const [tabsHeight] = useTabsHeight();
     const listRef = useAnimatedRef<FlatList>();
 
@@ -94,7 +95,8 @@ export default function Album() {
                                             }} />
                                         </>}
                                         onPress={() => {
-
+                                            if (!data.song) return;
+                                            queue.replace(data.song, data.song.findIndex(x => x.id === item.id), { source: 'album', sourceId: data.id, sourceName: data.name });
                                         }}
                                     />
                                 )}

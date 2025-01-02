@@ -17,7 +17,7 @@ function QueueItem({ item, getIndex, drag, isActive }: RenderItemParams<Child>) 
     const queue = useQueue();
     const { nowPlaying } = queue;
 
-    const isPlaying = nowPlaying?.id === item.id;
+    const isPlaying = queue.activeIndex === getIndex();
 
     const [gestureEnabled, setGestureEnabled] = useContext(GestureEnabledContext);
 

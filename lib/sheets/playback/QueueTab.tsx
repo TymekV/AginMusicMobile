@@ -42,7 +42,7 @@ export default function QueueTab() {
                 <View style={styles.actionBar}>
                     <View>
                         <Title size={16} fontFamily="Poppins-SemiBold">Queue</Title>
-                        <Title size={12} fontFamily="Poppins-Regular" color={colors.text[1]}>Playing from Playlist 1</Title>
+                        <Title size={12} fontFamily="Poppins-Regular" color={colors.text[1]}>{queue.source.sourceName ? `Playing from ${queue.source.sourceName}` : 'Manually Added'}</Title>
                     </View>
                     <View style={styles.actions}>
                         <ActionIcon icon={IconTrash} variant='secondary' size={16} onPress={async () => await queue.clearConfirm({ wait: true, onConfirm: () => SheetManager.hide(sheetId) })} />

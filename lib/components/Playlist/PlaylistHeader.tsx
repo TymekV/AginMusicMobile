@@ -64,8 +64,13 @@ export function PlaylistHeader({ playlist, album, onTitlePress }: PlaylistHeader
             <View style={styles.actions}>
                 <ActionIcon icon={IconDownload} variant='subtleFilled' size={20} extraSize={24} />
                 <ActionIcon icon={IconPlayerPlayFilled} variant='primary' isFilled size={24} extraSize={32} onPress={() => {
-                    if (!playlist?.entry) return;
-                    queue.replace(playlist.entry, 0);
+                    const newQueue = playlist?.entry ?? album?.song;
+                    if (!newQueue) return;
+                    queue.replace(newQueue, 0, {
+                        source: playlist ? 'playlist' : 'album',
+                        sourceId: playlist ? playlist.id : album?.id,
+                        sourceName: playlist ? playlist.name : album?.name,
+                    });
                 }} />
                 <ActionIcon icon={IconArrowsShuffle} variant='subtleFilled' size={20} extraSize={24} />
             </View>

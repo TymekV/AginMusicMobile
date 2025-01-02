@@ -14,8 +14,19 @@ export type ClearConfirmOptions = {
 
 export type TQueueItem = Track & { _child: Child };
 
+export type QueueSource = {
+    source: 'playlist' | 'album' | 'none';
+    sourceId?: string;
+    sourceName?: string;
+}
+
+const initialSource: QueueSource = {
+    source: 'none',
+}
+
 export type QueueContextType = {
     queue: TQueueItem[];
+    source: QueueSource;
     nowPlaying: Child;
     activeIndex: number;
     canGoForward: boolean;
@@ -27,11 +38,12 @@ export type QueueContextType = {
     jumpTo: (index: number) => void;
     skipBackward: () => void;
     skipForward: () => void;
-    replace: (items: Child[], initialIndex?: number) => void;
+    replace: (items: Child[], initialIndex?: number, source?: QueueSource) => void;
 }
 
 const initialQueueContext: QueueContextType = {
     queue: [],
+    source: initialSource,
     nowPlaying: {
         id: '',
         isDir: false,
@@ -64,6 +76,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     const [queue, setQueue] = useState<TQueueItem[]>([]);
     const [nowPlaying, setNowPlaying] = useState<Child>(initialQueueContext.nowPlaying);
     const [activeIndex, setActiveIndex] = useState<number>(0);
+    const [source, setSource] = useState<QueueSource>(initialSource);
 
     const canGoBackward = nowPlaying.id != '';
     const canGoForward = activeIndex < (queue.length ?? 0) - 1;
@@ -154,6 +167,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     useTrackPlayerEvents([Event.PlaybackTrackChanged], async (event) => {
         if (event.type === Event.PlaybackTrackChanged) {
             await updateNowPlaying();
+            await updateActive();
         }
     });
 
@@ -162,13 +176,14 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         if (!data) return;
 
         TrackPlayer.add(convertToTrack(data));
-        TrackPlayer.play();
+        // TrackPlayer.play();
 
         await updateQueue();
         await updateActive();
     }, [cache, convertToTrack]);
 
-    const replace = useCallback(async (items: Child[], initialIndex?: number) => {
+    const replace = useCallback(async (items: Child[], initialIndex?: number, source?: QueueSource) => {
+        if (source) setSource(source);
         TrackPlayer.reset();
         TrackPlayer.add(items.map(convertToTrack));
         TrackPlayer.skip(initialIndex ?? 0);
@@ -248,6 +263,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
             skipForward,
             replace,
             clearConfirm,
+            source,
         }}>
             {children}
         </QueueContext.Provider>

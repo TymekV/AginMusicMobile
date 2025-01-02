@@ -21,16 +21,16 @@ export default function LyricsTab() {
     const api = useApi();
 
     const [lyrics, setLyrics] = useState<StructuredLyrics[]>([]);
-    const [noLyrics, setNoLyerics] = useState(false);
+    const [noLyrics, setNoLyrics] = useState(false);
 
     useEffect(() => {
         if (nowPlaying.id == '' || !api) return;
         (async () => {
-            setNoLyerics(false);
+            setNoLyrics(false);
 
             const lyrics = await cache.fetchLyrics(nowPlaying.id);
             if (lyrics) setLyrics(lyrics);
-            else setNoLyerics(true);
+            else setNoLyrics(true);
         })();
     }, [api, nowPlaying.id]);
 
@@ -59,6 +59,7 @@ export default function LyricsTab() {
             <View style={styles.top}>
                 <SmallNowPlaying />
             </View>
+            {/* TODO: Add lyrics selection */}
             {noLyrics ? <FullscreenMessage
                 icon={IconMessage}
                 label='No lyrics available'

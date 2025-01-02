@@ -1,7 +1,7 @@
 import Container from '@/lib/components/Container';
 import Header from '@/lib/components/Header';
-import { PlaylistBackground, PlaylistHeader } from '@lib/components/Playlist';
-import { useColors, useCoverBuilder, useMemoryCache, useQueue, useTabsHeight } from '@lib/hooks';
+import { PlaylistHeader } from '@lib/components/Playlist';
+import { useCoverBuilder, useMemoryCache, useQueue, useTabsHeight } from '@lib/hooks';
 import ActionIcon from '@lib/components/ActionIcon';
 import { LibSize, LibLayout, LibSeparators } from '@lib/components/MediaLibraryList';
 import MediaLibItem from '@lib/components/MediaLibraryList/Item';
@@ -11,14 +11,13 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { FlatList, View } from 'react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
-import Animated, { Easing, FadeIn, useAnimatedRef, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedRef, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export default function Playlist() {
     const { id } = useLocalSearchParams();
 
     const cache = useMemoryCache();
     const cover = useCoverBuilder();
-    const colors = useColors();
     const queue = useQueue();
     const [tabsHeight] = useTabsHeight();
     const listRef = useAnimatedRef<FlatList>();
@@ -97,7 +96,7 @@ export default function Playlist() {
                                         </>}
                                         onPress={() => {
                                             if (!data.entry) return;
-                                            queue.replace(data.entry, data.entry.findIndex(x => x.id === item.id));
+                                            queue.replace(data.entry, data.entry.findIndex(x => x.id === item.id), { source: 'playlist', sourceId: data.id, sourceName: data.name });
                                         }}
                                     />
                                 )}

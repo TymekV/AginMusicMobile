@@ -1,13 +1,16 @@
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import ActionIcon from '../ActionIcon';
 import { IconDots, IconDownload, IconHeart, IconHeartFilled } from '@tabler/icons-react-native';
 import { useQueue } from '@/lib/hooks';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
+import { IdContext } from '@lib/sheets/playback';
 
 export default function NowPlayingActions() {
     const { nowPlaying } = useQueue();
+
+    const sheetId = useContext(IdContext);
 
     const styles = useMemo(() => StyleSheet.create({
         actions: {
@@ -21,15 +24,16 @@ export default function NowPlayingActions() {
             {/* FIXME */}
             <ActionIcon variant='secondary' icon={nowPlaying.starred ? IconHeartFilled : IconHeart} size={16} />
             <ActionIcon variant='secondary' icon={IconDownload} size={16} />
-            <ActionIcon variant='secondary' icon={IconDots} size={16} onPress={() => {
+            <ActionIcon variant='secondary' icon={IconDots} size={16} onPress={async () => {
                 Haptics.selectionAsync();
-                SheetManager.show('track', {
+                const data = await SheetManager.show('track', {
                     payload: {
                         id: nowPlaying.id,
                         data: nowPlaying,
                         context: 'nowPlaying'
                     }
-                })
+                });
+                if (data.shouldCloseSheet) SheetManager.hide(sheetId);
             }} />
         </View>
     )

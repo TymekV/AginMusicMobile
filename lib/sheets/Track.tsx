@@ -13,6 +13,7 @@ import Toast from 'react-native-toast-message';
 import { SmallToastProps } from '@lib/components/SmallToast';
 import * as Haptics from 'expo-haptics';
 import showToast from '@lib/showToast';
+import { router } from 'expo-router';
 
 function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
     const insets = useSafeAreaInsets();
@@ -85,7 +86,8 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                 icon={IconDisc}
                 label='Go to Album'
                 onPress={() => {
-                    SheetManager.hide(sheetId);
+                    router.push({ pathname: '/albums/[id]', params: { id: data?.albumId ?? '' } });
+                    SheetManager.hide(sheetId, { payload: { shouldCloseSheet: true } });
                 }}
             />}
             {payload?.context != 'nowPlaying' && <SheetOption

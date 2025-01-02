@@ -53,6 +53,9 @@ declare module 'react-native-actions-sheet' {
                 context?: 'playlist' | 'album' | 'nowPlaying';
                 contextId?: string;
             },
+            returnValue: {
+                shouldCloseSheet?: boolean;
+            }
         }>;
         'playlist': SheetDefinition<{
             payload: {

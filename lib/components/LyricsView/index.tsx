@@ -37,7 +37,7 @@ export default function SycnedLyricsView({ lyrics }: LyricsViewProps) {
             const position = await TrackPlayer.getPosition();
             let activeLine = lyrics?.line.findIndex(line => {
                 if (!line.start) return false;
-                return line.start >= (position * 1000) - 100;
+                return line.start >= (position * 1000) - 150;
             }) - 1;
             if (activeLine == -2) activeLine = lyrics.line.length - 1;
             setActiveLine(activeLine);

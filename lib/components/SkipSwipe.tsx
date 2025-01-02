@@ -36,7 +36,7 @@ export default function SkipSwipe({ width, renderItem, style }: SkipSwipeProps) 
                 queue.jumpTo(index);
             }}
             panGestureHandlerProps={{
-                activeOffsetX: [-20, 20],
+                // activeOffsetX: [-20, 20],
             }}
             style={style}
         />
