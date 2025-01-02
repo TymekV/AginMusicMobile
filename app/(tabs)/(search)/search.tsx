@@ -12,7 +12,7 @@ import { AlbumID3, ArtistID3, Child, SearchResult3 } from '@lib/types';
 import { IconDisc, IconMicrophone2, IconMusic, IconSearch } from '@tabler/icons-react-native';
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { Easing, FadeIn, FadeOut } from 'react-native-reanimated';
 
 type Offsets = {
@@ -133,6 +133,9 @@ export default function Search() {
     const styles = useMemo(() => StyleSheet.create({
         history: {
             paddingTop: 5,
+        },
+        main: {
+            flex: 1,
         }
     }), []);
 
@@ -144,17 +147,19 @@ export default function Search() {
 
     return (
         <Container>
-            <Header withAvatar={false}>
-                <Input compact icon={IconSearch} placeholder='Search songs, artists, albums...' autoFocus ref={inputRef} clearButtonMode='always' value={query} onChangeText={setQuery} />
-            </Header>
-            {query !== '' && <Animated.View entering={entering} exiting={exiting}>
-                <TagTabs data={tabs} tab={tab} onChange={setTab} keyboardShouldPersistTaps='handled' />
-                <MediaLibraryList data={filteredResults} onItemPress={() => { }} size='medium' keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
-            </Animated.View>}
-            {query === '' && <Animated.View style={styles.history} entering={entering} exiting={exiting}>
-                {mappedHistory.length !== 0 && <SearchSection label='Recently Searched' />}
-                <MediaLibraryList data={mappedHistory} onItemPress={() => { }} size='medium' withTopMargin={false} keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
-            </Animated.View>}
+            <KeyboardAvoidingView behavior='padding' style={styles.main}>
+                <Header withAvatar={false}>
+                    <Input compact icon={IconSearch} placeholder='Search songs, artists, albums...' autoFocus ref={inputRef} clearButtonMode='always' value={query} onChangeText={setQuery} />
+                </Header>
+                {query !== '' && <Animated.View entering={entering} exiting={exiting}>
+                    <TagTabs data={tabs} tab={tab} onChange={setTab} keyboardShouldPersistTaps='handled' />
+                    <MediaLibraryList data={filteredResults} onItemPress={() => { }} size='medium' keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
+                </Animated.View>}
+                {query === '' && <Animated.View style={styles.history} entering={entering} exiting={exiting}>
+                    {mappedHistory.length !== 0 && <SearchSection label='Recently Searched' />}
+                    <MediaLibraryList data={mappedHistory} onItemPress={() => { }} size='medium' withTopMargin={false} keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
+                </Animated.View>}
+            </KeyboardAvoidingView>
         </Container>
     )
 }

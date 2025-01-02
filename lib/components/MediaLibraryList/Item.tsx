@@ -22,13 +22,13 @@ export interface MediaLibItemProps extends TMediaLibItem, Omit<TouchableOpacityP
     index?: number;
 }
 
-function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSection, style, index, isAlbumEntry = false, trackNumber, ...props }: MediaLibItemProps) {
+function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSection, style, index, isAlbumEntry = false, trackNumber, type, ...props }: MediaLibItemProps) {
     const layout = useContext(LibLayout);
     const ItemRenderer = layout === 'grid' ? GridItem : layout === 'list' ? ListItem : View;
 
     return (
         <TouchableOpacity activeOpacity={.8} style={[style, (index != undefined && layout == 'grid') && (index % 2 == 0 ? { marginRight: 5 } : { marginLeft: 5 })]} {...props}>
-            <ItemRenderer id={id} title={title} subtitle={subtitle} coverUri={coverUri} coverCacheKey={coverCacheKey} rightSection={rightSection} isAlbumEntry={isAlbumEntry} trackNumber={trackNumber} />
+            <ItemRenderer id={id} title={title} subtitle={subtitle} coverUri={coverUri} coverCacheKey={coverCacheKey} rightSection={rightSection} isAlbumEntry={isAlbumEntry} trackNumber={trackNumber} type={type} />
         </TouchableOpacity>
     )
 }
