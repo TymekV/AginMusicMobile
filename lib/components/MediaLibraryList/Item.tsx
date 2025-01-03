@@ -12,6 +12,7 @@ export type TMediaLibItem = {
     subtitle?: string;
     coverUri?: string;
     coverCacheKey?: string;
+    coverArt?: string;
     isAlbumEntry?: boolean;
     trackNumber?: number;
     type?: 'album' | 'artist' | 'track' | 'playlist';
