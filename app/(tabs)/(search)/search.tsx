@@ -7,7 +7,7 @@ import SearchRightSection from '@lib/components/SearchRightSection';
 import SearchSection from '@lib/components/SearchSection';
 import TagTabs from '@lib/components/TagTabs';
 import { TTagTab } from '@lib/components/TagTabs/TagTab';
-import { useApi, useCoverBuilder, useSearchHistory } from '@lib/hooks';
+import { useApi, useCoverBuilder, useSearchHistory, useSearchItemActions } from '@lib/hooks';
 import { AlbumID3, ArtistID3, Child, SearchResult3 } from '@lib/types';
 import { IconDisc, IconMicrophone2, IconMusic, IconSearch } from '@tabler/icons-react-native';
 import { useFocusEffect } from 'expo-router';
@@ -56,6 +56,7 @@ export default function Search() {
     const history = useSearchHistory();
     const cover = useCoverBuilder();
     const api = useApi();
+    const actions = useSearchItemActions();
 
     const [tab, setTab] = useState<string>('all');
     const [query, setQuery] = useState<string>('');
@@ -154,7 +155,7 @@ export default function Search() {
                 {/* Had to do this beacuse Navidrome returns empty response for one character queries */}
                 {query.length > 1 && <Animated.View entering={entering} exiting={exiting}>
                     <TagTabs data={tabs} tab={tab} onChange={setTab} keyboardShouldPersistTaps='handled' />
-                    <MediaLibraryList data={filteredResults} onItemPress={() => { }} size='medium' keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
+                    <MediaLibraryList data={filteredResults} onItemPress={actions.press} size='medium' keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
                 </Animated.View>}
                 {query.length <= 1 && <Animated.View style={styles.history} entering={entering} exiting={exiting}>
                     {mappedHistory.length !== 0 && <SearchSection label='Recently Searched' />}

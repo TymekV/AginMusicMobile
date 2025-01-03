@@ -67,6 +67,7 @@ declare module 'react-native-actions-sheet' {
             payload: {
                 id: string;
                 data?: AlbumID3;
+                context?: 'search' | 'album';
             },
         }>;
         'settingSelect': SheetDefinition<{

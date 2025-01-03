@@ -21,11 +21,12 @@ export default function SearchRightSection({ item }: SearchRightSectionProps) {
                 payload: {
                     id: item.id,
                     data: 'fullData' in item ? item.fullData as AlbumID3 : undefined,
+                    context: 'search',
                 }
             });
         } else if (item.type == 'artist') {
-        } else if (item.type == 'track') {
             // TODO: Show artist context menu
+        } else if (item.type == 'track') {
             SheetManager.show('track', {
                 payload: {
                     id: item.id,

@@ -14,3 +14,4 @@ export * from './useApiHelpers';
 export * from './useTabsHeight';
 export * from './useSetting';
 export * from './useSearchHistory';
+export * from './useSearchItemActions';

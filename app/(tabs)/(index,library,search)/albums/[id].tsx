@@ -47,6 +47,7 @@ export default function Album() {
             payload: {
                 id: data.id,
                 data,
+                context: 'album',
             }
         });
     }, [data]);
