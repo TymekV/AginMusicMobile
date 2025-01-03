@@ -1,10 +1,14 @@
+import showToast from "@lib/showToast";
+import { IconCircleCheck } from "@tabler/icons-react-native";
 import { useSQLiteContext } from "expo-sqlite";
 import { createContext, useCallback, useEffect, useState } from "react";
+
+export type SHItemType = 'track' | 'album' | 'artist' | 'playlist';
 
 export type SearchHistoryItem = {
     id: string;
     name: string;
-    type: 'track' | 'album' | 'artist' | 'playlist';
+    type: SHItemType;
     searchedAt: number;
     description: string;
     coverArt: string;
@@ -70,6 +74,11 @@ export default function SearchHistoryProvider({ children }: { children: React.Re
     const clearAll = useCallback(async () => {
         await db.runAsync('DELETE FROM searchHistory');
         setItems([]);
+        await showToast({
+            title: 'Search history cleared',
+            subtitle: 'Your search history has been cleared',
+            icon: IconCircleCheck,
+        });
     }, []);
 
     return (

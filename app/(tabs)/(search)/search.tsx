@@ -162,7 +162,7 @@ export default function Search() {
                 </Animated.View>}
                 {query.length <= 1 && <Animated.View style={styles.history} entering={entering} exiting={exiting}>
                     {mappedHistory.length !== 0 && <SearchSection label='Recently Searched' action={{ label: 'Clear', onPress: async () => await history.clearAll() }} />}
-                    <MediaLibraryList data={mappedHistory} onItemPress={() => { }} size='medium' withTopMargin={false} keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
+                    <MediaLibraryList data={mappedHistory} onItemPress={(item) => actions.press(item, { addToHistory: false })} size='medium' withTopMargin={false} keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
                 </Animated.View>}
             </KeyboardAvoidingView>
         </Container>

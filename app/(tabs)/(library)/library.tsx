@@ -59,7 +59,7 @@ export default function Library() {
 
     return (
         <Container>
-            <Header rightSpacing={0} title="Library" rightSection={<>
+            <Header rightSpacing={0} title="Library" withAvatar rightSection={<>
                 {tab == 'playlists' && <ActionIcon size={16} icon={IconPlus} onPress={() => SheetManager.show('newPlaylist')} />}
                 <ActionIcon size={16} icon={layout == 'list' ? IconLayoutGrid : IconLayoutList} onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

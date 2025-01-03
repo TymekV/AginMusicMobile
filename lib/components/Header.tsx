@@ -31,7 +31,7 @@ export default function Header({
     subtitle,
     rightSection,
     withBackIcon = false,
-    withAvatar = true,
+    withAvatar = false,
     floating = false,
     rightSpacing = 10,
     scrollRef,
@@ -116,7 +116,7 @@ export default function Header({
                         {withBackIcon && <ActionIcon icon={IconChevronLeft} size={16} variant='secondary' onPress={() => router.back()} />}
                         <Animated.View style={[styles.titleContainer, titleStyle]}>
                             {children}
-                            {title && <Title size={titleSize} fontFamily='Poppins-SemiBold' numberOfLines={1}>{title}</Title>}
+                            {title ? <Title size={titleSize} fontFamily='Poppins-SemiBold' numberOfLines={1}>{title}</Title> : <View></View>}
                         </Animated.View>
                     </View>
                     <View style={styles.iconGroup}>
