@@ -21,6 +21,7 @@ export default function NowPlayingTab({ icon: Icon, active, disabled, onPress, .
         },
         activeTab: {
             backgroundColor: colors.text[1],
+            borderRadius: 8,
         }
     }), [colors]);
 

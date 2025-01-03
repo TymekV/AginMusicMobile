@@ -107,7 +107,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
 
         const track = await TrackPlayer.getTrack(trackNumber);
         console.log({ track });
-
+        if (!track) return;
         setNowPlaying(track?._child as Child);
     }, []);
 

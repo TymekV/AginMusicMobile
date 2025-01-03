@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { Platform } from 'react-native';
 import TrackPlayer, { Capability, IOSCategory, IOSCategoryMode, RepeatMode } from 'react-native-track-player';
 
 async function setupPlayer() {
@@ -8,22 +9,23 @@ async function setupPlayer() {
         iosCategoryMode: IOSCategoryMode.Default,
         autoUpdateMetadata: true,
     });
+    if (Platform.OS === 'ios') {
+        await TrackPlayer.updateOptions({
+            // Media controls capabilities
+            capabilities: [
+                Capability.Play,
+                Capability.Pause,
+                Capability.SkipToNext,
+                Capability.SkipToPrevious,
+                Capability.Stop,
+                Capability.SeekTo,
+                // Capability.Like,
+            ],
 
-    await TrackPlayer.updateOptions({
-        // Media controls capabilities
-        capabilities: [
-            Capability.Play,
-            Capability.Pause,
-            Capability.SkipToNext,
-            Capability.SkipToPrevious,
-            Capability.Stop,
-            Capability.SeekTo,
-            Capability.Like,
-        ],
-
-        compactCapabilities: [Capability.Play, Capability.Pause],
-        progressUpdateEventInterval: 300,
-    });
+            compactCapabilities: [Capability.Play, Capability.Pause],
+            progressUpdateEventInterval: 300,
+        });
+    }
 
     // await TrackPlayer.setVolume(1);
     await TrackPlayer.setRepeatMode(RepeatMode.Off);
