@@ -55,6 +55,7 @@ declare module 'react-native-actions-sheet' {
             },
             returnValue: {
                 shouldCloseSheet?: boolean;
+                hasPlayed?: boolean;
             }
         }>;
         'playlist': SheetDefinition<{
@@ -68,6 +69,7 @@ declare module 'react-native-actions-sheet' {
                 id: string;
                 data?: AlbumID3;
                 context?: 'search' | 'album';
+                hasPlayed?: boolean;
             },
         }>;
         'settingSelect': SheetDefinition<{

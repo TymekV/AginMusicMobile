@@ -8,7 +8,6 @@ export function useApi() {
     const params = useSubsonicParams();
 
     const api = useMemo(() => {
-        console.log('Creating API instance', params);
         return params != null ? axios.create({
             baseURL: `${server.url}/rest/`,
             params,

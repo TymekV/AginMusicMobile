@@ -74,7 +74,6 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
         const albumsRes = await api.get('/getAlbumList2', { params: { type: 'newest', size: 500 } });
         const albums = albumsRes.data?.['subsonic-response']?.albumList2?.album as AlbumID3[];
         if (!albums) return;
-        console.log({ albums });
 
         setCache(c => ({ ...c, allAlbums: albums }));
         return albums;
@@ -87,7 +86,6 @@ export default function MemoryCacheProvider({ children }: { children?: React.Rea
         const albumRes = await api.get('/getAlbum', { params: { id } });
         const album = albumRes.data?.['subsonic-response']?.album as AlbumWithSongsID3;
         if (!album) return;
-        console.log({ album });
 
         setCache(c => ({ ...c, albums: { ...c.albums, [id]: album } }));
         return album;

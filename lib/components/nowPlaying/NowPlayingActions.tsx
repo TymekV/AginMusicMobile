@@ -23,7 +23,17 @@ export default function NowPlayingActions() {
         <View style={styles.actions}>
             {/* FIXME */}
             <ActionIcon variant='secondary' icon={nowPlaying.starred ? IconHeartFilled : IconHeart} size={16} />
-            <ActionIcon variant='secondary' icon={IconDownload} size={16} />
+            <ActionIcon variant='secondary' icon={IconDownload} size={16} onPress={async () => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+                await SheetManager.show('confirm', {
+                    payload: {
+                        title: 'Sorry!',
+                        message: 'Downloads feature will be avalibale soon. Stay tuned!',
+                        withCancel: false,
+                        confirmText: 'OK',
+                    }
+                });
+            }} />
             <ActionIcon variant='secondary' icon={IconDots} size={16} onPress={async () => {
                 Haptics.selectionAsync();
                 const data = await SheetManager.show('track', {

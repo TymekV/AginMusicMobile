@@ -14,10 +14,18 @@ export function useSearchItemActions() {
                 coverArt: item.coverArt ?? '',
                 name: item.title,
                 description: item.subtitle ?? '',
-                searchedAt: new Date(),
+                searchedAt: Date.now(),
             });
             await queue.playTrackNow(item.id);
         } else if (item.type === 'album') {
+            await history.addItem({
+                type: 'album',
+                id: item.id,
+                coverArt: item.coverArt ?? '',
+                name: item.title,
+                description: item.subtitle ?? '',
+                searchedAt: Date.now(),
+            });
             router.push({ pathname: '/albums/[id]', params: { id: item.id } });
         }
     }, []);

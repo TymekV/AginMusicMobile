@@ -93,6 +93,7 @@ export default function Search() {
                 coverUri: cover.generateUrl(item.coverArt ?? '', { size: 128 }),
                 coverCacheKey: `${item.coverArt}-128x128`,
                 fullData: item,
+                coverArt: item.coverArt,
             })) ?? [];
 
             const artists: MappedResult[] = results.artist?.map((item): MappedResult => ({
@@ -103,6 +104,7 @@ export default function Search() {
                 coverUri: cover.generateUrl(item.coverArt ?? '', { size: 128 }),
                 coverCacheKey: `${item.coverArt}-128x128`,
                 fullData: item,
+                coverArt: item.coverArt,
             })) ?? [];
 
             const songs: MappedResult[] = results.song?.map((item): MappedResult => ({
@@ -113,6 +115,7 @@ export default function Search() {
                 coverUri: cover.generateUrl(item.coverArt ?? '', { size: 128 }),
                 coverCacheKey: `${item.coverArt}-128x128`,
                 fullData: item,
+                coverArt: item.coverArt,
             })) ?? [];
 
             // TODO: Add sorting
@@ -129,7 +132,7 @@ export default function Search() {
         coverUri: cover.generateUrl(item.coverArt, { size: 128 }),
         coverCacheKey: `${item.coverArt}-128x128`,
         type: item.type,
-    })), [history]);
+    })), [history.items]);
 
     const styles = useMemo(() => StyleSheet.create({
         history: {
@@ -158,7 +161,7 @@ export default function Search() {
                     <MediaLibraryList data={filteredResults} onItemPress={actions.press} size='medium' keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
                 </Animated.View>}
                 {query.length <= 1 && <Animated.View style={styles.history} entering={entering} exiting={exiting}>
-                    {mappedHistory.length !== 0 && <SearchSection label='Recently Searched' />}
+                    {mappedHistory.length !== 0 && <SearchSection label='Recently Searched' action={{ label: 'Clear', onPress: async () => await history.clearAll() }} />}
                     <MediaLibraryList data={mappedHistory} onItemPress={() => { }} size='medium' withTopMargin={false} keyboardShouldPersistTaps='handled' rightSection={SearchRightSection} />
                 </Animated.View>}
             </KeyboardAvoidingView>

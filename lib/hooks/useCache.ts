@@ -65,7 +65,6 @@ export function useCache() {
     const getLyrics = useCallback(async (songId: string): Promise<StructuredLyrics[] | null> => {
         console.log('[lyricsCache] getting ', songId);
         const row = await db.getFirstAsync<{ id: string, data: string, updatedAt: Date }>('SELECT * FROM lyricsCache WHERE id = $id', { $id: songId });
-        console.log({ row });
 
         if (!row) return null;
 
@@ -85,7 +84,6 @@ export function useCache() {
     const fetchLyrics = useCallback(async (id: string): Promise<StructuredLyrics[] | undefined> => {
         try {
             console.log('[lyricsCache] requesting ', id);
-            console.log({ api });
 
             if (!api) return;
 

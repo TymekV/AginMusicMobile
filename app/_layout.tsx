@@ -23,10 +23,15 @@ import TabsHeightProvider from '@lib/providers/TabsHeightProvider';
 import Toast from 'react-native-toast-message';
 import { toastConfig } from '@lib/toastConfig';
 import ToastWrapper from '@lib/components/ToastWrapper';
+import SearchHistoryProvider from '@lib/providers/SearchHistoryProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+SplashScreen.setOptions({
+  duration: 300,
+  fade: true,
+});
 
 // This is the default configuration
 configureReanimatedLogger({
@@ -76,22 +81,24 @@ export default function RootLayout() {
         <SQLiteProvider databaseName="cache.db" onInit={initDatabase}>
           <TabsHeightProvider>
             <ServerProvider>
-              <QueueProvider>
-                <MemoryCacheProvider>
-                  <GestureHandlerRootView style={{ flex: 1 }}>
-                    <SheetProvider>
-                      <Stack>
-                        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                        <Stack.Screen name="+not-found" />
-                        <Stack.Screen name="login" options={{ headerShown: false }} />
-                        <Stack.Screen name="login-password" options={{ headerShown: false }} />
-                      </Stack>
-                      <ToastWrapper />
-                      <StatusBar style="auto" />
-                    </SheetProvider>
-                  </GestureHandlerRootView>
-                </MemoryCacheProvider>
-              </QueueProvider>
+              <SearchHistoryProvider>
+                <QueueProvider>
+                  <MemoryCacheProvider>
+                    <GestureHandlerRootView style={{ flex: 1 }}>
+                      <SheetProvider>
+                        <Stack>
+                          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                          <Stack.Screen name="+not-found" />
+                          <Stack.Screen name="login" options={{ headerShown: false }} />
+                          <Stack.Screen name="login-password" options={{ headerShown: false }} />
+                        </Stack>
+                        <ToastWrapper />
+                        <StatusBar style="auto" />
+                      </SheetProvider>
+                    </GestureHandlerRootView>
+                  </MemoryCacheProvider>
+                </QueueProvider>
+              </SearchHistoryProvider>
             </ServerProvider>
           </TabsHeightProvider>
         </SQLiteProvider>

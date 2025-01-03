@@ -11,6 +11,7 @@ import { IconCircleMinus, IconCirclePlus, IconCopy, IconDisc, IconDownload, Icon
 import * as Clipboard from 'expo-clipboard';
 import showToast from '@lib/showToast';
 import { router } from 'expo-router';
+import * as Haptics from 'expo-haptics';
 
 function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
     const insets = useSafeAreaInsets();
@@ -90,7 +91,16 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
             {payload?.context != 'nowPlaying' && <SheetOption
                 icon={IconDownload}
                 label='Download'
-                onPress={() => {
+                onPress={async () => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+                    await SheetManager.show('confirm', {
+                        payload: {
+                            title: 'Sorry!',
+                            message: 'Downloads feature will be avalibale soon. Stay tuned!',
+                            withCancel: false,
+                            confirmText: 'OK',
+                        }
+                    });
                     SheetManager.hide(sheetId);
                 }}
             />}

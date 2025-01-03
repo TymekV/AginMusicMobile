@@ -54,7 +54,6 @@ export default function SycnedLyricsView({ lyrics }: LyricsViewProps) {
         const toScroll = prevLine < 0 ? 0 : prevLine;
 
         if (toScroll > lyrics?.line.length - 1 || !lyrics?.line.length || isNaN(toScroll)) return;
-        console.log(toScroll);
 
         try {
             listRef.current?.scrollToIndex({ index: toScroll, animated: true });

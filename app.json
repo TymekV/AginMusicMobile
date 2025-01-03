@@ -2,7 +2,7 @@
   "expo": {
     "name": "Agin Music",
     "slug": "agin-music",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "aginmusic",
@@ -37,10 +37,16 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/images/splash-light.png",
+          "imageWidth": 150,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#ffffff",
+          "dark": {
+            "image": "./assets/images/splash-dark.png",
+            "imageWidth": 150,
+            "resizeMode": "contain",
+            "backgroundColor": "#0A0A0B"
+          }
         }
       ],
       "expo-secure-store",
