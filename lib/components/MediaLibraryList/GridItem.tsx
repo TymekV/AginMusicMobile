@@ -1,32 +1,37 @@
-import { StyleSheet, View, ViewProps } from 'react-native';
+import { StyleSheet, useWindowDimensions, View, ViewProps } from 'react-native';
 import { MediaLibItemProps, TMediaLibItem } from './Item';
 import { useColors } from '@lib/hooks';
 import { useContext, useMemo } from 'react';
 import Title from '../Title';
 import Cover from '../Cover';
-import { LibSize, LibSeparators } from '.';
+import { LibSize, LibSeparators, LibLayout } from '.';
 import { IconChevronRight } from '@tabler/icons-react-native';
+import React from 'react';
 
 export default function GridItem({ title, subtitle, coverUri, coverCacheKey, rightSection }: MediaLibItemProps) {
     const size = useContext(LibSize);
+    const layout = useContext(LibLayout);
+
+    const { width } = useWindowDimensions();
 
     const colors = useColors();
     const styles = useMemo(() => StyleSheet.create({
         item: {
-            flex: 1 / 2,
             overflow: 'hidden',
         },
         metadata: {
             marginTop: 5,
+        },
+        horizontalItem: {
+            maxWidth: (width - 40 - 10) / 2,
         }
-    }), [colors, size]);
+    }), [colors, size, width]);
 
     return (
-        <View style={styles.item}>
+        <View style={[styles.item, layout == 'horizontal' && styles.horizontalItem]}>
             <Cover
                 source={{ uri: coverUri }}
                 cacheKey={coverCacheKey}
-                // size={50}
                 withShadow={false}
             />
             <View style={styles.metadata}>

@@ -78,7 +78,7 @@ export default function Playlist() {
                 queue.replace(data.entry, data.entry.findIndex(x => x.id === item.id), { source: 'playlist', sourceId: data.id, sourceName: data.name });
             }}
         />
-    ), []);
+    ), [data?.entry]);
 
     return (
         <Container includeTop={false} includeBottom={false}>

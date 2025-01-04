@@ -1,14 +1,16 @@
 import { useColors } from '@lib/hooks';
 import { useMemo } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Title from './Title';
+import { Icon, IconChevronRight } from '@tabler/icons-react-native';
 
 export type HomeSectionHeaderProps = {
     label: string;
     description?: string;
     action?: {
-        label: string;
+        label?: string;
         onPress: () => void;
+        type?: 'text' | 'more';
     }
 }
 
@@ -27,14 +29,17 @@ export default function HomeSectionHeader({ label, description, action }: HomeSe
     }), []);
 
     return (
-        <View style={styles.section}>
-            <View>
-                <Title size={18} fontFamily='Poppins-SemiBold'>{label}</Title>
-                {description && <Title size={12} fontFamily='Poppins-Regular' color={colors.text[1]}>{description}</Title>}
+        <Pressable onPress={action && action.type == 'more' ? action.onPress : () => { }}>
+            <View style={styles.section}>
+                <View>
+                    <Title size={18} fontFamily='Poppins-SemiBold'>{label}</Title>
+                    {description && <Title size={12} fontFamily='Poppins-Regular' color={colors.text[1]}>{description}</Title>}
+                </View>
+                {action && action.type == 'text' && <TouchableOpacity onPress={action.onPress}>
+                    <Title size={12} color={colors.forcedTint} fontFamily='Poppins-Regular'>{action.label}</Title>
+                </TouchableOpacity>}
+                {action && action.type == 'more' && <IconChevronRight size={20} color={colors.text[1]} />}
             </View>
-            {action && <TouchableOpacity onPress={action.onPress}>
-                <Title size={12} color={colors.forcedTint} fontFamily='Poppins-Regular'>{action.label}</Title>
-            </TouchableOpacity>}
-        </View>
+        </Pressable>
     )
 }

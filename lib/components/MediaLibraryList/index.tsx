@@ -2,9 +2,9 @@ import { useTabsHeight } from '@lib/hooks';
 import React from 'react';
 import MediaLibItem, { TMediaLibItem } from './Item';
 import { createContext, useMemo } from 'react';
-import { FlatList, FlatListProps, StyleSheet, View } from 'react-native';
+import { FlatList, FlatListProps, StyleSheet, useWindowDimensions, View } from 'react-native';
 
-export type MediaLibraryLayout = 'grid' | 'list' | 'gridCompact' | '';
+export type MediaLibraryLayout = 'grid' | 'list' | 'gridCompact' | 'horizontal' | '';
 
 export type MediaLibrarySize = 'small' | 'medium' | 'large';
 
@@ -16,14 +16,17 @@ export interface MediaLibraryListProps extends Omit<FlatListProps<TMediaLibItem>
     withSeparators?: boolean;
     withTopMargin?: boolean;
     rightSection?: ({ item, index }: { item: TMediaLibItem, index: number }) => React.ReactNode;
+    isFullHeight?: boolean;
 }
 
 export const LibLayout = createContext<MediaLibraryLayout>('list');
 export const LibSize = createContext<MediaLibrarySize>('large');
 export const LibSeparators = createContext<boolean>(true);
 
-export default function MediaLibraryList({ data, layout = 'list', size = 'large', withSeparators = true, withTopMargin = true, onItemPress, rightSection: RightSection, ...props }: MediaLibraryListProps) {
+export default function MediaLibraryList({ data, layout = 'list', size = 'large', withSeparators = true, withTopMargin = true, onItemPress, rightSection: RightSection, isFullHeight = true, ...props }: MediaLibraryListProps) {
     const [tabsHeight] = useTabsHeight();
+
+    const { width } = useWindowDimensions();
 
     const styles = useMemo(() => StyleSheet.create({
         list: {
@@ -35,10 +38,16 @@ export default function MediaLibraryList({ data, layout = 'list', size = 'large'
         gridSeparator: {
             height: 10,
         },
+        horizontalSeparator: {
+            width: 10,
+        },
         footer: {
-            height: tabsHeight + 10,
+            height: isFullHeight ? (tabsHeight + 10) : 0,
+        },
+        horizontalPadding: {
+            width: 20,
         }
-    }), [layout, withTopMargin]);
+    }), [layout, withTopMargin, isFullHeight, layout]);
 
     return (
         <LibLayout.Provider value={layout}>
@@ -50,8 +59,13 @@ export default function MediaLibraryList({ data, layout = 'list', size = 'large'
                         keyExtractor={(item) => item.id}
                         renderItem={({ item, index }) => <MediaLibItem {...item} onPress={() => onItemPress(item)} style={[layout === 'grid' && { flex: 1 / 2 }, layout === 'gridCompact' && { flex: 1 / 3 }]} index={index} rightSection={RightSection ? <RightSection item={item} index={index} /> : undefined} />}
                         numColumns={layout === 'grid' ? 2 : layout === 'gridCompact' ? 3 : 1}
-                        ItemSeparatorComponent={(layout === 'grid' || layout == 'gridCompact') ? () => <View style={styles.gridSeparator} /> : undefined}
-                        ListFooterComponent={<View style={styles.footer} />}
+                        ItemSeparatorComponent={(layout === 'grid' || layout == 'gridCompact') ? () => <View style={styles.gridSeparator} /> : layout == 'horizontal' ? () => <View style={styles.horizontalSeparator} /> : undefined}
+                        ListFooterComponent={<View style={layout === 'horizontal' ? styles.horizontalPadding : styles.footer} />}
+                        ListHeaderComponent={layout === 'horizontal' ? <View style={styles.horizontalPadding} /> : undefined}
+                        horizontal={layout === 'horizontal'}
+                        showsHorizontalScrollIndicator={false}
+                        snapToAlignment={layout === 'horizontal' ? 'start' : undefined}
+                        snapToInterval={layout === 'horizontal' ? ((width - 40 - 10) / 2) + 10 : undefined}
                         key={layout}
                         {...props}
                     />

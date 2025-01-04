@@ -78,7 +78,7 @@ export default function Album() {
                 queue.replace(data.song, data.song.findIndex(x => x.id === item.id), { source: 'album', sourceId: data.id, sourceName: data.name });
             }}
         />
-    ), []);
+    ), [data?.song]);
 
     return (
         <Container includeTop={false} includeBottom={false}>

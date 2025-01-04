@@ -1,35 +1,23 @@
 import Container from '@lib/components/Container';
 import Header from '@lib/components/Header';
-import HomeSectionHeader from '@lib/components/HomeSectionHeader';
-import MediaLibraryList from '@lib/components/MediaLibraryList';
-import GridCompactItem from '@lib/components/MediaLibraryList/GridCompactItem';
-import { TMediaLibItem } from '@lib/components/MediaLibraryList/Item';
-import { useCoverBuilder, usePins } from '@lib/hooks';
+import { Pinned, Playlists } from '@lib/components/HomeSections';
 import React, { useMemo } from 'react';
+import { ScrollView, StyleSheet } from 'react-native';
 
 export default function Home() {
-    const { pins } = usePins();
-    const cover = useCoverBuilder();
-    const pinsData = useMemo(() => pins.map((pin): TMediaLibItem => ({
-        id: pin.id,
-        title: pin.name.replace(/\(.*/g, '').trim(),
-        coverArt: pin.coverArt,
-        coverUri: cover.generateUrl(pin.coverArt, { size: 300 }),
-        coverCacheKey: `${pin.coverArt}-300x300`,
-        type: pin.type,
-    })), [pins]);
+    const styles = useMemo(() => StyleSheet.create({
+        main: {
+            flex: 1,
+        }
+    }), []);
 
     return (
         <Container>
-            <Header title="Home" withAvatar />
-            <HomeSectionHeader label="Pinned" description="Your favorite music at a glance" action={{ label: 'Edit', onPress: () => { } }} />
-            <MediaLibraryList
-                data={pinsData}
-                onItemPress={() => { }}
-                layout='gridCompact'
-                withTopMargin={false}
-                scrollEnabled={false}
-            />
+            <ScrollView style={styles.main}>
+                <Header title="Home" withAvatar />
+                <Pinned />
+                <Playlists />
+            </ScrollView>
         </Container>
     )
 }
