@@ -4,7 +4,7 @@ import MediaLibItem, { TMediaLibItem } from './Item';
 import { createContext, useMemo } from 'react';
 import { FlatList, FlatListProps, StyleSheet, View } from 'react-native';
 
-export type MediaLibraryLayout = 'grid' | 'list' | '';
+export type MediaLibraryLayout = 'grid' | 'list' | 'gridCompact' | '';
 
 export type MediaLibrarySize = 'small' | 'medium' | 'large';
 
@@ -27,7 +27,7 @@ export default function MediaLibraryList({ data, layout = 'list', size = 'large'
 
     const styles = useMemo(() => StyleSheet.create({
         list: {
-            marginTop: withTopMargin ? layout == 'grid' ? 10 : 5 : 0,
+            marginTop: withTopMargin ? (layout == 'grid' || layout == 'gridCompact') ? 10 : 5 : 0,
         },
         gridList: {
             paddingHorizontal: 20,
@@ -45,12 +45,12 @@ export default function MediaLibraryList({ data, layout = 'list', size = 'large'
             <LibSize.Provider value={size}>
                 <LibSeparators.Provider value={withSeparators}>
                     <FlatList
-                        style={[styles.list, layout === 'grid' && styles.gridList]}
+                        style={[styles.list, (layout === 'grid' || layout == 'gridCompact') && styles.gridList]}
                         data={data}
                         keyExtractor={(item) => item.id}
-                        renderItem={({ item, index }) => <MediaLibItem {...item} onPress={() => onItemPress(item)} style={layout === 'grid' && { flex: 1 / 2 }} index={index} rightSection={RightSection ? <RightSection item={item} index={index} /> : undefined} />}
-                        numColumns={layout === 'grid' ? 2 : 1}
-                        ItemSeparatorComponent={layout === 'grid' ? () => <View style={styles.gridSeparator} /> : undefined}
+                        renderItem={({ item, index }) => <MediaLibItem {...item} onPress={() => onItemPress(item)} style={(layout === 'grid' || layout == 'gridCompact') && { flex: 1 / 2 }} index={index} rightSection={RightSection ? <RightSection item={item} index={index} /> : undefined} />}
+                        numColumns={layout === 'grid' ? 2 : layout === 'gridCompact' ? 3 : 1}
+                        ItemSeparatorComponent={(layout === 'grid' || layout == 'gridCompact') ? () => <View style={styles.gridSeparator} /> : undefined}
                         ListFooterComponent={<View style={styles.footer} />}
                         key={layout}
                         {...props}
