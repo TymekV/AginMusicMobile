@@ -19,6 +19,7 @@ export default function SmallToast({ title, subtitle, cover, icon: Icon, link }:
     const styles = useMemo(() => StyleSheet.create({
         container: {
             alignItems: 'center',
+            paddingHorizontal: 30,
         },
         toast: {
             padding: 8,

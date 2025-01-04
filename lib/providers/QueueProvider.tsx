@@ -6,6 +6,8 @@ import qs from 'qs';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
 import TrackPlayer, { Event, Track, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
+import showToast from '@lib/showToast';
+import { IconExclamationCircle } from '@tabler/icons-react-native';
 
 export type ClearConfirmOptions = {
     wait?: boolean;
@@ -32,15 +34,15 @@ export type QueueContextType = {
     canGoForward: boolean;
     canGoBackward: boolean;
     setQueue: (queue: TQueueItem[]) => void;
-    add: (id: string) => Promise<void>;
+    add: (id: string) => Promise<boolean>;
     clear: () => void;
     clearConfirm: (options?: ClearConfirmOptions) => Promise<boolean>;
     jumpTo: (index: number) => void;
     skipBackward: () => void;
     skipForward: () => void;
     replace: (items: Child[], initialIndex?: number, source?: QueueSource) => void;
-    playTrackNow: (id: string) => Promise<void>;
-    playNext: (id: string) => Promise<void>;
+    playTrackNow: (id: string) => Promise<boolean>;
+    playNext: (id: string) => Promise<boolean>;
 }
 
 const initialQueueContext: QueueContextType = {
@@ -55,15 +57,15 @@ const initialQueueContext: QueueContextType = {
     canGoBackward: false,
     canGoForward: false,
     setQueue: () => { },
-    add: async (id: string) => { },
+    add: async (id: string) => false,
     clear: () => { },
     clearConfirm: async () => false,
     jumpTo: (index: number) => { },
     skipBackward: () => { },
     skipForward: () => { },
     replace: (items: Child[]) => { },
-    playTrackNow: async (id: string) => { },
-    playNext: async (id: string) => { },
+    playTrackNow: async (id: string) => false,
+    playNext: async (id: string) => false,
 }
 
 export const QueueContext = createContext<QueueContextType>(initialQueueContext);
@@ -186,7 +188,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
 
     const add = useCallback(async (id: string) => {
         const data = await cache.fetchChild(id);
-        if (!data) return;
+        if (!data) return false;
         const currentlyPlaying = await TrackPlayer.getCurrentTrack();
         await TrackPlayer.add(convertToTrack(data));
         if (currentlyPlaying == null) await TrackPlayer.play();
@@ -194,28 +196,38 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
 
         await updateQueue();
         await updateActive();
+        return true;
     }, [cache, convertToTrack]);
 
     const playNext = useCallback(async (id: string) => {
         const data = await cache.fetchChild(id);
-        if (!data) return;
+        if (!data) return false;
         const currentlyPlaying = await TrackPlayer.getCurrentTrack();
         await TrackPlayer.add(convertToTrack(data), (currentlyPlaying ?? 0) + 1);
 
         await updateQueue();
         await updateActive();
+        return true;
     }, [cache, convertToTrack]);
 
     const playTrackNow = useCallback(async (id: string) => {
         const data = await cache.fetchChild(id);
-        if (!data) return;
-        const currentlyPlaying = await TrackPlayer.getCurrentTrack();
+        if (!data) {
+            await showToast({
+                title: 'Track Not Found',
+                subtitle: 'The track you\'re trying to play does not exist on this server.',
+                icon: IconExclamationCircle,
+                haptics: 'error',
+            });
+            return false;
+        }
         await TrackPlayer.reset();
         await TrackPlayer.add(convertToTrack(data));
         await TrackPlayer.play();
 
         await updateQueue();
         await updateActive();
+        return true;
     }, [cache, convertToTrack]);
 
     const replace = useCallback(async (items: Child[], initialIndex?: number, source?: QueueSource) => {

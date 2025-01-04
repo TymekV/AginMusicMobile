@@ -16,7 +16,7 @@ export function useHomeItemActions() {
         } else if (item.type === 'playlist') {
             router.push({ pathname: '/playlists/[id]', params: { id: item.id } });
         }
-    }, []);
+    }, [queue.playTrackNow]);
 
     const longPress = useCallback(async (item: TMediaLibItem) => {
         Haptics.selectionAsync();
