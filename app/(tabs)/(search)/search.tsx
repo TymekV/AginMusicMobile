@@ -7,7 +7,7 @@ import SearchRightSection from '@lib/components/SearchRightSection';
 import SearchSection from '@lib/components/SearchSection';
 import TagTabs from '@lib/components/TagTabs';
 import { TTagTab } from '@lib/components/TagTabs/TagTab';
-import { useApi, useCoverBuilder, useSearchHistory, useSearchItemActions } from '@lib/hooks';
+import { useApi, useCoverBuilder, useSearchHistory, useSearchItemActions, useSetting } from '@lib/hooks';
 import { AlbumID3, ArtistID3, Child, SearchResult3 } from '@lib/types';
 import { IconDisc, IconMicrophone2, IconMusic, IconSearch } from '@tabler/icons-react-native';
 import { useFocusEffect } from 'expo-router';
@@ -57,6 +57,8 @@ export default function Search() {
     const cover = useCoverBuilder();
     const api = useApi();
     const actions = useSearchItemActions();
+
+    const autoFocus = useSetting('ui.autoFocusSearchBar');
 
     const [tab, setTab] = useState<string>('all');
     const [query, setQuery] = useState<string>('');
@@ -146,14 +148,17 @@ export default function Search() {
     const inputRef = useRef<TextInput>(null);
 
     useFocusEffect(useCallback(() => {
+        console.log({ autoFocus });
+
+        if (!autoFocus) return;
         inputRef.current?.focus();
-    }, []));
+    }, [autoFocus]));
 
     return (
         <Container>
             <KeyboardAvoidingView behavior='padding' style={styles.main}>
                 <Header withAvatar={false}>
-                    <Input compact icon={IconSearch} placeholder='Search songs, artists, albums...' autoFocus ref={inputRef} clearButtonMode='always' value={query} onChangeText={setQuery} />
+                    <Input compact icon={IconSearch} placeholder='Search songs, artists, albums...' autoFocus={!!autoFocus} ref={inputRef} clearButtonMode='always' value={query} onChangeText={setQuery} />
                 </Header>
                 {/* Had to do this beacuse Navidrome returns empty response for one character queries */}
                 {query.length > 1 && <Animated.View entering={entering} exiting={exiting}>

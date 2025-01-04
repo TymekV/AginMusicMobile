@@ -44,7 +44,7 @@ function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
                 cover={{ uri: cover.generateUrl(data?.coverArt ?? '', { size: 128 }) }}
                 coverCacheKey={`${data?.coverArt}-128x128`}
                 title={data?.name}
-                artist={`${data?.songCount} songs • edited ${formatDistanceToNow(new Date(data?.changed), { addSuffix: true })}`}
+                artist={`${data?.songCount} songs • edited ${data?.changed ? formatDistanceToNow(new Date(data?.changed), { addSuffix: true }) : ''}`}
             />
             {payload?.context != 'playlist' && <SheetOption
                 icon={IconPlayerPlay}

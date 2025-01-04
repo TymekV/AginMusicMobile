@@ -36,7 +36,7 @@ export default function Settings() {
             <Header title="Settings" withBackIcon withAvatar={false} titleSize={20} />
             <ScrollView>
                 <View style={styles.settings}>
-                    <SettingsSection label='Audio Quality' />
+                    {/* <SettingsSection label='Audio Quality' />
                     <Setting
                         id='audioQuality.wifi'
                         type='select'
@@ -66,7 +66,7 @@ export default function Settings() {
                         type='switch'
                         label='Dolby Atmos'
                         description='Enable Dolby Atmos when available'
-                    />
+                    /> */}
                     <SettingsSection label='Storage' />
                     <Setting
                         id='storage.clearCache'
@@ -117,8 +117,7 @@ export default function Settings() {
                         id='ui.autoFocusSearchBar'
                         type='switch'
                         label='Automatically Focus Search Bar'
-                        description='Focus the search bar when opening the search tab'
-                        defaultValue={true}
+                        description='Focus the search bar automatically'
                     />
                     <SettingsSection label='Developer Options' />
                     <Setting

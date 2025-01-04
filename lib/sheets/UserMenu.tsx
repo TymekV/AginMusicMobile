@@ -2,14 +2,16 @@ import { StyledActionSheet } from '@lib/components/StyledActionSheet';
 import { Linking, Platform } from 'react-native';
 import { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useCache, useMemoryCache, useQueue, useServer } from '@lib/hooks';
+import { useCache, useMemoryCache, useQueue, useServer, useApi } from '@lib/hooks';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
-import { IconArrowsSort, IconBrandGithub, IconExclamationCircle, IconLogout, IconMusic, IconSettings } from '@tabler/icons-react-native';
+import { IconArrowsSort, IconBrandGithub, IconExclamationCircle, IconFileSearch, IconLogout, IconMusic, IconSettings } from '@tabler/icons-react-native';
 import Avatar from '@lib/components/Avatar';
 import config from '@lib/constants/config';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
+import showToast from '@lib/showToast';
+import { ScanStatus } from '@lib/types';
 
 function UserMenuSheet({ sheetId, payload }: SheetProps<'userMenu'>) {
     const insets = useSafeAreaInsets();
@@ -17,6 +19,7 @@ function UserMenuSheet({ sheetId, payload }: SheetProps<'userMenu'>) {
     const cache = useCache();
     const memoryCache = useMemoryCache();
     const queue = useQueue();
+    const api = useApi();
 
     return (
         <StyledActionSheet
@@ -35,6 +38,36 @@ function UserMenuSheet({ sheetId, payload }: SheetProps<'userMenu'>) {
                 onPress={() => {
                     router.push('/settings');
                     SheetManager.hide(sheetId);
+                }}
+            />
+            <SheetOption
+                icon={IconFileSearch}
+                label='Trigger Scan'
+                onPress={async () => {
+                    if (!api) return;
+                    SheetManager.hide(sheetId);
+                    await showToast({
+                        title: 'Scan Triggered',
+                        subtitle: 'The server is now scanning for new music.',
+                        icon: IconFileSearch,
+                        haptics: 'none',
+                    });
+                    const result = await api.get('/startScan');
+                    const status = result.data?.['subsonic-response']?.scanStatus as ScanStatus;
+                    if (!status) {
+                        return await showToast({
+                            title: 'Scan Failed',
+                            subtitle: 'Ensure that you have the correct permissions.',
+                            icon: IconExclamationCircle,
+                            haptics: 'error',
+                        });
+                    }
+
+                    return await showToast({
+                        title: 'Scan Finished',
+                        subtitle: `Total tracks: ${status.count}`,
+                        icon: IconFileSearch,
+                    });
                 }}
             />
             {config.repoUrl && <SheetOption
