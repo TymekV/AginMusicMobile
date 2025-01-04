@@ -10,7 +10,7 @@ As the developer of Agin Music, I do not collect, store, or process any user dat
 ## Data Collected by Media Servers
 Agin Music acts as a client that connects to an OpenSubsonic-compatible media server of your choice. The data you provide, such as server credentials or media preferences, is used exclusively to interact with the server.
 
-## Please note that the media server you connect to may collect, store, or process your data in accordance with its own privacy policy. It is your responsibility to review the privacy policy of the media server you use to understand how your data is handled.
+Please note that the media server you connect to may collect, store, or process your data in accordance with its own privacy policy. It is your responsibility to review the privacy policy of the media server you use to understand how your data is handled.
 
 ## Open Source Transparency
 Agin Music is open source, and its source code is publicly available. This transparency ensures that anyone can review the code to confirm that no data is being collected or shared.
