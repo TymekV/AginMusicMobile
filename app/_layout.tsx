@@ -24,6 +24,7 @@ import Toast from 'react-native-toast-message';
 import { toastConfig } from '@lib/toastConfig';
 import ToastWrapper from '@lib/components/ToastWrapper';
 import SearchHistoryProvider from '@lib/providers/SearchHistoryProvider';
+import PinsProvider from '@lib/providers/PinsProvider';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -84,18 +85,20 @@ export default function RootLayout() {
               <SearchHistoryProvider>
                 <QueueProvider>
                   <MemoryCacheProvider>
-                    <GestureHandlerRootView style={{ flex: 1 }}>
-                      <SheetProvider>
-                        <Stack>
-                          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                          <Stack.Screen name="+not-found" />
-                          <Stack.Screen name="login" options={{ headerShown: false }} />
-                          <Stack.Screen name="login-password" options={{ headerShown: false }} />
-                        </Stack>
-                        <ToastWrapper />
-                        <StatusBar style="auto" />
-                      </SheetProvider>
-                    </GestureHandlerRootView>
+                    <PinsProvider>
+                      <GestureHandlerRootView style={{ flex: 1 }}>
+                        <SheetProvider>
+                          <Stack>
+                            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                            <Stack.Screen name="+not-found" />
+                            <Stack.Screen name="login" options={{ headerShown: false }} />
+                            <Stack.Screen name="login-password" options={{ headerShown: false }} />
+                          </Stack>
+                          <ToastWrapper />
+                          <StatusBar style="auto" />
+                        </SheetProvider>
+                      </GestureHandlerRootView>
+                    </PinsProvider>
                   </MemoryCacheProvider>
                 </QueueProvider>
               </SearchHistoryProvider>

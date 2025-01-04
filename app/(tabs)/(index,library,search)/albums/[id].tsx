@@ -12,6 +12,7 @@ import { FlatList, View } from 'react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
 import Animated, { Easing, useAnimatedRef, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Child } from '@lib/types';
 
 export default function Album() {
     const { id } = useLocalSearchParams();
@@ -52,6 +53,33 @@ export default function Album() {
         });
     }, [data]);
 
+    const renderItem = useCallback(({ item, index }: { item: Child, index: number }) => (
+        <MediaLibItem
+            id={item.id}
+            title={item.title}
+            coverUri={cover.generateUrl(item.coverArt ?? '', { size: 128 })}
+            coverCacheKey={`${item.coverArt}-128x128`}
+            isAlbumEntry
+            trackNumber={item.track}
+            rightSection={<>
+                <ActionIcon icon={IconDots} size={16} variant='secondaryTransparent' onPress={() => {
+                    Haptics.selectionAsync();
+                    SheetManager.show('track', {
+                        payload: {
+                            id: item.id,
+                            data: item,
+                            context: 'album',
+                        }
+                    });
+                }} />
+            </>}
+            onPress={() => {
+                if (!data.song) return;
+                queue.replace(data.song, data.song.findIndex(x => x.id === item.id), { source: 'album', sourceId: data.id, sourceName: data.name });
+            }}
+        />
+    ), []);
+
     return (
         <Container includeTop={false} includeBottom={false}>
             <Header
@@ -75,32 +103,7 @@ export default function Album() {
                                 data={tracksData}
                                 keyExtractor={(item) => item.id ?? `fallback-${Math.random()}`}
                                 ref={listRef}
-                                renderItem={({ item, index }) => (
-                                    <MediaLibItem
-                                        id={item.id}
-                                        title={item.title}
-                                        coverUri={cover.generateUrl(item.coverArt ?? '', { size: 128 })}
-                                        coverCacheKey={`${item.coverArt}-128x128`}
-                                        isAlbumEntry
-                                        trackNumber={item.track}
-                                        rightSection={<>
-                                            <ActionIcon icon={IconDots} size={16} variant='secondaryTransparent' onPress={() => {
-                                                Haptics.selectionAsync();
-                                                SheetManager.show('track', {
-                                                    payload: {
-                                                        id: item.id,
-                                                        data: item,
-                                                        context: 'album',
-                                                    }
-                                                });
-                                            }} />
-                                        </>}
-                                        onPress={() => {
-                                            if (!data.song) return;
-                                            queue.replace(data.song, data.song.findIndex(x => x.id === item.id), { source: 'album', sourceId: data.id, sourceName: data.name });
-                                        }}
-                                    />
-                                )}
+                                renderItem={renderItem}
                                 ListHeaderComponent={<PlaylistHeader album={data} onTitlePress={showContextMenu} />}
                                 ListFooterComponent={<View style={{ height: tabsHeight + 10 }} />}
                             />

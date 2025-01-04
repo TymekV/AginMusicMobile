@@ -15,7 +15,7 @@ export default function GridCompactItem({ title, subtitle, coverUri, coverCacheK
     const colors = useColors();
     const styles = useMemo(() => StyleSheet.create({
         item: {
-            flex: 1 / 2,
+            flex: 1 / 3,
             overflow: 'hidden',
             position: 'relative',
         },

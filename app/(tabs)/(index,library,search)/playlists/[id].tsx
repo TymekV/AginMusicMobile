@@ -12,6 +12,7 @@ import { FlatList, View } from 'react-native';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
 import Animated, { Easing, useAnimatedRef, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Child } from '@lib/types';
 
 export default function Playlist() {
     const { id } = useLocalSearchParams();
@@ -51,6 +52,34 @@ export default function Playlist() {
         });
     }, [data]);
 
+    const renderItem = useCallback(({ item, index }: { item: Child, index: number }) => (
+        <MediaLibItem
+            key={item.id}
+            id={item.id}
+            title={item.title}
+            subtitle={item.artist}
+            coverUri={cover.generateUrl(item.coverArt ?? '', { size: 128 })}
+            coverCacheKey={`${item.coverArt}-128x128`}
+            rightSection={<>
+                <ActionIcon icon={IconDots} size={16} variant='secondaryTransparent' onPress={() => {
+                    Haptics.selectionAsync();
+                    SheetManager.show('track', {
+                        payload: {
+                            id: item.id,
+                            data: item,
+                            context: 'playlist',
+                            contextId: data.id,
+                        }
+                    });
+                }} />
+            </>}
+            onPress={() => {
+                if (!data.entry) return;
+                queue.replace(data.entry, data.entry.findIndex(x => x.id === item.id), { source: 'playlist', sourceId: data.id, sourceName: data.name });
+            }}
+        />
+    ), []);
+
     return (
         <Container includeTop={false} includeBottom={false}>
             <Header
@@ -74,32 +103,10 @@ export default function Playlist() {
                                 data={entryData}
                                 keyExtractor={(item) => item.id ?? `fallback-${Math.random()}`}
                                 ref={listRef}
-                                renderItem={({ item, index }) => (
-                                    <MediaLibItem
-                                        id={item.id}
-                                        title={item.title}
-                                        subtitle={item.artist}
-                                        coverUri={cover.generateUrl(item.coverArt ?? '', { size: 128 })}
-                                        coverCacheKey={`${item.coverArt}-128x128`}
-                                        rightSection={<>
-                                            <ActionIcon icon={IconDots} size={16} variant='secondaryTransparent' onPress={() => {
-                                                Haptics.selectionAsync();
-                                                SheetManager.show('track', {
-                                                    payload: {
-                                                        id: item.id,
-                                                        data: item,
-                                                        context: 'playlist',
-                                                        contextId: data.id,
-                                                    }
-                                                });
-                                            }} />
-                                        </>}
-                                        onPress={() => {
-                                            if (!data.entry) return;
-                                            queue.replace(data.entry, data.entry.findIndex(x => x.id === item.id), { source: 'playlist', sourceId: data.id, sourceName: data.name });
-                                        }}
-                                    />
-                                )}
+                                // windowSize={5}
+                                // getItemCount={() => entryData?.length ?? 0}
+                                getItemLayout={(data, index) => ({ length: 62, offset: 62 * index, index })}
+                                renderItem={renderItem}
                                 ListHeaderComponent={<PlaylistHeader playlist={data} onTitlePress={showContextMenu} />}
                                 ListFooterComponent={<View style={{ height: tabsHeight + 10 }} />}
                             />

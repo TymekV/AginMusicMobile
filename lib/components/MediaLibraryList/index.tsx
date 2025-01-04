@@ -48,7 +48,7 @@ export default function MediaLibraryList({ data, layout = 'list', size = 'large'
                         style={[styles.list, (layout === 'grid' || layout == 'gridCompact') && styles.gridList]}
                         data={data}
                         keyExtractor={(item) => item.id}
-                        renderItem={({ item, index }) => <MediaLibItem {...item} onPress={() => onItemPress(item)} style={(layout === 'grid' || layout == 'gridCompact') && { flex: 1 / 2 }} index={index} rightSection={RightSection ? <RightSection item={item} index={index} /> : undefined} />}
+                        renderItem={({ item, index }) => <MediaLibItem {...item} onPress={() => onItemPress(item)} style={[layout === 'grid' && { flex: 1 / 2 }, layout === 'gridCompact' && { flex: 1 / 3 }]} index={index} rightSection={RightSection ? <RightSection item={item} index={index} /> : undefined} />}
                         numColumns={layout === 'grid' ? 2 : layout === 'gridCompact' ? 3 : 1}
                         ItemSeparatorComponent={(layout === 'grid' || layout == 'gridCompact') ? () => <View style={styles.gridSeparator} /> : undefined}
                         ListFooterComponent={<View style={styles.footer} />}

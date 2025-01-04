@@ -4,7 +4,6 @@ import DraggableFlatList from 'react-native-draggable-flatlist';
 import QueueItem from './QueueItem';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { GestureEnabledContext } from '@/lib/sheets/playback';
-import { Child } from '@/lib/types';
 import { TQueueItem } from '@lib/providers/QueueProvider';
 
 export default function Queue() {
@@ -40,6 +39,7 @@ export default function Queue() {
             <DraggableFlatList
                 style={styles.list}
                 data={delayedQueue ?? []}
+                windowSize={3}
                 keyExtractor={(item, index) => `${item._child.id}-${index}`}
                 renderItem={({ item, ...props }) => <QueueItem item={item._child} {...props} />}
                 onDragEnd={handleDragEnd}
