@@ -2,7 +2,7 @@ import { registerSheet, SheetDefinition } from 'react-native-actions-sheet';
 import PlaybackSheet from './playback';
 import ConfirmSheet from './Confirm';
 import NewPlaylsitSheet from './NewPlaylist';
-import { AlbumID3, Child, Playlist } from '@lib/types';
+import { AlbumID3, Child, Playlist, PlaylistWithSongs } from '@lib/types';
 import TrackSheet from './Track';
 import PlaylistSheet from './Playlist';
 import AlbumSheet from './Album';
@@ -50,7 +50,7 @@ declare module 'react-native-actions-sheet' {
             payload: {
                 id: string;
                 data?: Child;
-                context?: 'playlist' | 'album' | 'nowPlaying' | 'search';
+                context?: 'home' | 'playlist' | 'album' | 'nowPlaying' | 'search';
                 contextId?: string;
             },
             returnValue: {
@@ -61,14 +61,15 @@ declare module 'react-native-actions-sheet' {
         'playlist': SheetDefinition<{
             payload: {
                 id: string;
-                data?: Playlist;
+                data?: PlaylistWithSongs;
+                context?: 'home' | 'playlist';
             },
         }>;
         'album': SheetDefinition<{
             payload: {
                 id: string;
                 data?: AlbumID3;
-                context?: 'search' | 'album';
+                context?: 'home' | 'search' | 'album';
                 hasPlayed?: boolean;
             },
         }>;

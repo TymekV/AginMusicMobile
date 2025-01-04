@@ -92,7 +92,8 @@ export default function Album() {
                 titleSize={18}
                 initialHideTitle
                 rightSection={<>
-                    <ActionIcon icon={IconSearch} size={16} variant='secondary' />
+                    {/* TODO */}
+                    {/* <ActionIcon icon={IconSearch} size={16} variant='secondary' /> */}
                     <ActionIcon icon={IconDots} size={16} variant='secondary' onPress={showContextMenu} />
                 </>} />
             <Animated.View style={[{ flex: 1 }, containerStyle]}>

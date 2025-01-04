@@ -1,12 +1,13 @@
 import React, { useMemo } from 'react';
 import HomeSectionHeader from '../HomeSectionHeader';
 import MediaLibraryList from '../MediaLibraryList';
-import { usePins, useCoverBuilder, useMemoryCache } from '@lib/hooks';
+import { usePins, useCoverBuilder, useHomeItemActions } from '@lib/hooks';
 import { TMediaLibItem } from '../MediaLibraryList/Item';
 
 export function Pinned() {
     const { pins } = usePins();
     const cover = useCoverBuilder();
+    const { press, longPress } = useHomeItemActions();
 
     const pinsData = useMemo(() => pins.map((pin): TMediaLibItem => ({
         id: pin.id,
@@ -23,7 +24,8 @@ export function Pinned() {
                 <HomeSectionHeader label="Pinned" description="Your favorite music at a glance" action={{ label: 'Edit', onPress: () => { } }} />
                 <MediaLibraryList
                     data={pinsData}
-                    onItemPress={() => { }}
+                    onItemPress={press}
+                    onItemLongPress={longPress}
                     layout='gridCompact'
                     withTopMargin={false}
                     scrollEnabled={false}

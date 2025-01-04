@@ -1,7 +1,7 @@
 import ActionIcon from '@/lib/components/ActionIcon';
 import Cover from '@/lib/components/Cover';
 import Title from '@/lib/components/Title';
-import { useColors, useCoverBuilder, useGlobalPlayer, useQueue } from '@lib/hooks';
+import { useColors, useCoverBuilder, useQueue } from '@lib/hooks';
 import { IconPlayerPauseFilled, IconPlayerPlayFilled, IconPlayerTrackNextFilled } from '@tabler/icons-react-native';
 import { useContext, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';

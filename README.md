@@ -21,3 +21,39 @@ If you don't have a Navidrome server, you can test the app using Naivdrome's dem
 **Username:** demo
 
 **Password:** demo
+
+## Building locally
+
+To build the app locally, first clone the repo and `cd` into the folder.
+
+Install dependencies by running:
+```
+npm i
+```
+
+### Building for iOS
+Requirements:
+- Xcode
+
+**Building in development mode**
+```
+npx expo run:ios
+```
+**Building in release mode**
+```
+npx expo run:ios --configuration Release
+```
+
+### Building for Android
+Requirements:
+- Android SDK
+- OpenJDK 17+
+
+**Building in development mode**
+```
+npx expo run:android
+```
+**Building in release mode**
+```
+npx expo run:ios --variant Release
+```

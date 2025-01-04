@@ -6,9 +6,10 @@ import { useApiHelpers, useCoverBuilder, useMemoryCache, usePins, useQueue, useS
 import { useEffect } from 'react';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
-import { IconArrowsShuffle, IconArrowsSort, IconCirclePlus, IconCopy, IconMicrophone2, IconPin, IconPinnedOff, IconPlayerPlay, IconPlayerTrackNext, IconPlaylistAdd } from '@tabler/icons-react-native';
+import { IconArrowsShuffle, IconCirclePlus, IconCopy, IconDownload, IconMicrophone2, IconPin, IconPinnedOff, IconPlayerPlay } from '@tabler/icons-react-native';
 import * as Clipboard from 'expo-clipboard';
 import showToast from '@lib/showToast';
+import * as Haptics from 'expo-haptics';
 
 function AlbumSheet({ sheetId, payload }: SheetProps<'album'>) {
     const insets = useSafeAreaInsets();
@@ -43,25 +44,57 @@ function AlbumSheet({ sheetId, payload }: SheetProps<'album'>) {
                 title={data?.name}
                 artist={`${data?.artist} • ${data?.year}`}
             />
-            {payload?.context == 'search' && <SheetOption
+            {payload?.context != 'album' && <SheetOption
                 icon={IconPlayerPlay}
                 label='Play'
                 onPress={async () => {
                     SheetManager.hide(sheetId);
+                    const newQueue = data.song;
+                    if (!newQueue) return;
+
+                    queue.replace(newQueue, 0, {
+                        source: 'album',
+                        sourceId: data.id,
+                        sourceName: data.name,
+                    });
                 }}
             />}
-            {payload?.context == 'search' && <SheetOption
+            {payload?.context != 'album' && <SheetOption
                 icon={IconArrowsShuffle}
                 label='Shuffle'
                 onPress={async () => {
                     SheetManager.hide(sheetId);
                 }}
             />}
-            {payload?.context == 'album' && <SheetOption
+            {/* TODO */}
+            {/* {payload?.context == 'album' && <SheetOption
                 icon={IconArrowsSort}
                 label='Sort By'
                 description='Album Order'
                 onPress={() => {
+                    SheetManager.hide(sheetId);
+                }}
+                />} */}
+            <SheetOption
+                icon={IconMicrophone2}
+                label='Go to Artist'
+                onPress={() => {
+                    SheetManager.hide(sheetId);
+                }}
+            />
+            {payload?.context != 'album' && <SheetOption
+                icon={IconDownload}
+                label='Download'
+                onPress={async () => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+                    await SheetManager.show('confirm', {
+                        payload: {
+                            title: 'Sorry!',
+                            message: 'Downloads feature will be avalibale soon. Stay tuned!',
+                            withCancel: false,
+                            confirmText: 'OK',
+                        }
+                    });
                     SheetManager.hide(sheetId);
                 }}
             />}
@@ -94,13 +127,6 @@ function AlbumSheet({ sheetId, payload }: SheetProps<'album'>) {
                     SheetManager.hide(sheetId);
                 }}
             />}
-            <SheetOption
-                icon={IconMicrophone2}
-                label='Go to Artist'
-                onPress={() => {
-                    SheetManager.hide(sheetId);
-                }}
-            />
             <SheetOption
                 icon={IconCirclePlus}
                 label='Add to a Playlist'

@@ -15,3 +15,4 @@ export * from './useTabsHeight';
 export * from './useSetting';
 export * from './useSearchHistory';
 export * from './useSearchItemActions';
+export * from './useHomeItemActions';

@@ -2,11 +2,11 @@ import { StyledActionSheet } from '@lib/components/StyledActionSheet';
 import { Alert, Platform } from 'react-native';
 import { SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useApiHelpers, useCoverBuilder, useMemoryCache, usePins, useSetting } from '@lib/hooks';
+import { useApiHelpers, useCoverBuilder, useMemoryCache, usePins, useQueue, useSetting } from '@lib/hooks';
 import { useEffect } from 'react';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
-import { IconArrowsSort, IconCopy, IconPencil, IconPin, IconPinnedOff, IconTrash } from '@tabler/icons-react-native';
+import { IconArrowsShuffle, IconArrowsSort, IconCopy, IconDownload, IconPencil, IconPin, IconPinnedOff, IconPlayerPlay, IconTrash } from '@tabler/icons-react-native';
 import { formatDistanceToNow } from 'date-fns';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
@@ -18,6 +18,7 @@ function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
     const memoryCache = useMemoryCache();
     const cover = useCoverBuilder();
     const helpers = useApiHelpers();
+    const queue = useQueue();
 
     const copyIdEnabled = useSetting('developer.copyId');
 
@@ -45,21 +46,60 @@ function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
                 title={data?.name}
                 artist={`${data?.songCount} songs • edited ${formatDistanceToNow(new Date(data?.changed), { addSuffix: true })}`}
             />
-            <SheetOption
+            {payload?.context != 'playlist' && <SheetOption
+                icon={IconPlayerPlay}
+                label='Play'
+                onPress={async () => {
+                    SheetManager.hide(sheetId);
+                    const newQueue = data.entry;
+                    if (!newQueue) return;
+
+                    queue.replace(newQueue, 0, {
+                        source: 'playlist',
+                        sourceId: data.id,
+                        sourceName: data.name,
+                    });
+                }}
+            />}
+            {payload?.context != 'playlist' && <SheetOption
+                icon={IconArrowsShuffle}
+                label='Shuffle'
+                onPress={async () => {
+                    SheetManager.hide(sheetId);
+                }}
+            />}
+            {payload?.context == 'playlist' && <SheetOption
                 icon={IconPencil}
                 label='Edit'
                 onPress={() => {
                     SheetManager.hide(sheetId);
                 }}
-            />
-            <SheetOption
+            />}
+            {/* TODO */}
+            {/* <SheetOption
                 icon={IconArrowsSort}
                 label='Sort By'
                 description='Playlist Order'
                 onPress={() => {
                     SheetManager.hide(sheetId);
                 }}
-            />
+            /> */}
+            {payload?.context != 'playlist' && <SheetOption
+                icon={IconDownload}
+                label='Download'
+                onPress={async () => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+                    await SheetManager.show('confirm', {
+                        payload: {
+                            title: 'Sorry!',
+                            message: 'Downloads feature will be avalibale soon. Stay tuned!',
+                            withCancel: false,
+                            confirmText: 'OK',
+                        }
+                    });
+                    SheetManager.hide(sheetId);
+                }}
+            />}
             <SheetOption
                 icon={isPinned ? IconPinnedOff : IconPin}
                 label={isPinned ? 'Unpin Playlist' : 'Pin Playlist'}

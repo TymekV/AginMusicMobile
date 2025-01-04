@@ -11,6 +11,7 @@ export type MediaLibrarySize = 'small' | 'medium' | 'large';
 export interface MediaLibraryListProps extends Omit<FlatListProps<TMediaLibItem>, 'renderItem' | 'data'> {
     data: TMediaLibItem[];
     onItemPress: (item: TMediaLibItem) => void;
+    onItemLongPress?: (item: TMediaLibItem) => void;
     layout?: MediaLibraryLayout;
     size?: MediaLibrarySize;
     withSeparators?: boolean;
@@ -23,7 +24,7 @@ export const LibLayout = createContext<MediaLibraryLayout>('list');
 export const LibSize = createContext<MediaLibrarySize>('large');
 export const LibSeparators = createContext<boolean>(true);
 
-export default function MediaLibraryList({ data, layout = 'list', size = 'large', withSeparators = true, withTopMargin = true, onItemPress, rightSection: RightSection, isFullHeight = true, ...props }: MediaLibraryListProps) {
+export default function MediaLibraryList({ data, layout = 'list', size = 'large', withSeparators = true, withTopMargin = true, onItemPress, onItemLongPress, rightSection: RightSection, isFullHeight = true, ...props }: MediaLibraryListProps) {
     const [tabsHeight] = useTabsHeight();
 
     const { width } = useWindowDimensions();
@@ -57,7 +58,7 @@ export default function MediaLibraryList({ data, layout = 'list', size = 'large'
                         style={[styles.list, (layout === 'grid' || layout == 'gridCompact') && styles.gridList]}
                         data={data}
                         keyExtractor={(item) => item.id}
-                        renderItem={({ item, index }) => <MediaLibItem {...item} onPress={() => onItemPress(item)} style={[layout === 'grid' && { flex: 1 / 2 }, layout === 'gridCompact' && { flex: 1 / 3 }]} index={index} rightSection={RightSection ? <RightSection item={item} index={index} /> : undefined} />}
+                        renderItem={({ item, index }) => <MediaLibItem {...item} onPress={() => onItemPress(item)} onLongPress={() => onItemLongPress?.(item)} style={[layout === 'grid' && { flex: 1 / 2 }, layout === 'gridCompact' && { flex: 1 / 3 }]} index={index} rightSection={RightSection ? <RightSection item={item} index={index} /> : undefined} />}
                         numColumns={layout === 'grid' ? 2 : layout === 'gridCompact' ? 3 : 1}
                         ItemSeparatorComponent={(layout === 'grid' || layout == 'gridCompact') ? () => <View style={styles.gridSeparator} /> : layout == 'horizontal' ? () => <View style={styles.horizontalSeparator} /> : undefined}
                         ListFooterComponent={<View style={layout === 'horizontal' ? styles.horizontalPadding : styles.footer} />}
