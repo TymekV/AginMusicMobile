@@ -90,6 +90,15 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     const cover = useCoverBuilder();
     const { position } = useProgress();
 
+    useEffect(() => {
+        (async () => {
+            if (nowPlaying.id == '' || !api) return;
+            console.log('scrobbling', nowPlaying.id);
+
+            await api.get('/scrobble', { params: { id: nowPlaying.id } });
+        })();
+    }, [api, nowPlaying]);
+
     const generateMediaUrl = useCallback((options: StreamOptions) => `${server.url}/rest/stream?${qs.stringify({ ...params, ...options })}`, [params, server.url]);
 
     const convertToTrack = useCallback((data: Child): Track => ({
