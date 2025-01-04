@@ -6,6 +6,7 @@ import ListItem from './ListItem';
 import GridItem from './GridItem';
 import React from 'react';
 import GridCompactItem from './GridCompactItem';
+import { Icon } from '@tabler/icons-react-native';
 
 export type TMediaLibItem = {
     id: string;
@@ -17,6 +18,7 @@ export type TMediaLibItem = {
     isAlbumEntry?: boolean;
     trackNumber?: number;
     type?: 'album' | 'artist' | 'track' | 'playlist';
+    icon?: Icon;
 }
 
 export interface MediaLibItemProps extends TMediaLibItem, Omit<TouchableOpacityProps, 'id'> {
@@ -24,7 +26,7 @@ export interface MediaLibItemProps extends TMediaLibItem, Omit<TouchableOpacityP
     index?: number;
 }
 
-function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSection, style, index, isAlbumEntry = false, trackNumber, type, ...props }: MediaLibItemProps) {
+function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSection, style, index, isAlbumEntry = false, trackNumber, type, icon, ...props }: MediaLibItemProps) {
     const layout = useContext(LibLayout);
     const ItemRenderer = (layout === 'grid' || layout == 'horizontal') ? GridItem : layout === 'list' ? ListItem : layout === 'gridCompact' ? GridCompactItem : View;
 
@@ -36,7 +38,7 @@ function MediaLibItem({ id, title, subtitle, coverUri, coverCacheKey, rightSecti
 
     return (
         <TouchableOpacity activeOpacity={.8} style={[style, gridStyles, compactGridStyles]} {...props}>
-            <ItemRenderer id={id} title={title} subtitle={subtitle} coverUri={coverUri} coverCacheKey={coverCacheKey} rightSection={rightSection} isAlbumEntry={isAlbumEntry} trackNumber={trackNumber} type={type} />
+            <ItemRenderer id={id} title={title} subtitle={subtitle} coverUri={coverUri} coverCacheKey={coverCacheKey} rightSection={rightSection} isAlbumEntry={isAlbumEntry} trackNumber={trackNumber} type={type} icon={icon} />
         </TouchableOpacity>
     )
 }

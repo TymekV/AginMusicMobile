@@ -6,7 +6,7 @@ import { useApiHelpers, useCoverBuilder, useMemoryCache, usePins, useQueue, useS
 import { useEffect } from 'react';
 import SheetTrackHeader from '@lib/components/sheet/SheetTrackHeader';
 import SheetOption from '@lib/components/sheet/SheetOption';
-import { IconArrowsShuffle, IconArrowsSort, IconCopy, IconDownload, IconPencil, IconPin, IconPinnedOff, IconPlayerPlay, IconTrash } from '@tabler/icons-react-native';
+import { IconArrowsShuffle, IconArrowsSort, IconCirclePlus, IconCopy, IconDownload, IconPencil, IconPin, IconPinnedOff, IconPlayerPlay, IconTrash } from '@tabler/icons-react-native';
 import { formatDistanceToNow } from 'date-fns';
 import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
@@ -130,6 +130,20 @@ function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
                 }}
             />}
             <SheetOption
+                icon={IconCirclePlus}
+                label='Add to a Playlist'
+                onPress={async () => {
+                    if (!data.entry) return;
+                    const { added } = await SheetManager.show('addToPlaylist', {
+                        payload: {
+                            idList: data.entry.map(x => x.id),
+                        }
+                    });
+                    if (!added) return;
+                    SheetManager.hide(sheetId);
+                }}
+            />
+            <SheetOption
                 icon={IconTrash}
                 label='Remove Playlist'
                 variant='destructive'
@@ -138,6 +152,12 @@ function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
 
                     const removed = await helpers.removePlaylistConfirm(payload?.id);
                     if (!removed) return;
+
+                    await showToast({
+                        title: 'Playlist Removed',
+                        subtitle: data?.name,
+                        icon: IconTrash,
+                    });
 
                     SheetManager.hide(sheetId);
                     router.back();

@@ -11,9 +11,10 @@ export type SmallToastProps = {
     cover?: ImageSource;
     icon?: Icon;
     link?: string;
+    reverse?: boolean;
 }
 
-export default function SmallToast({ title, subtitle, cover, icon: Icon, link }: SmallToastProps) {
+export default function SmallToast({ title, subtitle, cover, icon: Icon, reverse, link }: SmallToastProps) {
     const colors = useColors();
 
     const styles = useMemo(() => StyleSheet.create({
@@ -37,6 +38,9 @@ export default function SmallToast({ title, subtitle, cover, icon: Icon, link }:
             width: 30,
             height: 30,
             borderRadius: 5,
+        },
+        reverse: {
+            flexDirection: 'column-reverse',
         }
     }), [colors, Icon]);
 
@@ -45,7 +49,7 @@ export default function SmallToast({ title, subtitle, cover, icon: Icon, link }:
             <View style={styles.toast}>
                 {cover && <Image source={cover} style={styles.image} />}
                 {Icon && <Icon size={20} color={colors.text[0]} />}
-                <View>
+                <View style={reverse && styles.reverse}>
                     <Title size={12} fontFamily="Poppins-SemiBold">{title}</Title>
                     <Title size={10} fontFamily="Poppins-Regular" color={colors.text[1]}>{subtitle}</Title>
                 </View>

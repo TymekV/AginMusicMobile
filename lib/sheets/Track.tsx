@@ -137,16 +137,14 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
             <SheetOption
                 icon={IconCirclePlus}
                 label='Add to a Playlist'
-                onPress={() => {
-                    // const toastProps: SmallToastProps = {
-                    //     title: 'Added to Playlist',
-                    //     subtitle: data?.title,
-                    //     cover: { uri: cover.generateUrl(data?.coverArt ?? '', { size: 128 }), cacheKey: `${data?.coverArt}-128x128` },
-                    // }
-                    // Toast.show({
-                    //     type: 'info',
-                    //     props: toastProps,
-                    // });
+                onPress={async () => {
+                    if (!payload?.id) return;
+                    const { added } = await SheetManager.show('addToPlaylist', {
+                        payload: {
+                            idList: [payload?.id],
+                        }
+                    });
+                    if (!added) return;
                     SheetManager.hide(sheetId);
                 }}
             />

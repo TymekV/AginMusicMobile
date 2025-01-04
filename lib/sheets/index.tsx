@@ -10,6 +10,7 @@ import UserMenuSheet from './UserMenu';
 import { SettingSelectOption } from '@lib/components/Setting';
 import { Icon } from '@tabler/icons-react-native';
 import SettingSelectSheet from './SettingSelect';
+import AddToPlaylistSheet from './AddToPlaylist';
 
 registerSheet('playback', PlaybackSheet);
 registerSheet('confirm', ConfirmSheet);
@@ -19,6 +20,7 @@ registerSheet('playlist', PlaylistSheet);
 registerSheet('album', AlbumSheet);
 registerSheet('userMenu', UserMenuSheet);
 registerSheet('settingSelect', SettingSelectSheet);
+registerSheet('addToPlaylist', AddToPlaylistSheet);
 
 // We extend some of the types here to give us great intellisense
 // across the app for all registered sheets.
@@ -44,6 +46,7 @@ declare module 'react-native-actions-sheet' {
             returnValue: {
                 created: boolean;
                 id?: string;
+                name?: string;
             };
         }>;
         'track': SheetDefinition<{
@@ -85,6 +88,15 @@ declare module 'react-native-actions-sheet' {
             },
             returnValue: {
                 value: string;
+            }
+        }>;
+        'addToPlaylist': SheetDefinition<{
+            payload: {
+                idList: string[];
+            },
+            returnValue: {
+                added?: boolean;
+                playlistId?: string;
             }
         }>;
     }

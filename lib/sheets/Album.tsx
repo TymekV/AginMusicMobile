@@ -130,7 +130,14 @@ function AlbumSheet({ sheetId, payload }: SheetProps<'album'>) {
             <SheetOption
                 icon={IconCirclePlus}
                 label='Add to a Playlist'
-                onPress={() => {
+                onPress={async () => {
+                    if (!data.song) return;
+                    const { added } = await SheetManager.show('addToPlaylist', {
+                        payload: {
+                            idList: data.song.map(x => x.id),
+                        }
+                    });
+                    if (!added) return;
                     SheetManager.hide(sheetId);
                 }}
             />

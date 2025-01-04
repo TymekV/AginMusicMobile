@@ -7,7 +7,7 @@ import { useColors } from '@/lib/hooks/useColors';
 import { useQueue } from '@/lib/hooks';
 import { useCoverBuilder } from '@/lib/hooks/useCoverBuilder';
 import BlurredBackground from '@/lib/components/BlurredBackground';
-import { IconCast, IconList, IconMessage } from '@tabler/icons-react-native';
+import { IconCast, IconList, IconMessage, IconRepeatOff } from '@tabler/icons-react-native';
 import { showRoutePicker } from 'react-airplay';
 import MainTab from './MainTab';
 import Tabs, { Tab } from './Tabs';

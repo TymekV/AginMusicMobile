@@ -7,7 +7,7 @@ import Cover from '../Cover';
 import { LibSize, LibSeparators } from '.';
 import { IconChevronRight } from '@tabler/icons-react-native';
 
-export default function ListItem({ title, subtitle, coverUri, coverCacheKey, rightSection, isAlbumEntry, trackNumber, type }: MediaLibItemProps) {
+export default function ListItem({ title, subtitle, coverUri, coverCacheKey, rightSection, isAlbumEntry, trackNumber, type, icon }: MediaLibItemProps) {
     const size = useContext(LibSize);
     const withSeparators = useContext(LibSeparators);
 
@@ -61,6 +61,7 @@ export default function ListItem({ title, subtitle, coverUri, coverCacheKey, rig
                     size={size == 'small' ? 40 : size == 'medium' ? 50 : 60}
                     radius={type == 'artist' ? 999999 : (size == 'small' || size == 'medium') ? 6 : 8}
                     withShadow={false}
+                    icon={icon}
                 />}
                 <View style={styles.metadata}>
                     <Title size={(size == 'small' || size == 'medium') ? 14 : 16} numberOfLines={1}>{title}</Title>

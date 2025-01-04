@@ -45,7 +45,7 @@ function NewPlaylsitSheet({ sheetId, payload }: SheetProps<'newPlaylist'>) {
 
             await cache.refreshPlaylists();
 
-            SheetManager.hide(sheetId, { payload: { created: true, id: playlistId } });
+            SheetManager.hide(sheetId, { payload: { created: true, id: playlistId, name } });
         } catch (error) {
             console.log(error);
 

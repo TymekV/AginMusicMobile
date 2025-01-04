@@ -1,16 +1,21 @@
+import { useColors } from '@lib/hooks';
+import { Icon } from '@tabler/icons-react-native';
 import { Image, ImageSource } from 'expo-image';
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 export type CoverProps = {
-    source: ImageSource;
+    source?: ImageSource;
     cacheKey?: string;
     size?: number;
     radius?: number;
     withShadow?: boolean;
+    icon?: Icon;
 }
 
-export default function Cover({ source, size, radius, withShadow = true, cacheKey }: CoverProps) {
+export default function Cover({ source, size, radius, withShadow = true, cacheKey, icon: Icon }: CoverProps) {
+    const colors = useColors();
+
     const styles = useMemo(() => StyleSheet.create({
         container: {
             shadowColor: '#000',
@@ -30,12 +35,19 @@ export default function Cover({ source, size, radius, withShadow = true, cacheKe
             borderRadius: radius ?? 15,
             borderColor: '#ffffff10',
             borderWidth: 1,
+        },
+        icon: {
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: colors.secondaryBackground,
         }
-    }), [size, radius]);
+    }), [size, radius, colors]);
 
     return (
         <View style={withShadow && styles.container}>
-            <Image source={{ ...source, cacheKey }} style={styles.image} cachePolicy="disk" />
+            {Icon ? <View style={[styles.image, styles.icon]}>
+                <Icon size={20} color={colors.forcedTint} />
+            </View> : <Image source={{ ...source, cacheKey }} style={styles.image} cachePolicy="disk" />}
         </View>
     )
 }

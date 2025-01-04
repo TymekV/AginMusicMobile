@@ -2,14 +2,16 @@ import { useColors, useCoverBuilder, useQueue } from '@lib/hooks';
 import { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Cover from '../Cover';
-import { AlbumWithSongsID3, Playlist, PlaylistWithSongs } from '@lib/types';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AlbumWithSongsID3, PlaylistWithSongs } from '@lib/types';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Title from '../Title';
 import { formatDistanceToNow } from 'date-fns';
 import React from 'react';
 import ActionIcon from '../ActionIcon';
 import { IconArrowsShuffle, IconDownload, IconPlayerPlayFilled } from '@tabler/icons-react-native';
 import { PlaylistBackground } from './PlaylistBackground';
+import * as Haptics from 'expo-haptics';
+import { SheetManager } from 'react-native-actions-sheet';
 
 export type PlaylistHeaderProps = {
     playlist?: PlaylistWithSongs;
@@ -62,7 +64,17 @@ export function PlaylistHeader({ playlist, album, onTitlePress }: PlaylistHeader
                 <Title align="center" size={14} fontFamily="Poppins-Regular" color={colors.text[1]}>{playlist && `${playlist.songCount} songs • edited ${formatDistanceToNow(new Date(playlist.changed), { addSuffix: true })}`}{album && `${album.artist} • ${album.year}`}</Title>
             </View>
             <View style={styles.actions}>
-                <ActionIcon icon={IconDownload} variant='subtleFilled' size={20} extraSize={24} />
+                <ActionIcon icon={IconDownload} variant='subtleFilled' size={20} extraSize={24} onPress={async () => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+                    await SheetManager.show('confirm', {
+                        payload: {
+                            title: 'Sorry!',
+                            message: 'Downloads feature will be avalibale soon. Stay tuned!',
+                            withCancel: false,
+                            confirmText: 'OK',
+                        }
+                    });
+                }} />
                 <ActionIcon icon={IconPlayerPlayFilled} variant='primary' isFilled size={24} extraSize={32} onPress={() => {
                     const newQueue = playlist?.entry ?? album?.song;
                     if (!newQueue) return;
