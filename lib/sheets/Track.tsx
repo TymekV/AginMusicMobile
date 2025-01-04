@@ -52,6 +52,7 @@ function TrackSheet({ sheetId, payload }: SheetProps<'track'>) {
                 icon={IconPlayerTrackNext}
                 label='Play Next'
                 onPress={async () => {
+                    await queue.playNext(data?.id ?? '');
                     await showToast({
                         title: 'Playing Next',
                         subtitle: data?.title,

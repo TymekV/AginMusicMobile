@@ -40,6 +40,7 @@ export type QueueContextType = {
     skipForward: () => void;
     replace: (items: Child[], initialIndex?: number, source?: QueueSource) => void;
     playTrackNow: (id: string) => Promise<void>;
+    playNext: (id: string) => Promise<void>;
 }
 
 const initialQueueContext: QueueContextType = {
@@ -62,6 +63,7 @@ const initialQueueContext: QueueContextType = {
     skipForward: () => { },
     replace: (items: Child[]) => { },
     playTrackNow: async (id: string) => { },
+    playNext: async (id: string) => { },
 }
 
 export const QueueContext = createContext<QueueContextType>(initialQueueContext);
@@ -194,6 +196,16 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         await updateActive();
     }, [cache, convertToTrack]);
 
+    const playNext = useCallback(async (id: string) => {
+        const data = await cache.fetchChild(id);
+        if (!data) return;
+        const currentlyPlaying = await TrackPlayer.getCurrentTrack();
+        await TrackPlayer.add(convertToTrack(data), (currentlyPlaying ?? 0) + 1);
+
+        await updateQueue();
+        await updateActive();
+    }, [cache, convertToTrack]);
+
     const playTrackNow = useCallback(async (id: string) => {
         const data = await cache.fetchChild(id);
         if (!data) return;
@@ -289,6 +301,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
             clearConfirm,
             source,
             playTrackNow,
+            playNext,
         }}>
             {children}
         </QueueContext.Provider>
