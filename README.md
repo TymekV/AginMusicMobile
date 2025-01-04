@@ -2,14 +2,14 @@
 Agin Music is an open source client for OpenSubsonic-compatible servers written in React Native. It has been tested to work properly with [Navidrome](https://www.navidrome.org/).
 
 ## Features
-- Synced lyrics support
-- Bluetooth audio/AirPlay support
-- Dark mode support
-- Marking songs as favourite
-- Pinning songs, albums and artist
-- Managing playback from the lock screen
-- Gesture support
-- Offline playback *(coming soon)*
+- :microphone: Synced lyrics support
+- :headphones: Bluetooth audio/AirPlay support
+- :new_moon: Dark mode support
+- :sparkling_heart: Marking songs as favourite
+- :pushpin: Pinning songs, albums and artist
+- :iphone: Managing playback from the lock screen
+- :point_up_2: Gesture support
+- :floppy_disk: Offline playback *(coming soon)*
 
 More features coming soon!
 
