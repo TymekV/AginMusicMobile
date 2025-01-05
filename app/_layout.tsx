@@ -25,6 +25,8 @@ import { toastConfig } from '@lib/toastConfig';
 import ToastWrapper from '@lib/components/ToastWrapper';
 import SearchHistoryProvider from '@lib/providers/SearchHistoryProvider';
 import PinsProvider from '@lib/providers/PinsProvider';
+import { registerWidgetTaskHandler } from 'react-native-android-widget';
+import { widgetTaskHandler } from '@lib/widget-task-handler';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -41,6 +43,8 @@ configureReanimatedLogger({
 });
 
 TrackPlayer.registerPlaybackService(() => PlaybackService);
+
+registerWidgetTaskHandler(widgetTaskHandler);
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

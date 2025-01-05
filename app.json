@@ -51,7 +51,28 @@
       ],
       "expo-secure-store",
       "expo-sqlite",
-      "react-native-android-widget"
+      [
+        "react-native-android-widget",
+        {
+          "fonts": [
+            "./assets/fonts/Poppins/Poppins-Regular.ttf",
+            "./assets/fonts/Poppins/Poppins-Medium.ttf",
+            "./assets/fonts/Poppins/Poppins-SemiBold.ttf"
+          ],
+          "widgets": [
+            {
+              "name": "Pinned",
+              "label": "Pinned Music",
+              "minWidth": "320dp",
+              "minHeight": "60dp",
+              "targetCellWidth": 5,
+              "targetCellHeight": 1,
+              "description": "Quick access to your pinned music",
+              "updatePeriodMillis": 1800000
+            }
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

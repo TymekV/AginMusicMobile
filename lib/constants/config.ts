@@ -12,13 +12,17 @@ export type AppConfig = {
 
     /** GitHub repository URL displayed in user info sheet */
     repoUrl?: string;
+
+    /** Specifies URI Scheme (use din widgets to link to the app) */
+    uriScheme: string;
 };
 
 const config: AppConfig = {
     clientName: 'AginMusic',
     clientVersion: Application.nativeApplicationVersion ?? '',
     protocolVersion: '1.16.1',
-    repoUrl: 'https://github.com/TymekV/AginMusicMobile'
+    repoUrl: 'https://github.com/TymekV/AginMusicMobile',
+    uriScheme: 'aginmusic',
 };
 
 export default config;

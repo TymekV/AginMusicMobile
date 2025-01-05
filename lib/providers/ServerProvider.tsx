@@ -23,7 +23,7 @@ export type ServerAuth = {
     hash?: string;
 }
 
-const initialServer: Server = {
+export const initialServer: Server = {
     url: '',
     authMethod: '',
     auth: {
