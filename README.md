@@ -29,7 +29,8 @@ More features coming soon!
 - [ ] Quality settings
 - [ ] Locally storing playback history
 - [ ] Homepage improvements
-- [ ] Widgets on Android and iOS
+- [x] Widgets on Android
+- [ ] Widgets on iOS
 - [ ] Performance improvements
 
 ## TestFlight
