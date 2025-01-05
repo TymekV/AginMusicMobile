@@ -18,13 +18,14 @@ export interface MediaLibraryListProps extends Omit<FlatListProps<TMediaLibItem>
     withTopMargin?: boolean;
     rightSection?: ({ item, index }: { item: TMediaLibItem, index: number }) => React.ReactNode;
     isFullHeight?: boolean;
+    FlatListComponent?: React.ComponentType<FlatListProps<TMediaLibItem>>;
 }
 
 export const LibLayout = createContext<MediaLibraryLayout>('list');
 export const LibSize = createContext<MediaLibrarySize>('large');
 export const LibSeparators = createContext<boolean>(true);
 
-export default function MediaLibraryList({ data, layout = 'list', size = 'large', withSeparators = true, withTopMargin = true, onItemPress, onItemLongPress, rightSection: RightSection, isFullHeight = true, ...props }: MediaLibraryListProps) {
+export default function MediaLibraryList({ data, layout = 'list', size = 'large', withSeparators = true, withTopMargin = true, onItemPress, onItemLongPress, rightSection: RightSection, isFullHeight = true, FlatListComponent = FlatList, ...props }: MediaLibraryListProps) {
     const [tabsHeight] = useTabsHeight();
 
     const { width } = useWindowDimensions();
@@ -54,7 +55,7 @@ export default function MediaLibraryList({ data, layout = 'list', size = 'large'
         <LibLayout.Provider value={layout}>
             <LibSize.Provider value={size}>
                 <LibSeparators.Provider value={withSeparators}>
-                    <FlatList
+                    <FlatListComponent
                         style={[styles.list, (layout === 'grid' || layout == 'gridCompact') && styles.gridList]}
                         data={data}
                         keyExtractor={(item) => item.id}

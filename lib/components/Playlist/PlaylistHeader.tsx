@@ -1,5 +1,5 @@
 import { useColors, useCoverBuilder, useQueue } from '@lib/hooks';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Cover from '../Cover';
 import { AlbumWithSongsID3, PlaylistWithSongs } from '@lib/types';
@@ -46,6 +46,20 @@ export function PlaylistHeader({ playlist, album, onTitlePress }: PlaylistHeader
 
     const art = playlist?.coverArt ?? album?.coverArt ?? '';
 
+    const playAction = useCallback((shuffle: boolean) => {
+        const newQueue = playlist?.entry ?? album?.song;
+        if (!newQueue) return;
+        queue.replace(newQueue, {
+            initialIndex: 0,
+            source: {
+                source: playlist ? 'playlist' : 'album',
+                sourceId: playlist ? playlist.id : album?.id,
+                sourceName: playlist ? playlist.name : album?.name,
+            },
+            shuffle,
+        });
+    }, [playlist, album, queue.replace]);
+
     return (
         <View style={styles.container}>
             <PlaylistBackground
@@ -75,16 +89,8 @@ export function PlaylistHeader({ playlist, album, onTitlePress }: PlaylistHeader
                         }
                     });
                 }} />
-                <ActionIcon icon={IconPlayerPlayFilled} variant='primary' isFilled size={24} extraSize={32} onPress={() => {
-                    const newQueue = playlist?.entry ?? album?.song;
-                    if (!newQueue) return;
-                    queue.replace(newQueue, 0, {
-                        source: playlist ? 'playlist' : 'album',
-                        sourceId: playlist ? playlist.id : album?.id,
-                        sourceName: playlist ? playlist.name : album?.name,
-                    });
-                }} />
-                <ActionIcon icon={IconArrowsShuffle} variant='subtleFilled' size={20} extraSize={24} />
+                <ActionIcon icon={IconPlayerPlayFilled} variant='primary' isFilled size={24} extraSize={32} onPress={() => playAction(false)} />
+                <ActionIcon icon={IconArrowsShuffle} variant='subtleFilled' size={20} extraSize={24} onPress={() => playAction(true)} />
             </View>
         </View>
     )

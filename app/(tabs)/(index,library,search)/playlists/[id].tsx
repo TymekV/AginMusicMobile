@@ -76,7 +76,10 @@ export default function Playlist() {
             </>}
             onPress={() => {
                 if (!data.entry) return;
-                queue.replace(data.entry, data.entry.findIndex(x => x.id === item.id), { source: 'playlist', sourceId: data.id, sourceName: data.name });
+                queue.replace(data.entry, {
+                    initialIndex: data.entry.findIndex(x => x.id === item.id),
+                    source: { source: 'playlist', sourceId: data.id, sourceName: data.name },
+                });
             }}
         />
     ), [data?.entry]);

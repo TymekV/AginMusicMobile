@@ -52,10 +52,13 @@ function AlbumSheet({ sheetId, payload }: SheetProps<'album'>) {
                     const newQueue = data.song;
                     if (!newQueue) return;
 
-                    queue.replace(newQueue, 0, {
-                        source: 'album',
-                        sourceId: data.id,
-                        sourceName: data.name,
+                    queue.replace(newQueue, {
+                        initialIndex: 0,
+                        source: {
+                            source: 'album',
+                            sourceId: data.id,
+                            sourceName: data.name,
+                        }
                     });
                 }}
             />}
@@ -64,6 +67,18 @@ function AlbumSheet({ sheetId, payload }: SheetProps<'album'>) {
                 label='Shuffle'
                 onPress={async () => {
                     SheetManager.hide(sheetId);
+                    const newQueue = data.song;
+                    if (!newQueue) return;
+
+                    queue.replace(newQueue, {
+                        initialIndex: 0,
+                        source: {
+                            source: 'album',
+                            sourceId: data.id,
+                            sourceName: data.name,
+                        },
+                        shuffle: true,
+                    });
                 }}
             />}
             {/* TODO */}

@@ -1,6 +1,6 @@
 import { StyledActionSheet } from '@/lib/components/StyledActionSheet';
 import { Platform, StyleSheet, View } from 'react-native';
-import { SheetManager, SheetProps } from 'react-native-actions-sheet';
+import { FlatList, SheetManager, SheetProps } from 'react-native-actions-sheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useApi, useColors, useCoverBuilder, useMemoryCache } from '../hooks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -106,6 +106,7 @@ function AddToPlaylistSheet({ sheetId, payload }: SheetProps<'addToPlaylist'>) {
                 data={playlists}
                 onItemPress={addToPlaylist}
                 size='small'
+                FlatListComponent={FlatList}
             />
         </StyledActionSheet>
     );

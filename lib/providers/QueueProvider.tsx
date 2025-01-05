@@ -8,10 +8,17 @@ import * as Haptics from 'expo-haptics';
 import TrackPlayer, { Event, RepeatMode, Track, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
 import showToast from '@lib/showToast';
 import { IconExclamationCircle } from '@tabler/icons-react-native';
+import { shuffleArray } from '@lib/util';
 
 export type ClearConfirmOptions = {
     wait?: boolean;
     onConfirm?: () => void;
+}
+
+export type QueueReplaceOptions = {
+    initialIndex?: number;
+    source?: QueueSource;
+    shuffle?: boolean;
 }
 
 export type TQueueItem = Track & { _child: Child };
@@ -40,7 +47,7 @@ export type QueueContextType = {
     jumpTo: (index: number) => void;
     skipBackward: () => void;
     skipForward: () => void;
-    replace: (items: Child[], initialIndex?: number, source?: QueueSource) => void;
+    replace: (items: Child[], options?: QueueReplaceOptions) => void;
     playTrackNow: (id: string) => Promise<boolean>;
     playNext: (id: string) => Promise<boolean>;
     repeatMode: RepeatMode;
@@ -237,11 +244,13 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         return true;
     }, [cache, convertToTrack]);
 
-    const replace = useCallback(async (items: Child[], initialIndex?: number, source?: QueueSource) => {
-        if (source) setSource(source);
+    const replace = useCallback(async (items: Child[], options?: QueueReplaceOptions) => {
+        let itemsCopy = [...items];
+        if (options?.shuffle) itemsCopy = shuffleArray(itemsCopy);
+        if (options?.source) setSource(options.source);
         TrackPlayer.reset();
-        TrackPlayer.add(items.map(convertToTrack));
-        TrackPlayer.skip(initialIndex ?? 0);
+        TrackPlayer.add(itemsCopy.map(convertToTrack));
+        TrackPlayer.skip(options?.initialIndex ?? 0);
         TrackPlayer.play();
 
         await updateQueue();

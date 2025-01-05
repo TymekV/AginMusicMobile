@@ -54,10 +54,13 @@ function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
                     const newQueue = data.entry;
                     if (!newQueue) return;
 
-                    queue.replace(newQueue, 0, {
-                        source: 'playlist',
-                        sourceId: data.id,
-                        sourceName: data.name,
+                    queue.replace(newQueue, {
+                        initialIndex: 0,
+                        source: {
+                            source: 'playlist',
+                            sourceId: data.id,
+                            sourceName: data.name,
+                        }
                     });
                 }}
             />}
@@ -66,6 +69,18 @@ function PlaylistSheet({ sheetId, payload }: SheetProps<'playlist'>) {
                 label='Shuffle'
                 onPress={async () => {
                     SheetManager.hide(sheetId);
+                    const newQueue = data.entry;
+                    if (!newQueue) return;
+
+                    queue.replace(newQueue, {
+                        initialIndex: 0,
+                        source: {
+                            source: 'playlist',
+                            sourceId: data.id,
+                            sourceName: data.name,
+                        },
+                        shuffle: true,
+                    });
                 }}
             />}
             {payload?.context == 'playlist' && <SheetOption

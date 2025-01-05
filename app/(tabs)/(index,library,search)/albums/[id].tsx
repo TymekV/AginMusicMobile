@@ -75,7 +75,10 @@ export default function Album() {
             </>}
             onPress={() => {
                 if (!data.song) return;
-                queue.replace(data.song, data.song.findIndex(x => x.id === item.id), { source: 'album', sourceId: data.id, sourceName: data.name });
+                queue.replace(data.song, {
+                    initialIndex: data.song.findIndex(x => x.id === item.id),
+                    source: { source: 'album', sourceId: data.id, sourceName: data.name },
+                });
             }}
         />
     ), [data?.song]);
