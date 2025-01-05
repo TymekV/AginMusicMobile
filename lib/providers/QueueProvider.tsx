@@ -5,7 +5,7 @@ import { useApi, useCoverBuilder, useServer, useSubsonicParams } from '@lib/hook
 import qs from 'qs';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
-import TrackPlayer, { Event, Track, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
+import TrackPlayer, { Event, RepeatMode, Track, useProgress, useTrackPlayerEvents } from 'react-native-track-player';
 import showToast from '@lib/showToast';
 import { IconExclamationCircle } from '@tabler/icons-react-native';
 
@@ -43,6 +43,9 @@ export type QueueContextType = {
     replace: (items: Child[], initialIndex?: number, source?: QueueSource) => void;
     playTrackNow: (id: string) => Promise<boolean>;
     playNext: (id: string) => Promise<boolean>;
+    repeatMode: RepeatMode;
+    changeRepeatMode: (mode: RepeatMode) => Promise<void>;
+    cycleRepeatMode: () => Promise<void>;
 }
 
 const initialQueueContext: QueueContextType = {
@@ -66,6 +69,9 @@ const initialQueueContext: QueueContextType = {
     replace: (items: Child[]) => { },
     playTrackNow: async (id: string) => false,
     playNext: async (id: string) => false,
+    repeatMode: RepeatMode.Off,
+    changeRepeatMode: async () => { },
+    cycleRepeatMode: async () => { },
 }
 
 export const QueueContext = createContext<QueueContextType>(initialQueueContext);
@@ -83,6 +89,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     const [nowPlaying, setNowPlaying] = useState<Child>(initialQueueContext.nowPlaying);
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [source, setSource] = useState<QueueSource>(initialSource);
+    const [repeatMode, setRepeatMode] = useState<RepeatMode>(RepeatMode.Off);
 
     const canGoBackward = nowPlaying.id != '';
     const canGoForward = activeIndex < (queue.length ?? 0) - 1;
@@ -296,6 +303,21 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         }
     }, [jumpTo, position]);
 
+    const changeRepeatMode = useCallback(async (mode: RepeatMode) => {
+        setRepeatMode(mode);
+        TrackPlayer.setRepeatMode(mode);
+    }, []);
+
+    const cycleRepeatMode = useCallback(async () => {
+        if (repeatMode === RepeatMode.Off) {
+            await changeRepeatMode(RepeatMode.Queue);
+        } else if (repeatMode === RepeatMode.Queue) {
+            await changeRepeatMode(RepeatMode.Track);
+        } else {
+            await changeRepeatMode(RepeatMode.Off);
+        }
+    }, [repeatMode]);
+
     return (
         <QueueContext.Provider value={{
             queue,
@@ -314,6 +336,9 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
             source,
             playTrackNow,
             playNext,
+            repeatMode,
+            changeRepeatMode,
+            cycleRepeatMode,
         }}>
             {children}
         </QueueContext.Provider>

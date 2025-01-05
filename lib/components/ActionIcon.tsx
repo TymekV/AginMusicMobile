@@ -1,11 +1,11 @@
 import { Icon, IconProps } from '@tabler/icons-react-native';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { ColorValue, Pressable, PressableProps, StyleSheet, ViewStyle } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useColors } from '../hooks/useColors';
 
-export type ActionIconVariant = 'subtle' | 'subtleFilled' | 'primary' | 'secondary' | 'secondaryTransparent';
+export type ActionIconVariant = 'subtle' | 'subtleFilled' | 'primary' | 'secondary' | 'secondaryTransparent' | 'secondaryFilled';
 
 export type ActionIconProps = PressableProps & {
     icon: Icon;
@@ -59,6 +59,13 @@ const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor
             tapBackgroundColor: '#ffffff05',
             extraSize: extraSize ?? 12,
         },
+        secondaryFilled: {
+            styles: {},
+            iconColor: colors.tintText,
+            backgroundColor: colors.tint,
+            tapBackgroundColor: colors.tint + '90',
+            extraSize: extraSize ?? 12,
+        },
         secondaryTransparent: {
             styles: {},
             iconColor: colors.text[1],
@@ -83,6 +90,10 @@ const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor
     const opacity = useSharedValue(1);
     const backgroundColor = useSharedValue(variantStyles[variant].backgroundColor);
 
+    useEffect(() => {
+        backgroundColor.value = withSpring(variantStyles[variant].backgroundColor);
+    }, [variant]);
+
     const scaleHandler = Gesture.Tap()
         .onBegin(() => {
             "worklet";
@@ -101,7 +112,7 @@ const ActionIcon = ({ icon: Icon, size = 24, isFilled = false, stroke, iconColor
         transform: [{ scale: scaleDownAnimation.value }],
         opacity: disabled ? .3 : opacity.value,
         backgroundColor: backgroundColor.value,
-    }));
+    }), [variant, variantStyles]);
 
     const iconCol = iconColor ?? variantStyles[variant].iconColor;
 
