@@ -1,3 +1,4 @@
+![](https://raw.githubusercontent.com/TymekV/AginMusicMobile/refs/heads/main/banner.png)
 # Agin Music
 Agin Music is an open source client for OpenSubsonic-compatible servers written in React Native. It has been tested to work properly with [Navidrome](https://www.navidrome.org/).
 

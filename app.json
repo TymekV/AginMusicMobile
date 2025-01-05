@@ -50,7 +50,8 @@
         }
       ],
       "expo-secure-store",
-      "expo-sqlite"
+      "expo-sqlite",
+      "react-native-android-widget"
     ],
     "experiments": {
       "typedRoutes": true
