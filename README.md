@@ -31,6 +31,9 @@ More features coming soon!
 - [ ] Widgets on Android and iOS
 - [ ] Performance improvements
 
+## TestFlight
+If you want to help testing the app, click [here](https://testflight.apple.com/join/jH76ZDQs).
+
 ## Demo
 If you don't have a Navidrome server, you can test the app using Naivdrome's demo server.
 
