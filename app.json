@@ -2,7 +2,7 @@
   "expo": {
     "name": "Agin Music",
     "slug": "agin-music",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "aginmusic",
