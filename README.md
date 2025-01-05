@@ -5,13 +5,31 @@ Agin Music is an open source client for OpenSubsonic-compatible servers written 
 - :microphone: Synced lyrics support
 - :headphones: Bluetooth audio/AirPlay support
 - :new_moon: Dark mode support
-- :sparkling_heart: Marking songs as favourite
+- :sparkling_heart: Marking songs as favourite *(coming soon)*
 - :pushpin: Pinning songs, albums and artist
 - :iphone: Managing playback from the lock screen
 - :point_up_2: Gesture support
 - :floppy_disk: Offline playback *(coming soon)*
 
 More features coming soon!
+
+## Roadmap
+- [x] Core playback features
+- [x] Synced lyrics support
+- [x] Bluetooth audio/AirPlay support
+- [x] Dark mode support
+- [x] Managing playback from the lock screen
+- [x] Gesture support
+- [ ] Marking songs as favourite
+- [ ] Artists and songs view in the Library
+- [ ] Offline playback
+- [ ] Playlist items reordering
+- [ ] Playlist renaming
+- [ ] Quality settings
+- [ ] Locally storing playback history
+- [ ] Homepage improvements
+- [ ] Widgets on Android and iOS
+- [ ] Performance improvements
 
 ## Demo
 If you don't have a Navidrome server, you can test the app using Naivdrome's demo server.
