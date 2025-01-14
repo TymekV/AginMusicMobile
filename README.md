@@ -32,6 +32,7 @@ More features coming soon!
 - [x] Widgets on Android
 - [ ] Widgets on iOS
 - [ ] Performance improvements
+- [ ] CarPlay support
 
 ## TestFlight
 If you want to help testing the app, click [here](https://testflight.apple.com/join/jH76ZDQs).
