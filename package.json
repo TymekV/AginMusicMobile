@@ -19,6 +19,7 @@
     "@react-navigation/bottom-tabs": "^7.0.0",
     "@react-navigation/native": "^7.0.0",
     "@tabler/icons-react-native": "^3.26.0",
+    "agin-music": "file:",
     "axios": "^1.7.9",
     "date-fns": "^4.1.0",
     "expo": "~52.0.20",
