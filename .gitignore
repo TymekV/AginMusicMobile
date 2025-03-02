@@ -38,3 +38,6 @@ yarn-error.*
 app-example
 
 lib/demoAccounts.ts
+
+android
+ios
