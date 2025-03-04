@@ -26,17 +26,19 @@ export function useCache() {
         return data;
     }, [db]);
 
-    const fetchChild = useCallback(async (id: string): Promise<Child | undefined> => {
+    const fetchChild = useCallback(async (id: string, forceRefresh: boolean = false): Promise<Child | undefined> => {
         console.log('[cache] requesting ', id);
 
         if (!api) return;
 
-        const cached = await getChild(id);
-        if (cached) {
-            console.log('[cache] HIT ', id);
-            return cached;
+        if (!forceRefresh) {
+            const cached = await getChild(id);
+            if (cached) {
+                console.log('[cache] HIT ', id);
+                return cached;
+            }
         }
-        console.log('[cache] MISS ', id);
+        console.log(`[cache] MISS${forceRefresh ? ' (force refreshing)' : ''}`, id);
 
         const child = await api.get('/getSong', { params: { id } });
         const childData = child.data?.['subsonic-response']?.song as Child | undefined;

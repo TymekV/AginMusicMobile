@@ -1,7 +1,7 @@
 import { Child } from '@lib/types';
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { useCache } from '@lib/hooks/useCache';
-import { useApi, useCoverBuilder, useServer, useSubsonicParams } from '@lib/hooks';
+import { useApi, useApiHelpers, useCoverBuilder, useServer, useSubsonicParams } from '@lib/hooks';
 import qs from 'qs';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
@@ -53,6 +53,7 @@ export type QueueContextType = {
     repeatMode: RepeatMode;
     changeRepeatMode: (mode: RepeatMode) => Promise<void>;
     cycleRepeatMode: () => Promise<void>;
+    toggleStar: () => Promise<void>;
 }
 
 const initialQueueContext: QueueContextType = {
@@ -79,6 +80,7 @@ const initialQueueContext: QueueContextType = {
     repeatMode: RepeatMode.Off,
     changeRepeatMode: async () => { },
     cycleRepeatMode: async () => { },
+    toggleStar: async () => { },
 }
 
 export const QueueContext = createContext<QueueContextType>(initialQueueContext);
@@ -107,6 +109,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
     const { server } = useServer();
     const cover = useCoverBuilder();
     const { position } = useProgress();
+    const helpers = useApiHelpers();
 
     useEffect(() => {
         (async () => {
@@ -327,6 +330,35 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
         }
     }, [repeatMode]);
 
+    const setStarred = useCallback(async (set: boolean) => {
+        const starred = set ? new Date() : undefined;
+        setNowPlaying(nowPlaying => ({ ...nowPlaying, starred }));
+        setQueue(q => q.map(x => x.id === nowPlaying.id ? ({ ...x, starred }) : x));
+    }, [queue, nowPlaying, cache]);
+
+    const toggleStar = useCallback(async () => {
+        console.log('toggle', nowPlaying.starred);
+
+        if (!nowPlaying.id) return;
+
+        await setStarred(!nowPlaying.starred);
+
+        try {
+            await helpers.star(nowPlaying.id, 'track', nowPlaying.starred ? 'unstar' : 'star');
+        } catch (error) {
+            // await setStarred(!nowPlaying.starred);
+            await showToast({
+                haptics: 'error',
+                icon: IconExclamationCircle,
+                title: 'Error',
+                subtitle: 'An error occurred while liking the track.',
+            });
+            return;
+        }
+
+        await cache.fetchChild(nowPlaying.id, true);
+    }, [queue, nowPlaying, cache]);
+
     return (
         <QueueContext.Provider value={{
             queue,
@@ -348,6 +380,7 @@ export default function QueueProvider({ children }: { children?: React.ReactNode
             repeatMode,
             changeRepeatMode,
             cycleRepeatMode,
+            toggleStar,
         }}>
             {children}
         </QueueContext.Provider>

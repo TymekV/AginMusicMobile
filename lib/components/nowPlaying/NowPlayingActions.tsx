@@ -1,14 +1,15 @@
 import { useContext, useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import ActionIcon from '../ActionIcon';
 import { IconDots, IconDownload, IconHeart, IconHeartFilled } from '@tabler/icons-react-native';
-import { useQueue } from '@/lib/hooks';
+import { useApiHelpers, useQueue } from '@/lib/hooks';
 import { SheetManager } from 'react-native-actions-sheet';
 import * as Haptics from 'expo-haptics';
 import { IdContext } from '@lib/sheets/playback';
 
 export default function NowPlayingActions() {
-    const { nowPlaying } = useQueue();
+    const { nowPlaying, toggleStar } = useQueue();
+    const helpers = useApiHelpers();
 
     const sheetId = useContext(IdContext);
 
@@ -22,7 +23,7 @@ export default function NowPlayingActions() {
     return (
         <View style={styles.actions}>
             {/* FIXME */}
-            <ActionIcon variant='secondary' icon={nowPlaying.starred ? IconHeartFilled : IconHeart} size={16} />
+            <ActionIcon variant={nowPlaying.starred ? 'secondaryFilled' : 'secondary'} icon={nowPlaying.starred ? IconHeartFilled : IconHeart} size={16} onPress={toggleStar} isFilled={!!nowPlaying.starred} />
             <ActionIcon variant='secondary' icon={IconDownload} size={16} onPress={async () => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
                 await SheetManager.show('confirm', {
