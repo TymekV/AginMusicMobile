@@ -28,6 +28,7 @@ More features coming soon!
 - [ ] Marking songs as favourite
 - [ ] Artists and songs view in the Library
 - [ ] Offline playback
+- [ ] Playback history
 - [ ] Playlist items reordering
 - [ ] Playlist renaming
 - [ ] Quality settings
