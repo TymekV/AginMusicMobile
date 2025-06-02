@@ -38,6 +38,7 @@ More features coming soon!
 - [ ] Widgets on iOS
 - [ ] Performance improvements
 - [ ] CarPlay support
+- [ ] Selecting default tab
 
 ## TestFlight
 
